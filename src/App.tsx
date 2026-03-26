@@ -668,7 +668,7 @@ function App() {
               </p>
             </div>
 
-            {/* Main featured card */}
+            {/* Product cards */}
             <div className="reveal-up mb-8">
               <div className="bg-[#15151A] border border-white/10 p-8 md:p-12 hover:border-amber-500/40 transition-all group relative">
                 {/* Badge */}
@@ -759,13 +759,164 @@ function App() {
                       <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Notion</span>
                       <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">AI Workflow</span>
                     </div>
-                    <a href="https://snazer.gumroad.com/l/ftimbb" target="_blank" rel="noreferrer"
-                      className="inline-flex items-center gap-3 border border-amber-500/40 text-amber-400 font-bold uppercase tracking-widest px-6 py-3 rounded-full text-xs hover:bg-amber-500/10 transition-colors hover-target">
-                      Get the Kit — $9.99
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
-                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-                      </svg>
-                    </a>
+                    <div className="flex flex-wrap gap-3">
+                      <a href="https://michaelverse453.gumroad.com/l/zasmyp" target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-3 border border-amber-500/40 text-amber-400 font-bold uppercase tracking-widest px-6 py-3 rounded-full text-xs hover:bg-amber-500/10 transition-colors hover-target">
+                        Get the Kit — $9.99
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+                        </svg>
+                      </a>
+                      <a href="https://ai-influencer-starter-kit.netlify.app" target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-3 border border-white/20 text-white/60 font-bold uppercase tracking-widest px-6 py-3 rounded-full text-xs hover:border-amber-500/30 hover:text-amber-400 transition-colors hover-target">
+                        Landing Page ↗
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Nano Banana Guide card */}
+            <div className="reveal-up">
+              <div className="bg-[#15151A] border border-white/10 p-8 md:p-12 hover:border-yellow-500/40 transition-all group relative">
+                {/* Badge */}
+                <div className="absolute top-6 right-6 flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 font-mono text-[10px] tracking-widest px-3 py-1.5 rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></div>
+                  Live on Gumroad
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                  {/* Visual — image-to-video pipeline */}
+                  <div className="w-full rounded-sm overflow-hidden bg-[#0a0d14] border border-white/5 p-6 flex flex-col gap-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                      <div className="font-mono text-[10px] text-yellow-400/60 tracking-widest">NANO BANANA — PIPELINE METHOD</div>
+                    </div>
+
+                    {/* Stage 1: Nano Banana → Image */}
+                    <div className="flex gap-3 items-stretch">
+                      <div className="flex flex-col items-center shrink-0 w-6">
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 mt-3 shrink-0"></div>
+                        <div className="w-px flex-1 bg-yellow-500/15 mt-1"></div>
+                      </div>
+                      <div className="flex-1 border border-yellow-500/30 bg-yellow-500/8 rounded p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-[8px] text-white/20 tracking-widest">01</span>
+                          <span className="font-sans font-bold text-xs text-white/80">Generate in Nano Banana</span>
+                          <span className="ml-auto font-mono text-[8px] text-yellow-400/60 border border-yellow-500/20 bg-yellow-500/5 px-2 py-0.5 rounded-full">INPUT</span>
+                        </div>
+                        <div className="font-mono text-[9px] text-white/30">25 photo prompts · photorealistic · commercial-grade</div>
+                        <div className="flex gap-1.5 mt-2">
+                          {['AFFILIATE', 'MERCH', 'DIGITAL', 'VIRAL'].map(t => (
+                            <div key={t} className="font-mono text-[7px] text-yellow-400/40 border border-yellow-500/15 bg-yellow-500/5 px-1.5 py-0.5 rounded">{t}</div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stage 2: Animate */}
+                    <div className="flex gap-3 items-stretch">
+                      <div className="flex flex-col items-center shrink-0 w-6">
+                        <div className="w-2.5 h-2.5 rounded-full bg-orange-400 mt-3 shrink-0"></div>
+                        <div className="w-px flex-1 bg-yellow-500/15 mt-1"></div>
+                      </div>
+                      <div className="flex-1 border border-orange-400/20 bg-orange-500/5 rounded p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-[8px] text-white/20 tracking-widest">02</span>
+                          <span className="font-sans font-bold text-xs text-white/80">Animate with Video AI</span>
+                        </div>
+                        <div className="font-mono text-[9px] text-white/30">25 video prompts · Kling AI · Luma Dream Machine · Runway Gen-3</div>
+                        <div className="flex gap-1.5 mt-2">
+                          {['KLING', 'LUMA', 'RUNWAY'].map(t => (
+                            <div key={t} className="font-mono text-[7px] text-orange-400/50 border border-orange-500/15 bg-orange-500/5 px-1.5 py-0.5 rounded">{t}</div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stage 3: Publish */}
+                    <div className="flex gap-3 items-stretch">
+                      <div className="flex flex-col items-center shrink-0 w-6">
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-200 mt-3 shrink-0"></div>
+                      </div>
+                      <div className="flex-1 border border-yellow-300/20 bg-yellow-400/5 rounded p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-[8px] text-white/20 tracking-widest">03</span>
+                          <span className="font-sans font-bold text-xs text-white/80">Publish & Monetise</span>
+                          <span className="ml-auto font-mono text-[8px] text-yellow-400/60 border border-yellow-500/20 bg-yellow-500/5 px-2 py-0.5 rounded-full">OUTPUT</span>
+                        </div>
+                        <div className="font-mono text-[9px] text-white/30">faceless channels · affiliate drops · digital product hooks</div>
+                      </div>
+                    </div>
+
+                    {/* Prompt count summary */}
+                    <div className="flex gap-2 mt-1">
+                      <div className="flex-1 bg-yellow-500/10 border border-yellow-500/20 rounded p-2 text-center">
+                        <div className="font-bold text-yellow-400 text-lg">25</div>
+                        <div className="font-mono text-[8px] text-white/30 tracking-widest">PHOTO PROMPTS</div>
+                      </div>
+                      <div className="flex-1 bg-orange-500/10 border border-orange-500/20 rounded p-2 text-center">
+                        <div className="font-bold text-orange-400 text-lg">25</div>
+                        <div className="font-mono text-[8px] text-white/30 tracking-widest">VIDEO PROMPTS</div>
+                      </div>
+                      <div className="flex-1 bg-white/[0.03] border border-white/5 rounded p-2 text-center">
+                        <div className="font-bold text-white text-lg">50</div>
+                        <div className="font-mono text-[8px] text-white/30 tracking-widest">TOTAL</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Copy */}
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">AI Image Gen | Content Creator</div>
+                      <span className="text-xs font-mono text-yellow-400">002</span>
+                    </div>
+                    <h3 className="text-3xl font-sans font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">The Ultimate Guide to Nano Banana</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                      Nano Banana is the hidden gem of AI image generation — photorealistic, fast, and built for commercial use. This guide weaponises it: 50 engineered prompts covering affiliate marketing, merch mockups, faceless channels, and viral content, plus a full image-to-video pipeline using Kling, Luma, and Runway.
+                    </p>
+
+                    <div className="space-y-2 mb-8">
+                      {[
+                        ["25 Photo Prompts", "Affiliate, merch, digital product, and viral hooks"],
+                        ["25 Video Prompts", "Motion directives for Kling AI, Luma Dream Machine & Runway"],
+                        ["The Pipeline Method", "Nano Banana image → AI video in 3 steps"],
+                        ["NotebookLM Research Pack", "Deep-research sources included for buyers"],
+                        ["Monetisation Use Cases", "Faceless channels, affiliate drops, POD, paid communities"],
+                      ].map(([title, desc]) => (
+                        <div key={title} className="flex gap-3 items-start border border-white/5 bg-white/[0.02] p-2.5 rounded group/item hover:border-yellow-500/20 transition-colors">
+                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shrink-0 mt-1.5"></div>
+                          <div>
+                            <div className="font-sans text-xs font-bold text-white/80 group-hover/item:text-yellow-400 transition-colors">{title}</div>
+                            <div className="font-mono text-[9px] text-white/30 leading-snug">{desc}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-yellow-500/30 text-yellow-400 bg-yellow-500/10">Nano Banana</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Kling AI</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Luma</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Runway</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">NotebookLM</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">AI Content</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      <a href="https://michaelverse453.gumroad.com/l/nanobanana-guide" target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-3 border border-yellow-500/40 text-yellow-400 font-bold uppercase tracking-widest px-6 py-3 rounded-full text-xs hover:bg-yellow-500/10 transition-colors hover-target">
+                        Get the Guide
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+                          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+                        </svg>
+                      </a>
+                      <a href="https://nanobanana-guide.netlify.app" target="_blank" rel="noreferrer"
+                        className="inline-flex items-center gap-3 border border-white/20 text-white/60 font-bold uppercase tracking-widest px-6 py-3 rounded-full text-xs hover:border-yellow-500/30 hover:text-yellow-400 transition-colors hover-target">
+                        Landing Page ↗
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
