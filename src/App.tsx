@@ -112,6 +112,7 @@ function App() {
         <div className="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest text-[#888891]">
           <a href="#work" className="hover-target hover:text-white transition-colors">Archive</a>
           <a href="#about" className="hover-target hover:text-white transition-colors">Manifesto</a>
+          <a href="#ui-ux" className="hover-target hover:text-white transition-colors">UI/UX</a>
           <a href="#design-systems" className="hover-target hover:text-white transition-colors">Design Systems</a>
           <a href="#ai-architect" className="hover-target hover:text-white transition-colors">AI Architect</a>
           <a href="#brand-kit" className="hover-target hover:text-white transition-colors">Brand Kit</a>
@@ -392,7 +393,225 @@ function App() {
                   </div>
                 </div>
 
+                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-green-500/50 group">
+                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
+                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-green-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
+                    <img src="images/repo-degenpad.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="DegenPad" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">Crypto Launchpad | Web3</div>
+                      <span className="text-xs font-mono text-green-400">007</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-green-400 transition-colors">DegenPad</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Premium web3 launchpad interface with aggressive neon aesthetics, real-time token tracking, and highly technical data visualizations tailored for crypto traders.</p>
+                    <div className="flex gap-4">
+                      <a href="https://github.com/Idris-Michael/degenpad" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-purple-500/50 group">
+                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
+                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-purple-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
+                    <img src="images/repo-videodb-voice.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="VideoDB Voice Clone" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">AI Audio | VideoDB</div>
+                      <span className="text-xs font-mono text-purple-400">008</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">VideoDB Voice Clone</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Sleek AI voice cloning dashboard built on VideoDB. Features detailed audio waveforms, nuanced parameter controls, and a dark mode aesthetic designed for professional audio engineers.</p>
+                    <div className="flex gap-4">
+                      <a href="https://github.com/Idris-Michael/videodb-voice-clone" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-orange-500/50 group">
+                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
+                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-orange-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
+                    <img src="images/repo-videodb-clipper.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="VideoDB Auto-Clipper" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">AI Video | VideoDB</div>
+                      <span className="text-xs font-mono text-orange-400">009</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">VideoDB Auto-Clipper</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Intelligent video editing dashboard that automatically extracts highlights. Includes timeline manipulation, side-by-side transcriptions, and rapid export capabilities.</p>
+                    <div className="flex gap-4">
+                      <a href="https://github.com/Idris-Michael/videodb-auto-clipper" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-teal-500/50 group">
+                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
+                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-teal-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
+                    <img src="images/repo-snazer.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="Snazer Voice Agent" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">Neural Agent | Voice AI</div>
+                      <span className="text-xs font-mono text-teal-400">010</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-teal-400 transition-colors">Snazer Voice Agent</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">A sophisticated AI terminal merging brutalist geometry with fluid glassmorphism. Functional density with monospace cryptographic hierarchy that feels like a live data stream for voice-driven neural agents.</p>
+                    <div className="flex gap-4">
+                      <a href="https://snazer.gumroad.com/l/ftimbb" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Project</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-cyan-500/50 group">
+                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
+                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-cyan-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
+                    <img src="images/repo-prompt-master.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="Prompt Master" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">AI Tools | Engineering</div>
+                      <span className="text-xs font-mono text-cyan-400">011</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Prompt Master</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">High-end, minimalist dashboard interface for advanced AI Prompt Engineering. Features professional libraries, category management, and robust input validation tools.</p>
+                    <div className="flex gap-4">
+                      <a href="https://github.com/nidhinjs/prompt-master" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            SECTION: UI/UX DESIGN SYSTEMS
+        ═══════════════════════════════════════════════════════════════════ */}
+        <section id="ui-ux" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0d1216] to-[#0D0D12]">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-20 reveal">
+              <div className="uppercase tracking-[0.3em] text-[#00e1ab] font-bold text-xs mb-4">004 // UI/UX LAB</div>
+              <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Design<br />Systems.</h2>
+              <p className="text-[#00e1ab]/80 text-base font-sans italic mb-4">Functional density meeting high-fidelity aesthetics.</p>
+              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+                A selection of recent UI/UX design systems engineered using Google Stitch. These projects reflect a strict adherence to premium, non-template aesthetics—leveraging organic brutalism, ethereal glassmorphism, and cinematic depth to solve complex interface challenges.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-24 reveal-up">
+              
+              {/* Project 01: DegenPad */}
+              <div className="flex flex-col lg:flex-row gap-12 items-center group relative">
+                <div className="w-full lg:w-7/12 aspect-[16/10] bg-[#15151A] rounded-sm border border-white/10 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-50 z-10 pointer-events-none"></div>
+                  <div className="absolute top-4 left-4 z-20 font-mono text-xs tracking-widest text-[#f3f300] bg-black/40 border border-[#f3f300]/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg pointer-events-none">01 // WEB3</div>
+                  <img src="images/ui-ux/stitch-degenpad.png" alt="DegenPad Solana Launcher" className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+                <div className="w-full lg:w-5/12 flex flex-col justify-center">
+                  <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-4">Crypto Launchpad</div>
+                  <h3 className="text-3xl font-sans font-bold text-white mb-6 group-hover:text-[#f3f300] transition-colors">DegenPad Solana Launcher</h3>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// THE KINETIC LEDGER</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        This design system rejects the "soft-and-safe" aesthetics of traditional fintech. Built on Organic Brutalism and intentional asymmetry, it feels like a high-end physical machine—heavy, loud, and unyielding—leveraging extreme contrast against a dark charcoal palette.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// USER JOURNEY</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Traders land on the launchpad and are instantly confronted by the technical authority of the UI. They navigate token sales using chunky toggle switches, define allocations within oversized terminal input fields, and execute transactions through high-contrast physical "Actuator" buttons.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Project 02: Voice Clone Studio */}
+              <div className="flex flex-col lg:flex-row-reverse gap-12 items-center group relative">
+                <div className="w-full lg:w-7/12 aspect-[16/10] bg-[#15151A] rounded-[2rem] border border-white/10 overflow-hidden relative shadow-2xl">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-50 z-10 pointer-events-none"></div>
+                  <div className="absolute top-4 left-4 z-20 font-mono text-xs tracking-widest text-[#9c93fe] bg-black/40 border border-[#9c93fe]/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg pointer-events-none">02 // AI STUDIO</div>
+                  <img src="images/ui-ux/stitch-voice-clone.png" alt="Voice Clone Studio" className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 rounded-[2rem]" />
+                </div>
+                <div className="w-full lg:w-5/12 flex flex-col justify-center">
+                  <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-4">AI Voice Synthesis</div>
+                  <h3 className="text-3xl font-sans font-bold text-white mb-6 group-hover:text-[#9c93fe] transition-colors">Voice Clone Studio</h3>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// THE PRISTINE STUDIO</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Moved away from standard SaaS dashboards, it is designed as a pristine digital atelier. Built around clear human aesthetics, using a MacOS-inspired light mode, soft pastels, and stacked glass layers to convey surgical precision and airiness.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// USER JOURNEY</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Audio engineers enter a calming workspace. They drop source audio onto the canvas, interact with sleek AI Waveform Cards rendered without heavy borders, input scripts via minimalist input fields with soft glowing focus states, and generate the clone using the signature 'Voice Orb' floating pill.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Project 03: VideoDB Auto-Clipper */}
+              <div className="flex flex-col lg:flex-row gap-12 items-center group relative">
+                <div className="w-full lg:w-7/12 aspect-[16/10] bg-[#15151A] rounded-sm border border-white/10 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-50 z-10 pointer-events-none"></div>
+                  <div className="absolute top-4 left-4 z-20 font-mono text-xs tracking-widest text-[#cc97ff] bg-black/40 border border-[#cc97ff]/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg pointer-events-none">03 // VIDEO AI</div>
+                  <img src="images/ui-ux/stitch-auto-clipper.png" alt="VideoDB Auto-Clipper" className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+                <div className="w-full lg:w-5/12 flex flex-col justify-center">
+                  <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-4">Intelligent Editing</div>
+                  <h3 className="text-3xl font-sans font-bold text-white mb-6 group-hover:text-[#cc97ff] transition-colors">VideoDB Auto-Clipper</h3>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// THE CINEMATIC VOID</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Built for the high-precision world of editing, this dark aesthetic focuses on receding the UI to let the video shine. Featuring overlapping translucent panels, glassmorphism modals, and electric purple glowing accents that feel like polished obsidian.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// USER JOURNEY</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Creators drop raw footage into the infinite charcoal canvas. Navigating the timeline guided by an AI Heatmap highlighting viral moments, they isolate automated clips. Refining timestamps and scripts happens within a glassmorphic modal before final export via a luminous primary CTA.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Project 04: Snazer Voice Agent */}
+              <div className="flex flex-col lg:flex-row-reverse gap-12 items-center group relative">
+                <div className="w-full lg:w-7/12 aspect-[16/10] bg-[#15151A] rounded-sm border border-white/10 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-50 z-10 pointer-events-none"></div>
+                  <div className="absolute top-4 left-4 z-20 font-mono text-xs tracking-widest text-[#00ffc2] bg-black/40 border border-[#00ffc2]/20 px-3 py-1 rounded-full backdrop-blur-md shadow-lg pointer-events-none">04 // NEURAL AGENT</div>
+                  <img src="images/ui-ux/stitch-snazer.png" alt="Snazer Voice Agent" className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+                <div className="w-full lg:w-5/12 flex flex-col justify-center">
+                  <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-4">Command Center</div>
+                  <h3 className="text-3xl font-sans font-bold text-white mb-6 group-hover:text-[#00ffc2] transition-colors">Snazer Voice Agent</h3>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// ORGANIC TECH-WEAR</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        A sophisticated, high-fidelity AI terminal. It avoids cliché aesthetics with a marriage of rigid brutalist geometry (0px radii) and fluid glassmorphism. It prioritizes functional density with a monospace cryptographic hierarchy to feel like a live data stream.
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-mono text-white/70 mb-2">// USER JOURNEY</h4>
+                      <p className="text-[#888891] text-sm leading-relaxed">
+                        Operators initialize the neural terminal using input fields stylized like open data ports. As responses render across the 'Stream' canvas, real-time performance telemetry is mapped on a constant corner HUD, allowing rapid, tactical adjustments.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
@@ -403,11 +622,11 @@ function App() {
         <section id="design-systems" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0f1118] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 reveal">
-              <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">004 // SYSTEMS</div>
+              <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">005 // SYSTEMS</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Design System<br />Architect.</h2>
               <p className="text-emerald-400/80 text-base font-sans italic mb-4">Building scalable frameworks, not just interfaces.</p>
               <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
-                Severus architects design systems from scratch using a custom AI-powered stack: Antigravity + Claude Code + Gemini 2.0 + Figma + NotebookLM. He specialises in creating skills.md frameworks that give AI tools persistent design rules, enabling consistent, production-ready outputs for apps, startups, and websites.
+                Severus architects design systems from scratch using a custom AI-powered stack: Antigravity + Claude Code + Gemini 2.0 + Figma + Google Stitch + NotebookLM. He specialises in creating skills.md frameworks that give AI tools persistent design rules — using Google Stitch to rapid-prototype screen flows from prompts, then refining into production-ready component libraries for apps, startups, and websites.
               </p>
             </div>
 
@@ -467,6 +686,7 @@ function App() {
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Antigravity</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Gemini</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">skills.md</span>
+                  <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-emerald-400/20 text-emerald-300/70 bg-emerald-500/5">Google Stitch</span>
                 </div>
               </div>
 
@@ -541,6 +761,7 @@ function App() {
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Antigravity</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Gemini</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">skills.md</span>
+                  <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-emerald-400/20 text-emerald-300/70 bg-emerald-500/5">Google Stitch</span>
                 </div>
               </div>
             </div>
@@ -553,11 +774,11 @@ function App() {
         <section id="ai-architect" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#100d18] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 reveal">
-              <div className="uppercase tracking-[0.3em] text-violet-400 font-bold text-xs mb-4">005 // INTELLIGENCE</div>
+              <div className="uppercase tracking-[0.3em] text-violet-400 font-bold text-xs mb-4">006 // INTELLIGENCE</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Solution<br />Architect.</h2>
               <p className="text-violet-400/80 text-base font-sans italic mb-4">Deep research. Sharper decisions. Faster builds.</p>
               <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
-                Severus runs structured AI research sprints for startups and solopreneurs using NotebookLM, Gemini, and Claude. He maps business problems to AI solutions — identifying the right tools, workflows, and automations to save time and unlock growth.
+                Severus runs structured AI research sprints for startups and solopreneurs using NotebookLM, Gemini, Claude, and Google Stitch. He maps business problems to AI solutions — identifying the right tools, workflows, and automations, then prototyping UI screens in Stitch to validate product direction before a single line of code is written.
               </p>
             </div>
 
@@ -603,6 +824,7 @@ function App() {
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Claude</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Deep Research</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Strategy</span>
+                  <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-violet-400/20 text-violet-300/70 bg-violet-500/5">Google Stitch</span>
                 </div>
               </div>
 
@@ -648,6 +870,7 @@ function App() {
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Claude</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Deep Research</span>
                   <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Strategy</span>
+                  <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-violet-400/20 text-violet-300/70 bg-violet-500/5">Google Stitch</span>
                 </div>
               </div>
             </div>
@@ -660,7 +883,7 @@ function App() {
         <section id="brand-kit" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#131008] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 reveal">
-              <div className="uppercase tracking-[0.3em] text-amber-400 font-bold text-xs mb-4">006 // BRAND</div>
+              <div className="uppercase tracking-[0.3em] text-amber-400 font-bold text-xs mb-4">007 // BRAND</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Brand Kit<br />Generator.</h2>
               <p className="text-amber-400/80 text-base font-sans italic mb-4">From brief to brand — 10 deliverables, zero design fees.</p>
               <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
@@ -930,7 +1153,7 @@ function App() {
         <section id="agency" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#13100d] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 reveal">
-              <div className="uppercase tracking-[0.3em] text-[#F97316] font-bold text-xs mb-4">006 // AGENCY</div>
+              <div className="uppercase tracking-[0.3em] text-[#F97316] font-bold text-xs mb-4">008 // AGENCY</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-6">Severus<br />Connects.</h2>
               <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
                 Enterprise-grade design and AI — now available to small businesses that deserve better.
@@ -978,7 +1201,7 @@ function App() {
         <section id="automation" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0d1012] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 reveal">
-              <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">008 // AUTOMATION</div>
+              <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">009 // AUTOMATION</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Automation<br />& Chatbots.</h2>
               <p className="text-sky-400/80 text-base font-sans italic mb-4">Intelligent systems that work while you sleep.</p>
               <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
