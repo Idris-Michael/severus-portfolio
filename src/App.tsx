@@ -447,24 +447,6 @@ function App() {
                   </div>
                 </div>
 
-                <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-teal-500/50 group">
-                  <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
-                    <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-teal-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
-                    <img src="images/repo-snazer.png" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="Snazer Voice Agent" />
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">Neural Agent | Voice AI</div>
-                      <span className="text-xs font-mono text-teal-400">010</span>
-                    </div>
-                    <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-teal-400 transition-colors">Snazer Voice Agent</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">A sophisticated AI terminal merging brutalist geometry with fluid glassmorphism. Functional density with monospace cryptographic hierarchy that feels like a live data stream for voice-driven neural agents.</p>
-                    <div className="flex gap-4">
-                      <a href="https://snazer.gumroad.com/l/ftimbb" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Project</a>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="w-full flex flex-col justify-between bg-[#15151A] p-6 border border-white/10 hover-target transition-all hover:border-cyan-500/50 group">
                   <div className="w-full aspect-video rounded-sm overflow-hidden mb-6 bg-black relative">
                     <div className="absolute top-4 left-4 z-10 font-mono text-xs tracking-widest text-white bg-cyan-500 px-3 py-1 rounded-full shadow-lg pointer-events-none">NEW</div>
@@ -473,7 +455,7 @@ function App() {
                   <div>
                     <div className="flex justify-between items-start mb-4">
                       <div className="text-white/50 text-xs font-bold uppercase tracking-widest">AI Tools | Engineering</div>
-                      <span className="text-xs font-mono text-cyan-400">011</span>
+                      <span className="text-xs font-mono text-cyan-400">010</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Prompt Master</h3>
                     <p className="text-[#888891] text-sm leading-relaxed mb-6">High-end, minimalist dashboard interface for advanced AI Prompt Engineering. Features professional libraries, category management, and robust input validation tools.</p>
@@ -1313,6 +1295,55 @@ function App() {
                 </div>
               </div>
             </div>
+
+            {/* Snazer Voice Agent */}
+            <div className="reveal-up mt-8">
+              <div className="bg-[#15151A] border border-white/10 p-8 md:p-12 hover:border-teal-500/40 transition-all group relative">
+                <div className="absolute top-6 right-6 bg-teal-500/10 border border-teal-500/30 text-teal-400 font-mono text-[10px] tracking-widest px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></div>
+                  Live
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  {/* Visual */}
+                  <div className="w-full aspect-[4/3] rounded-sm overflow-hidden bg-[#0a0d14] border border-white/5 relative">
+                    <img src="images/repo-snazer.png" className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" alt="Snazer Voice Agent" />
+                  </div>
+
+                  {/* Copy */}
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="text-white/50 text-xs font-bold uppercase tracking-widest">Neural Agent | Voice AI</div>
+                      <span className="text-xs font-mono text-teal-400">002</span>
+                    </div>
+                    <h3 className="text-3xl font-sans font-bold text-white mb-4 group-hover:text-teal-400 transition-colors">Snazer Voice Agent</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                      A sophisticated AI voice terminal merging brutalist geometry with fluid glassmorphism. Functional density with a monospace cryptographic hierarchy — designed to feel like a live data stream for voice-driven neural agents.
+                    </p>
+                    <div className="space-y-3 mb-8">
+                      {[
+                        "Real-time voice command processing",
+                        "Monospace cryptographic UI hierarchy",
+                        "Live telemetry HUD with performance metrics",
+                        "Brutalist geometry meets fluid glassmorphism",
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-sm text-[#888891]">
+                          <div className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0"></div>
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-teal-500/30 text-teal-400 bg-teal-500/10">Voice AI</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Neural Agent</span>
+                      <span className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/50">Automation</span>
+                    </div>
+                    <a href="https://snazer.gumroad.com/l/ftimbb" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-6 py-3 rounded-full hover:bg-teal-500 hover:border-teal-500 transition-colors inline-block">View Project ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
