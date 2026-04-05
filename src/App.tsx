@@ -273,6 +273,81 @@ function App() {
           </div>
         </section>
 
+        {/* ═══════════════════════════════════════════════════════════════════
+            SECTION: ABOUT / MANIFESTO
+        ═══════════════════════════════════════════════════════════════════ */}
+        <section id="about" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0f0f18] to-[#0D0D12]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start reveal">
+
+              {/* Left — heading + credentials */}
+              <div>
+                <div className="uppercase tracking-[0.3em] text-[#F97316] font-bold text-xs mb-6">002 // MANIFESTO</div>
+                <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-8 leading-tight">About<br />Me.</h2>
+                <p className="text-[#F97316]/80 text-base font-sans italic mb-8">Most designers use AI as a tool. I use it as a system.</p>
+
+                {/* Credential badges */}
+                <div className="flex flex-wrap gap-3 mb-10">
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-[#F97316]/30 text-[#F97316] bg-[#F97316]/5">Google Generative AI Leader 2026</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">Google Analytics Certified</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">AI-Powered Ads Certified</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">10+ Years UX & AI Consulting</span>
+                </div>
+
+                {/* What I do */}
+                <div className="border border-white/10 bg-[#15151A]/60 p-6 rounded-sm">
+                  <div className="text-xs font-mono text-white/40 tracking-widest mb-4">// WHAT I DO</div>
+                  <div className="space-y-3">
+                    {[
+                      "Design System Architecture (Antigravity · Figma · skills.md)",
+                      "AI Solution Architecture & Tech Roadmaps",
+                      "AI Brand Kit Generation (brief to full identity, end-to-end)",
+                      "Chatbots & Automations (Claude API)",
+                      "UX Design & Research",
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm text-[#888891]">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#F97316] shrink-0"></div>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right — bio copy */}
+              <div className="flex flex-col gap-8">
+                <div className="space-y-6 text-[#888891] text-base leading-relaxed">
+                  <p>
+                    I'm the founder of <span className="text-white font-semibold">Severus Connects</span> — a creative technology agency helping startups, solopreneurs, and SMEs build design systems, AI-powered brand kits, and intelligent automations that actually ship.
+                  </p>
+                  <p>
+                    With 10+ years across UX design, financial services, and AI consulting, I sit at the intersection of strategy, design, and technology. Whether that's architecting a scalable component library in Figma, running AI solution sprints with NotebookLM and Gemini, or deploying a Claude-powered chatbot that handles onboarding 24/7 — I build systems, not just deliverables.
+                  </p>
+                  <p>
+                    Recognised as a <span className="text-white font-semibold">Google Generative AI Leader 2026</span>. Google-certified across Analytics, AI-Powered Ads, and Generative AI — I bring both the strategic and technical depth to make AI work for real businesses.
+                  </p>
+                  <p className="text-white font-medium">
+                    If you're building something and need a thinking partner who can also execute — let's talk.
+                  </p>
+                </div>
+
+                {/* CTA row */}
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-white/10">
+                  <a href="https://severus-six.vercel.app" target="_blank" rel="noreferrer"
+                    className="hover-target text-xs font-bold uppercase tracking-widest border border-white/20 text-white px-6 py-3 rounded-full hover:bg-white/10 transition-colors">
+                    🌐 severus-six.vercel.app
+                  </a>
+                  <a href="mailto:idris.bakare92@outlook.com"
+                    className="hover-target text-xs font-bold uppercase tracking-widest bg-[#F97316] text-white px-6 py-3 rounded-full hover:bg-[#ea6a0a] transition-colors">
+                    📩 Let's Talk
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
         {/* Live Builds Carousel */}
         <section id="live-builds" className="py-24 px-6 md:px-12 overflow-hidden border-t border-white/5 bg-[#15151A]/30">
           <div className="max-w-7xl mx-auto">
