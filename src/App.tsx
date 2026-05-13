@@ -142,7 +142,7 @@ function App() {
         <div className="ticker-wrap shadow-2xl bg-[#F97316]">
           <div className="ticker-content pt-1 flex items-center gap-8 py-3 w-max animate-[ticker_30s_linear_infinite]">
             {["AGENTIC DEV", "✦", "AI INTEGRATOR", "✦", "REACT & TYPESCRIPT", "✦", "GOOGLE ADS & GA4", "✦", "N8N AUTOMATIONS", "✦", "MULTI-AGENT SYSTEMS", "✦", "UX DESIGN", "✦", "AGENTIC DEV", "✦", "AI INTEGRATOR", "✦", "REACT & TYPESCRIPT", "✦", "GOOGLE ADS & GA4", "✦", "N8N AUTOMATIONS", "✦", "MULTI-AGENT SYSTEMS", "✦", "UX DESIGN", "✦"].map((item, i) => (
-              <div key={i} className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">{item}</div>
+              <div key={i} className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-white">{item}</div>
             ))}
           </div>
         </div>
@@ -1566,7 +1566,7 @@ function App() {
                 <h3 className="font-sans font-bold text-2xl text-white mb-2">Ready to work together?</h3>
                 <p className="text-[#888891] text-sm max-w-lg">Free 20-minute audit call. No pitch, just actionable ideas for your business.</p>
               </div>
-              <a href="mailto:idris.bakare92@outlook.com" className="hover-target inline-block bg-[#F97316] text-black font-bold uppercase tracking-widest px-8 py-4 rounded-full text-sm hover:bg-white transition-colors shrink-0">
+              <a href="mailto:idris.bakare92@outlook.com" className="hover-target inline-block bg-[#F97316] text-white font-bold uppercase tracking-widest px-8 py-4 rounded-full text-sm hover:bg-white hover:text-white transition-colors shrink-0">
                 Book a Call
               </a>
             </div>
@@ -1966,7 +1966,7 @@ function App() {
             <span className="font-serif italic text-outline lowercase text-[#F97316]">Sequence.</span>
           </h2>
           <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-12 w-full max-w-2xl mx-auto px-4">
-            <a href="mailto:idris.bakare92@outlook.com" className="w-full md:w-auto hover-target inline-block bg-white text-black font-bold uppercase tracking-widest px-12 py-6 rounded-full text-lg hover:bg-[#F97316] hover:text-white transition-colors duration-300">
+            <a href="mailto:idris.bakare92@outlook.com" className="w-full md:w-auto hover-target inline-block bg-white text-[#0D0D12] font-bold uppercase tracking-widest px-12 py-6 rounded-full text-lg hover:bg-[#F97316] hover:text-white transition-colors duration-300">
               Send Signal
             </a>
             <a href="https://snazer.gumroad.com/l/ftimbb" target="_blank" className="w-full md:w-auto hover-target inline-flex items-center justify-center gap-3 border border-white/20 bg-[#15151A]/50 backdrop-blur-md text-white font-bold uppercase tracking-widest px-12 py-6 rounded-full text-lg hover:border-[#F97316] hover:text-[#F97316] transition-all duration-300">
