@@ -278,7 +278,9 @@ function App() {
                 {/* Credential badges */}
                 <div className="flex flex-wrap gap-3 mb-10">
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-[#F97316]/30 text-[#F97316] bg-[#F97316]/5">Google Generative AI Leader 2026</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-[#F97316]/30 text-[#F97316] bg-[#F97316]/5">Google AI Professional Certificate</span>
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">IBM AI Developer Professional Cert</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">IBM Design Thinking Practitioner</span>
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">Google Analytics Certified</span>
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">AI-Powered Ads & Shopping Certified</span>
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">Google UX Design Certificate</span>
@@ -293,7 +295,7 @@ function App() {
                       { area: "Frontend", tools: "React 19 · TypeScript · Next.js · Tailwind · Framer Motion" },
                       { area: "Ads & Analytics", tools: "Google Ads · GA4 · BigQuery · Looker Studio" },
                       { area: "Automation", tools: "n8n · Make.com · Claude API · Gemini API" },
-                      { area: "Design", tools: "Figma · Google Stitch · NotebookLM" },
+                      { area: "Design", tools: "Figma · Google Stitch · NotebookLM · Multi-Agents & Skills · Claude Design" },
                     ].map((row, i) => (
                       <div key={i} className="flex items-start gap-3 text-sm py-1.5 border-b border-white/5 last:border-0">
                         <span className="font-mono text-[9px] text-[#F97316] tracking-widest shrink-0 mt-0.5 w-20">{row.area}</span>
