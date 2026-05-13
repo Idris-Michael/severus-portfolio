@@ -167,11 +167,11 @@ function App() {
                 <p>
                   <strong className="text-[#F97316]">Most freelancers offer a skill. I ship an operating system.</strong> I'm the founder of Severus Connects — a London-based performance marketing agency built on a custom AI Agentic OS. I architect and deploy full multi-agent systems with persistent memory, permission governance, and n8n automations running 24/7.
                 </p>
-                <p className="text-base text-gray-200">
+                <p className="text-base text-white/80">
                   If you need AI agents actually running your business — lead capture, onboarding, reporting, campaign management — I build that infrastructure. Not demos. Governed, memory-persistent pipelines that get work done while you sleep.
                 </p>
               </div>
-              <div className="text-left md:text-right mt-12 md:mt-0 font-sans text-sm tracking-widest uppercase text-[#888891] pt-4 md:pt-0">
+              <div className="text-left md:text-right mt-12 md:mt-0 font-sans text-sm tracking-widest uppercase text-white/70 pt-4 md:pt-0">
                 Explore The Archive <br />↓
               </div>
             </div>
@@ -194,7 +194,7 @@ function App() {
                   <div className="bg-[#15151A]/90 backdrop-blur-md p-8 border border-white/10">
                     <div className="text-xs font-mono text-[#F97316] mb-4 tracking-widest">001 // UI-UX</div>
                     <h3 className="font-sans font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-6">User Interface</h3>
-                    <p className="text-[#888891] mb-8">Pinnacle digital product design, merging psychological user-centric research with jaw-dropping, premium interfaces.</p>
+                    <p className="text-white/70 mb-8">Pinnacle digital product design, merging psychological user-centric research with jaw-dropping, premium interfaces.</p>
                     <button onClick={() => setIsUxOpen(true)} className="inline-block border-b border-[#F97316] pb-1 text-xs uppercase tracking-widest font-bold text-white hover:text-[#F97316] transition-colors hover-target">View Case Studies</button>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ function App() {
                       </svg>
                     </div>
                     <h3 className="font-sans font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-6">Front End Development</h3>
-                    <p className="text-[#888891] mb-8">High-performance responsive applications and algorithmic solutions. Code architecture pushed live via GitHub.</p>
+                    <p className="text-white/70 mb-8">High-performance responsive applications and algorithmic solutions. Code architecture pushed live via GitHub.</p>
 
                     <div className="space-y-4 mb-8 flex flex-col">
                       <a href="/london-estate" target="_blank" rel="noreferrer" className="block group/repo border border-white/5 p-4 bg-white/5 hover:bg-blue-500/10 transition-colors">
@@ -252,7 +252,7 @@ function App() {
                   <div className="bg-[#15151A]/90 backdrop-blur-md p-8 border border-white/10">
                     <div className="text-xs font-mono text-purple-400 mb-4 tracking-widest">003 // MEDIA</div>
                     <h3 className="font-sans font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-6">AI Video Edits</h3>
-                    <p className="text-[#888891] mb-8">Director-level video editing enhanced by generative AI—transforming simple concepts into Hollywood-grade visual narratives.</p>
+                    <p className="text-white/70 mb-8">Director-level video editing enhanced by generative AI—transforming simple concepts into Hollywood-grade visual narratives.</p>
                     <button onClick={() => setIsVideoOpen(true)} className="inline-block border-b border-purple-400 pb-1 text-xs uppercase tracking-widest font-bold text-white hover:text-purple-400 transition-colors hover-target">Play Reel</button>
                   </div>
                 </div>
@@ -299,7 +299,7 @@ function App() {
                     ].map((row, i) => (
                       <div key={i} className="flex items-start gap-3 text-sm py-1.5 border-b border-white/5 last:border-0">
                         <span className="font-mono text-[9px] text-[#F97316] tracking-widest shrink-0 mt-0.5 w-20">{row.area}</span>
-                        <span className="text-[#888891]">{row.tools}</span>
+                        <span className="text-white/70">{row.tools}</span>
                       </div>
                     ))}
                   </div>
@@ -308,7 +308,7 @@ function App() {
 
               {/* Right — bio copy */}
               <div className="flex flex-col gap-8">
-                <div className="space-y-6 text-[#888891] text-base leading-relaxed">
+                <div className="space-y-6 text-white/70 text-base leading-relaxed">
                   <p>
                     I'm the founder of <span className="text-white font-semibold">Severus Connects</span> — a London-based performance marketing agency built on a custom AI Agentic OS. I architect and deploy full multi-agent systems using Hermes, OpenClaw, and OpenSwarm — with persistent memory layers, permission governance, and n8n automations running 24/7.
                   </p>
@@ -367,7 +367,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">001</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Vanguard Estates</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Cinematic 1:1 pixel-perfect luxury real estate experience featuring GSAP scrolling, React 3D Fiber architectural elements, and tailored brand aesthetics.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Cinematic 1:1 pixel-perfect luxury real estate experience featuring GSAP scrolling, React 3D Fiber architectural elements, and tailored brand aesthetics.</p>
                     <div className="flex gap-4">
                       <a href="/london-estate" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-blue-500 hover:border-blue-500 transition-colors">Launch Demo</a>
                     </div>
@@ -384,7 +384,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">002</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Nano-Stream AI</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Experimental AI-Generative Interface built with React 19, Three.js, and Google GenAI. Next-generation streaming platform with a cyberpunk UI.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Experimental AI-Generative Interface built with React 19, Three.js, and Google GenAI. Next-generation streaming platform with a cyberpunk UI.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/Nano-Stream" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -401,7 +401,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">003</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Severus Motion Particles</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Interactive 3D particle experience controlled directly by human hand gestures via computer vision. State-of-the-art interactive UI.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Interactive 3D particle experience controlled directly by human hand gestures via computer vision. State-of-the-art interactive UI.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/Severus-Motion-Particles" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -418,7 +418,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">004</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Nexus Smart Building</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Smart architecture control interface and digital twin dashboard. Merges sensor data streams with an intuitive command and control center.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Smart architecture control interface and digital twin dashboard. Merges sensor data streams with an intuitive command and control center.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/Nexus-Smart-Building" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -435,7 +435,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">005</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Logoisum Premium Hero</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Minimal, ultra-modern video editing agency hero section. Includes a cinematic full-screen video background, slick floating navigation, and sharp typography built seamlessly with native Tailwind configurations.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Minimal, ultra-modern video editing agency hero section. Includes a cinematic full-screen video background, slick floating navigation, and sharp typography built seamlessly with native Tailwind configurations.</p>
                     <div className="flex gap-4">
                       <a href="/logoisum/dist/index.html" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-blue-500 hover:border-blue-500 transition-colors">Launch Demo</a>
                     </div>
@@ -453,7 +453,7 @@ function App() {
                       <span className="text-xs font-mono text-blue-400">006</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Severus Overwatch</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Real-time aerial and ground surveillance dashboard featuring flight tracking, live TfL jam cams, and geographic disruption alerts using MapLibre, React, and Tailwind.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Real-time aerial and ground surveillance dashboard featuring flight tracking, live TfL jam cams, and geographic disruption alerts using MapLibre, React, and Tailwind.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/severus-overwatch" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -471,7 +471,7 @@ function App() {
                       <span className="text-xs font-mono text-green-400">007</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-green-400 transition-colors">DegenPad</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Premium web3 launchpad interface with aggressive neon aesthetics, real-time token tracking, and highly technical data visualizations tailored for crypto traders.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Premium web3 launchpad interface with aggressive neon aesthetics, real-time token tracking, and highly technical data visualizations tailored for crypto traders.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/degenpad" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -489,7 +489,7 @@ function App() {
                       <span className="text-xs font-mono text-purple-400">008</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">VideoDB Voice Clone</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Sleek AI voice cloning dashboard built on VideoDB. Features detailed audio waveforms, nuanced parameter controls, and a dark mode aesthetic designed for professional audio engineers.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Sleek AI voice cloning dashboard built on VideoDB. Features detailed audio waveforms, nuanced parameter controls, and a dark mode aesthetic designed for professional audio engineers.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/videodb-voice-clone" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -507,7 +507,7 @@ function App() {
                       <span className="text-xs font-mono text-orange-400">009</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">VideoDB Auto-Clipper</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">Intelligent video editing dashboard that automatically extracts highlights. Includes timeline manipulation, side-by-side transcriptions, and rapid export capabilities.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">Intelligent video editing dashboard that automatically extracts highlights. Includes timeline manipulation, side-by-side transcriptions, and rapid export capabilities.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/Idris-Michael/videodb-auto-clipper" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -525,7 +525,7 @@ function App() {
                       <span className="text-xs font-mono text-cyan-400">010</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">Prompt Master</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">High-end, minimalist dashboard interface for advanced AI Prompt Engineering. Features professional libraries, category management, and robust input validation tools.</p>
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">High-end, minimalist dashboard interface for advanced AI Prompt Engineering. Features professional libraries, category management, and robust input validation tools.</p>
                     <div className="flex gap-4">
                       <a href="https://github.com/nidhinjs/prompt-master" target="_blank" className="text-xs uppercase tracking-widest font-bold text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">View Source</a>
                     </div>
@@ -547,7 +547,7 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">005 // SYSTEMS</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Design System<br />Architect.</h2>
               <p className="text-emerald-400/80 text-base font-sans italic mb-4">Building scalable frameworks, not just interfaces.</p>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Severus architects design systems from scratch using a custom AI-powered stack: Antigravity + Claude Code + Gemini 2.0 + Figma + Google Stitch + NotebookLM. He specialises in creating skills.md frameworks that give AI tools persistent design rules — using Google Stitch to rapid-prototype screen flows from prompts, then refining into production-ready component libraries for apps, startups, and websites.
               </p>
             </div>
@@ -599,7 +599,7 @@ function App() {
                   <span className="text-xs font-mono text-emerald-400">001</span>
                 </div>
                 <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">Antigravity Design Framework</h3>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   A structured system using skills.md files to give Claude Code and Gemini persistent design context. Outputs: component libraries, token systems, and AI-ready style guides.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -674,7 +674,7 @@ function App() {
                   <span className="text-xs font-mono text-emerald-400">002</span>
                 </div>
                 <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">Startup UI System</h3>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   End-to-end design system for an early-stage product: typography scale, colour tokens, component variants, and handoff documentation.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -699,7 +699,7 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-violet-400 font-bold text-xs mb-4">006 // INTELLIGENCE</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Solution<br />Architect.</h2>
               <p className="text-violet-400/80 text-base font-sans italic mb-4">Deep research. Sharper decisions. Faster builds.</p>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Severus runs structured AI research sprints for startups and solopreneurs using NotebookLM, Gemini, Claude, and Google Stitch. He maps business problems to AI solutions — identifying the right tools, workflows, and automations, then prototyping UI screens in Stitch to validate product direction before a single line of code is written.
               </p>
             </div>
@@ -737,7 +737,7 @@ function App() {
                   <span className="text-xs font-mono text-violet-400">001</span>
                 </div>
                 <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">Startup Discovery Sprint</h3>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   A 3-phase AI research pipeline: problem definition, competitive landscape analysis, and AI toolstack recommendation. Delivered as a strategic brief.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -783,7 +783,7 @@ function App() {
                   <span className="text-xs font-mono text-violet-400">002</span>
                 </div>
                 <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-violet-400 transition-colors">Solopreneur AI Audit</h3>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   Deep review of a solopreneur's current workflow, identifying 5+ areas where AI can save 10+ hours per week.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -810,7 +810,7 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">006B // AGENTIC DEV</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Integrator.<br />Agentic Dev.</h2>
               <p className="text-emerald-400/80 text-base font-sans italic mb-4">Systems that build, route, and self-correct.</p>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Beyond prompting — I build multi-agent pipelines, instrument them with CLAUDE.md rules, and wire them to real business workflows. Every agent has a role, a budget, and a quality gate.
               </p>
             </div>
@@ -826,7 +826,7 @@ function App() {
                   </div>
                   <span className="text-[10px] font-mono text-white/20 border border-white/10 px-2 py-1 rounded">001</span>
                 </div>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   Dual-LLM contract review pipeline: Claude as Architect drafts risk analysis, Gemini as Auditor cross-checks for bias. Submitted to PortSwigger's AI Legal Pioneer competition.
                 </p>
                 <div className="bg-[#0a0d14] border border-white/5 rounded p-4 mb-6 font-mono text-xs">
@@ -855,7 +855,7 @@ function App() {
                   </div>
                   <span className="text-[10px] font-mono text-white/20 border border-white/10 px-2 py-1 rounded">002</span>
                 </div>
-                <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                <p className="text-white/70 text-sm leading-relaxed mb-6">
                   8-agent permission-gated system running as agency operating infrastructure. Kanban, CRM, Vault, Sandbox, and live run history — all wired to Claude Code via a local dashboard.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-6">
@@ -914,7 +914,7 @@ function App() {
                   ].map((rule, i) => (
                     <div key={i} className="flex items-start gap-3 py-2 border-b border-white/5 last:border-0">
                       <span className="font-mono text-[9px] text-emerald-400/60 shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="text-[#888891] text-sm">{rule}</span>
+                      <span className="text-white/70 text-sm">{rule}</span>
                     </div>
                   ))}
                 </div>
@@ -957,7 +957,7 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-amber-400 font-bold text-xs mb-4">007 // BRAND</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Brand Kit<br />Generator.</h2>
               <p className="text-amber-400/80 text-base font-sans italic mb-4">From brief to brand — 10 deliverables, zero design fees.</p>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 The AI Influencer Starter Kit is a shipped digital product that proves the concept: input a niche and a brief, output a complete brand system. Built entirely with AI tools, structured by Severus, and live on Gumroad. The workflow collapses weeks of brand strategy into a single afternoon.
               </p>
             </div>
@@ -1016,7 +1016,7 @@ function App() {
                       <span className="text-xs font-mono text-amber-400">001</span>
                     </div>
                     <h3 className="text-3xl font-sans font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">AI Influencer Starter Kit</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">
                       A complete brand-in-a-box for content creators and AI persona builders. Severus used Claude and ChatGPT to architect 10 production-ready resources — from niche definition to first sale — and deployed the full kit on Gumroad at $9.99.
                     </p>
 
@@ -1168,7 +1168,7 @@ function App() {
                       <span className="text-xs font-mono text-yellow-400">002</span>
                     </div>
                     <h3 className="text-3xl font-sans font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">The Ultimate Guide to Nano Banana</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">
                       Nano Banana is the hidden gem of AI image generation — photorealistic, fast, and built for commercial use. This guide weaponises it: 50 engineered prompts covering affiliate marketing, merch mockups, faceless channels, and viral content, plus a full image-to-video pipeline using Kling, Luma, and Runway.
                     </p>
 
@@ -1227,7 +1227,7 @@ function App() {
             <div className="mb-20 reveal">
               <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">007B // SYSTEMS</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Built Tools.<br />Not Just Outputs.</h2>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Every system below is live and in use. Not mockups — real infrastructure running daily client and agency work. Each one was built to solve a specific problem, then refined until it disappeared into the workflow.
               </p>
             </div>
@@ -1243,7 +1243,7 @@ function App() {
                         <span className="font-mono text-[10px] text-amber-400/60 tracking-widest">INTERACTIVE — CLICK TO EXPLORE</span>
                       </div>
                       <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">System Architecture Visualiser</h3>
-                      <p className="text-[#888891] text-sm leading-relaxed max-w-2xl">
+                      <p className="text-white/70 text-sm leading-relaxed max-w-2xl">
                         Every piece of the Severus Connects system in one diagram — who does what, what talks to what, and how a client request flows from trigger to output. Select a workflow on the right to trace the exact data path. Built so clients can see the system, not just trust it exists.
                       </p>
                     </div>
@@ -1276,7 +1276,7 @@ function App() {
                       <span className="font-mono text-[10px] text-emerald-400/60 tracking-widest">LIVE — RUNNING DAILY</span>
                     </div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">Severus Overwatch</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">
                       Agency mission control. One screen shows everything happening across clients, tasks, agents, and market signals — so nothing falls through the cracks and every decision has context.
                     </p>
                     <div className="space-y-3 mb-6">
@@ -1290,7 +1290,7 @@ function App() {
                       ].map(item => (
                         <div key={item.tab} className="flex items-start gap-3">
                           <span className="font-mono text-[9px] text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 rounded shrink-0 mt-0.5">{item.tab}</span>
-                          <span className="text-[#888891] text-sm">{item.plain}</span>
+                          <span className="text-white/70 text-sm">{item.plain}</span>
                         </div>
                       ))}
                     </div>
@@ -1363,7 +1363,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Swarm Runner</h3>
-                <p className="text-[#888891] text-sm leading-relaxed">Dispatch multiple AI agents on a single task and watch their live logs. One click runs a full campaign audit across GA4, creative, compliance, and budget simultaneously.</p>
+                <p className="text-white/70 text-sm leading-relaxed">Dispatch multiple AI agents on a single task and watch their live logs. One click runs a full campaign audit across GA4, creative, compliance, and budget simultaneously.</p>
               </div>
 
               {/* Agent Registry */}
@@ -1386,7 +1386,7 @@ function App() {
                   ))}
                 </div>
                 <h3 className="font-sans font-bold text-white mb-2 group-hover:text-violet-400 transition-colors">Agent Registry</h3>
-                <p className="text-[#888891] text-sm leading-relaxed">Live view of every AI model wired into the system — Claude, Gemini, DeepSeek, and local models. Switch between them per task based on cost, speed, and capability.</p>
+                <p className="text-white/70 text-sm leading-relaxed">Live view of every AI model wired into the system — Claude, Gemini, DeepSeek, and local models. Switch between them per task based on cost, speed, and capability.</p>
               </div>
 
               {/* Client Deck */}
@@ -1412,7 +1412,7 @@ function App() {
                   </div>
                 </div>
                 <h3 className="font-sans font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">Client Deck</h3>
-                <p className="text-[#888891] text-sm leading-relaxed">10-slide HTML presentation built for client meetings. Covers the problem, results, live tools, agent stack, and next steps — keyboard navigable, no PowerPoint required.</p>
+                <p className="text-white/70 text-sm leading-relaxed">10-slide HTML presentation built for client meetings. Covers the problem, results, live tools, agent stack, and next steps — keyboard navigable, no PowerPoint required.</p>
               </div>
 
             </div>
@@ -1427,7 +1427,7 @@ function App() {
             <div className="mb-20 reveal">
               <div className="uppercase tracking-[0.3em] text-[#F97316] font-bold text-xs mb-4">008 // AGENCY</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-6">Severus<br />Connects.</h2>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Enterprise-grade design and AI — now available to small businesses that deserve better.
                 Fast websites, cinematic reels, and intelligent automation for founders ready to scale.
               </p>
@@ -1437,7 +1437,7 @@ function App() {
             <div className="mt-16 bg-gradient-to-r from-[#F97316]/10 to-transparent border border-[#F97316]/20 rounded-sm p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 reveal">
               <div>
                 <h3 className="font-sans font-bold text-2xl text-white mb-2">Ready to work together?</h3>
-                <p className="text-[#888891] text-sm max-w-lg">Free 20-minute audit call. No pitch, just actionable ideas for your business.</p>
+                <p className="text-white/70 text-sm max-w-lg">Free 20-minute audit call. No pitch, just actionable ideas for your business.</p>
               </div>
               <a href="mailto:idris.bakare92@outlook.com" className="hover-target inline-block bg-[#F97316] text-white font-bold uppercase tracking-widest px-8 py-4 rounded-full text-sm hover:bg-white hover:text-white transition-colors shrink-0">
                 Book a Call
@@ -1455,7 +1455,7 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">009 // AUTOMATION</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">AI Automation<br />& Chatbots.</h2>
               <p className="text-sky-400/80 text-base font-sans italic mb-4">Intelligent systems that work while you sleep.</p>
-              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed">
                 Severus designs and builds AI-powered chatbots and automation workflows that handle onboarding, customer queries, and internal processes — freeing up founder time and improving user experience from day one.
               </p>
             </div>
@@ -1538,7 +1538,7 @@ function App() {
                       <span className="text-xs font-mono text-sky-400">001</span>
                     </div>
                     <h3 className="text-3xl font-sans font-bold text-white mb-4 group-hover:text-sky-400 transition-colors">Startup Onboarding Agent</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">
                       An AI chatbot that guides new users through a product, answers FAQs, collects key information, and routes edge cases to a human. Built with Claude API.
                     </p>
                     <div className="space-y-3 mb-8">
@@ -1548,7 +1548,7 @@ function App() {
                         "Key information collection",
                         "Human escalation routing for edge cases",
                       ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 text-sm text-[#888891]">
+                        <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                           <div className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0"></div>
                           {item}
                         </div>
@@ -1586,7 +1586,7 @@ function App() {
                       <span className="text-xs font-mono text-teal-400">002</span>
                     </div>
                     <h3 className="text-3xl font-sans font-bold text-white mb-4 group-hover:text-teal-400 transition-colors">Snazer Voice Agent</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                    <p className="text-white/70 text-sm leading-relaxed mb-6">
                       A sophisticated AI voice terminal merging brutalist geometry with fluid glassmorphism. Functional density with a monospace cryptographic hierarchy — designed to feel like a live data stream for voice-driven neural agents.
                     </p>
                     <div className="space-y-3 mb-8">
@@ -1596,7 +1596,7 @@ function App() {
                         "Live telemetry HUD with performance metrics",
                         "Brutalist geometry meets fluid glassmorphism",
                       ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 text-sm text-[#888891]">
+                        <div key={i} className="flex items-center gap-3 text-sm text-white/70">
                           <div className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0"></div>
                           {item}
                         </div>
@@ -1640,7 +1640,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Covent Garden</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Monmouth Coffee</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">One of London's most revered independent roasters. Expect perfectly pulled espresso, single-origin pourover, and a queue that's always worth the wait.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">One of London's most revered independent roasters. Expect perfectly pulled espresso, single-origin pourover, and a queue that's always worth the wait.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Specialty Coffee</div>
                 </div>
@@ -1653,7 +1653,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Fitzrovia</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Attendant Coffee</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">Tucked into a beautifully converted Victorian underground toilet. Exceptional flat whites and a cosy, characterful atmosphere unlike anywhere else.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">Tucked into a beautifully converted Victorian underground toilet. Exceptional flat whites and a cosy, characterful atmosphere unlike anywhere else.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Specialty Coffee</div>
                 </div>
@@ -1666,7 +1666,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Soho</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Department of Coffee</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">A Soho staple with serious beans, great food, and a relaxed buzz. Perfect for a morning meeting or solo work session with outstanding brews.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">A Soho staple with serious beans, great food, and a relaxed buzz. Perfect for a morning meeting or solo work session with outstanding brews.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Café</div>
                 </div>
@@ -1679,7 +1679,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Oxford Street</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Notes Coffee</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">Specialty coffee by day, wine bar by night. A sophisticated spot with direct-trade beans and a beautiful storefront that's perfect for people watching.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">Specialty coffee by day, wine bar by night. A sophisticated spot with direct-trade beans and a beautiful storefront that's perfect for people watching.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Specialty Coffee</div>
                 </div>
@@ -1692,7 +1692,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Fitzrovia</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Kaffeine</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">Widely considered one of the leading coffee shops in London, Kaffeine brings an Australian-style devotion to quality, speed, and hospitality.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">Widely considered one of the leading coffee shops in London, Kaffeine brings an Australian-style devotion to quality, speed, and hospitality.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Australian-Style</div>
                 </div>
@@ -1705,7 +1705,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Soho</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Nude Espresso</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">Artisan coffee roasters since 2008. Their Soho shop is a minimalist haven for coffee purists, focusing on ethical sourcing and brewing precision.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">Artisan coffee roasters since 2008. Their Soho shop is a minimalist haven for coffee purists, focusing on ethical sourcing and brewing precision.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Roastery Café</div>
                 </div>
@@ -1718,7 +1718,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Holborn</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Prufrock Coffee</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">A multi-award-winning café and training hub. Co-founded by a former World Barista Champion, an absolute destination for espresso lovers.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">A multi-award-winning café and training hub. Co-founded by a former World Barista Champion, an absolute destination for espresso lovers.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Specialty Coffee</div>
                 </div>
@@ -1731,7 +1731,7 @@ function App() {
                     </div>
                     <div className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Marylebone</div>
                     <h3 className="text-2xl font-sans font-bold text-white mb-4 group-hover:text-[#F97316] transition-colors">Gail's Bakery</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">Beyond the legendary sourdough and cinnamon buns, Gail's serves a curated selection of house-blend coffee in a bright, bustling setting.</p>
+                    <p className="text-white/70 text-sm leading-relaxed">Beyond the legendary sourdough and cinnamon buns, Gail's serves a curated selection of house-blend coffee in a bright, bustling setting.</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-white/10 text-xs text-white/40 uppercase tracking-widest">Bakery Café</div>
                 </div>
@@ -1773,7 +1773,7 @@ function App() {
             <div className="mb-16 reveal">
               <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">DEMOS // SEE IT LIVE</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Watch It<br />Work.</h2>
-              <p className="text-[#888891] text-base md:text-lg max-w-2xl leading-relaxed">
+              <p className="text-white/70 text-base md:text-lg max-w-2xl leading-relaxed">
                 Four live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
               </p>
             </div>
@@ -1824,7 +1824,7 @@ function App() {
                   </div>
                   <div className="p-6">
                     <h3 className={`font-sans font-bold text-white mb-2 group-hover:text-${demo.accent}-400 transition-colors`}>{demo.title}</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed">{demo.desc}</p>
+                    <p className="text-white/70 text-sm leading-relaxed">{demo.desc}</p>
                   </div>
                 </div>
               ))}
@@ -1852,7 +1852,7 @@ function App() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-6 flex justify-between items-center border-t border-white/10 text-xs text-[#888891] font-mono uppercase tracking-widest">
+        <footer className="py-8 px-6 flex justify-between items-center border-t border-white/10 text-xs text-white/70 font-mono uppercase tracking-widest">
           <div>© 2026 Idris Bakare</div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
@@ -1909,10 +1909,10 @@ function App() {
                 <div className="mb-16">
                   <div className="text-xs font-mono text-emerald-400 tracking-widest mb-4">004 // PRODUCT DESIGN</div>
                   <h3 className="font-serif italic text-4xl md:text-6xl text-white mb-4">Fintech Design Strategy.</h3>
-                  <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed mb-4">
+                  <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed mb-4">
                     A comprehensive multi-direction design exploration for a next-generation fintech platform. Three distinct visual identities — each grounded in competitive analysis, user psychology, and regulatory UX patterns — were developed from a single product requirements document to stress-test brand positioning across radically different market segments.
                   </p>
-                  <p className="text-[#888891] text-sm max-w-3xl leading-relaxed">
+                  <p className="text-white/70 text-sm max-w-3xl leading-relaxed">
                     Each direction includes a full PRD, mobile screen flows (pricing, tier selection, fee calculators, checkout, crypto portfolio, and security screens), a tailored colour palette, and component-level specifications. The strategy was synthesised using AI-assisted design tooling to rapidly iterate on layout, hierarchy, and interaction patterns at scale.
                   </p>
                 </div>
@@ -1920,21 +1920,21 @@ function App() {
                 {/* Strategy Document Header */}
                 <div className="bg-white/[0.03] border border-white/10 rounded-sm p-8 mb-16">
                   <h4 className="font-sans font-bold text-lg text-white mb-2">Fintech Design Strategy: Three Directions</h4>
-                  <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                  <p className="text-white/70 text-sm leading-relaxed mb-6">
                     This document establishes three design directions for a modern fintech product, each targeting a distinct market position and user psychology. The strategy was developed to present stakeholders with clear, contrasting approaches to visual identity, interaction patterns, and brand positioning.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     <div className="border border-white/5 p-4 bg-white/[0.02]">
                       <span className="font-mono text-[#39ff14] block mb-1">1. Neon Cyber (Dark &amp; Tech-Forward)</span>
-                      <span className="text-[#888891]">Aggressive, crypto-native aesthetic with high-energy data visualisation</span>
+                      <span className="text-white/70">Aggressive, crypto-native aesthetic with high-energy data visualisation</span>
                     </div>
                     <div className="border border-white/5 p-4 bg-white/[0.02]">
                       <span className="font-mono text-[#10b981] block mb-1">2. Soft Neo-Mint (Clean &amp; Approachable)</span>
-                      <span className="text-[#888891]">Trust-first retail banking UI with progressive disclosure and friendly hierarchy</span>
+                      <span className="text-white/70">Trust-first retail banking UI with progressive disclosure and friendly hierarchy</span>
                     </div>
                     <div className="border border-white/5 p-4 bg-white/[0.02]">
                       <span className="font-mono text-[#818cf8] block mb-1">3. Nordic Trust (Institutional &amp; Premium)</span>
-                      <span className="text-[#888891]">Enterprise wealth management with compliance-first design and restrained elegance</span>
+                      <span className="text-white/70">Enterprise wealth management with compliance-first design and restrained elegance</span>
                     </div>
                   </div>
                 </div>
@@ -1969,19 +1969,19 @@ function App() {
                           <div className="space-y-6">
                             <div>
                               <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Product Overview</h5>
-                              <p className="text-[#888891] text-sm leading-relaxed">{design.overview}</p>
+                              <p className="text-white/70 text-sm leading-relaxed">{design.overview}</p>
                             </div>
 
                             <div>
                               <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Design Philosophy</h5>
-                              <p className="text-[#888891] text-sm leading-relaxed">{design.designPhilosophy}</p>
+                              <p className="text-white/70 text-sm leading-relaxed">{design.designPhilosophy}</p>
                             </div>
 
                             <div>
                               <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Key Features</h5>
                               <ul className="space-y-2">
                                 {design.keyFeatures.map((feature, fIdx) => (
-                                  <li key={fIdx} className="text-[#888891] text-sm flex items-start gap-2">
+                                  <li key={fIdx} className="text-white/70 text-sm flex items-start gap-2">
                                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: design.color }}></span>
                                     {feature}
                                   </li>
@@ -1991,7 +1991,7 @@ function App() {
 
                             <div>
                               <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Typography</h5>
-                              <p className="text-[#888891] text-sm leading-relaxed">{design.typography}</p>
+                              <p className="text-white/70 text-sm leading-relaxed">{design.typography}</p>
                             </div>
                           </div>
                         </div>
@@ -2065,7 +2065,7 @@ function App() {
                               </div>
                               {/* Annotation */}
                               <div className="font-mono text-xs font-bold mb-1" style={{ color: design.color }}>{screen.name}</div>
-                              <p className="text-[#888891] text-[11px] leading-relaxed">{screen.desc}</p>
+                              <p className="text-white/70 text-[11px] leading-relaxed">{screen.desc}</p>
                             </div>
                           ))}
                         </div>
