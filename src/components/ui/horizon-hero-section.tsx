@@ -586,10 +586,10 @@ export const Component = () => {
 
                     <div ref={subtitleRef} className="hero-subtitle cosmos-subtitle mt-8 text-lg md:text-xl text-white/70 max-w-md font-light tracking-wide">
                         <p className="subtitle-line">
-                            Creative Technologist //
+                            AI Integrator // Agentic Dev
                         </p>
                         <p className="subtitle-line">
-                            AI Consultant shaping the future
+                            Founder, Severus Connects
                         </p>
                     </div>
                 </div>
@@ -619,8 +619,8 @@ export const Component = () => {
 
                         const subtitles = {
                             0: {
-                                line1: 'Creative Technologist //',
-                                line2: 'AI Consultant shaping the future'
+                                line1: 'AI Integrator // Agentic Dev',
+                                line2: 'Founder, Severus Connects'
                             },
                             1: {
                                 line1: 'Beyond the boundaries of imagination,',

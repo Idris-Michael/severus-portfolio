@@ -165,15 +165,10 @@ function App() {
             <div className="mt-16 flex flex-col md:flex-row justify-between items-start md:items-end border-t border-white/10 pt-8 reveal">
               <div className="max-w-2xl text-white font-sans text-lg md:text-xl leading-relaxed space-y-6">
                 <p>
-                  <strong className="text-[#F97316]">I engineer digital acceleration.</strong> As an AI Consultant
-                  and Front-End Technologist, I specialize in architecting systems that help brands scale
-                  faster. My stack merges psychological product design with high-performance React
-                  applications.
+                  <strong className="text-[#F97316]">Most freelancers offer a skill. I ship an operating system.</strong> I'm the founder of Severus Connects — a London-based performance marketing agency built on a custom AI Agentic OS. I architect and deploy full multi-agent systems with persistent memory, permission governance, and n8n automations running 24/7.
                 </p>
                 <p className="text-base text-gray-200">
-                  Whether I'm developing a Gemini-powered streaming platform like Nano-Stream, or
-                  orchestrating interactive 3D WebGL experiences, my philosophy is simple: push the boundaries
-                  of immersive web tech to deliver measurable business logic.
+                  If you need AI agents actually running your business — lead capture, onboarding, reporting, campaign management — I build that infrastructure. Not demos. Governed, memory-persistent pipelines that get work done while you sleep.
                 </p>
               </div>
               <div className="text-left md:text-right mt-12 md:mt-0 font-sans text-sm tracking-widest uppercase text-[#888891] pt-4 md:pt-0">
