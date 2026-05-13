@@ -107,22 +107,30 @@ function App() {
     <div className="bg-[#0D0D12] min-h-screen text-[#F5F5F7] selection:bg-[#F97316] selection:text-white antialiased font-sans">
 
       {/* Top Navbar */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-5xl bg-[#15151A]/80 backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 flex justify-between items-center mix-blend-difference">
-        <div className="font-sans font-bold text-xl tracking-tighter uppercase">Idris Bakare.</div>
-        <div className="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest text-[#888891]">
-          <a href="#work" className="hover-target hover:text-white transition-colors">Archive</a>
-          <a href="#about" className="hover-target hover:text-white transition-colors">Manifesto</a>
-          <a href="#ui-ux" className="hover-target hover:text-white transition-colors">UI/UX</a>
-          <a href="#design-systems" className="hover-target hover:text-white transition-colors">Design Systems</a>
-          <a href="#ai-architect" className="hover-target hover:text-white transition-colors">AI Architect</a>
-          <a href="#brand-kit" className="hover-target hover:text-white transition-colors">Brand Kit</a>
-          <a href="#automation" className="hover-target hover:text-white transition-colors">Automation</a>
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#0D0D12]/90 backdrop-blur-xl border-b border-white/5 px-6 md:px-12 py-4 flex justify-between items-center">
+        <div className="font-sans font-bold text-sm tracking-[0.15em] uppercase text-white">Idris Bakare.</div>
+        {/* Sections */}
+        <div className="hidden lg:flex items-center gap-1 text-[10px] font-mono uppercase tracking-widest">
+          {[
+            { href: "#work", label: "Work" },
+            { href: "#about", label: "About" },
+            { href: "#systems", label: "Systems" },
+            { href: "#agentic-dev", label: "Agentic Dev" },
+            { href: "#agency", label: "Agency" },
+            { href: "#demos", label: "Demos" },
+            { href: "#contact", label: "Contact" },
+          ].map(({ href, label }) => (
+            <a key={href} href={href}
+              className="hover-target px-3 py-1.5 rounded text-white/40 hover:text-white hover:bg-white/5 transition-all">
+              {label}
+            </a>
+          ))}
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <a href="https://www.linkedin.com/in/idrisbakare/" target="_blank" rel="noreferrer"
-            className="hover-target text-xs font-bold uppercase tracking-widest border border-white/20 text-white px-4 py-2 rounded-full hover:bg-white/10 transition-colors">LinkedIn</a>
+            className="hover-target text-[10px] font-mono uppercase tracking-widest border border-white/20 text-white/60 px-3 py-1.5 rounded hover:border-white/50 hover:text-white transition-all">LinkedIn</a>
           <a href="https://www.upwork.com/freelancers/~019206011393cf6c1b" target="_blank" rel="noreferrer"
-            className="hover-target text-xs font-bold uppercase tracking-widest bg-white text-black px-4 py-2 rounded-full hover:bg-[#F97316] hover:text-white transition-colors">Upwork</a>
+            className="hover-target text-[10px] font-mono uppercase tracking-widest bg-[#F97316] text-white px-3 py-1.5 rounded hover:bg-[#ea6a0a] transition-all">Hire Me</a>
         </div>
       </nav>
 
@@ -133,23 +141,9 @@ function App() {
       <div className="w-full overflow-hidden mt-20">
         <div className="ticker-wrap shadow-2xl bg-[#F97316]">
           <div className="ticker-content pt-1 flex items-center gap-8 py-3 w-max animate-[ticker_30s_linear_infinite]">
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">AI CONSULTANT</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">CREATIVE TECHNOLOGIST</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">FRONT END DEVELOPMENT</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">BRAND STRATEGIST</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            {/* Duplicate for seamless loop */}
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">AI CONSULTANT</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">CREATIVE TECHNOLOGIST</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">FRONT END DEVELOPMENT</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">BRAND STRATEGIST</div>
-            <div className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">✦</div>
+            {["AGENTIC DEV", "✦", "AI INTEGRATOR", "✦", "REACT & TYPESCRIPT", "✦", "GOOGLE ADS & GA4", "✦", "N8N AUTOMATIONS", "✦", "MULTI-AGENT SYSTEMS", "✦", "UX DESIGN", "✦", "AGENTIC DEV", "✦", "AI INTEGRATOR", "✦", "REACT & TYPESCRIPT", "✦", "GOOGLE ADS & GA4", "✦", "N8N AUTOMATIONS", "✦", "MULTI-AGENT SYSTEMS", "✦", "UX DESIGN", "✦"].map((item, i) => (
+              <div key={i} className="ticker-item font-sans font-bold text-xl uppercase tracking-widest text-black">{item}</div>
+            ))}
           </div>
         </div>
       </div>
@@ -284,30 +278,31 @@ function App() {
               <div>
                 <div className="uppercase tracking-[0.3em] text-[#F97316] font-bold text-xs mb-6">002 // MANIFESTO</div>
                 <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-8 leading-tight">About<br />Me.</h2>
-                <p className="text-[#F97316]/80 text-base font-sans italic mb-8">Most designers use AI as a tool. I use it as a system.</p>
+                <p className="text-[#F97316]/80 text-base font-sans italic mb-8">Most freelancers offer a skill. I ship an operating system.</p>
 
                 {/* Credential badges */}
                 <div className="flex flex-wrap gap-3 mb-10">
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-[#F97316]/30 text-[#F97316] bg-[#F97316]/5">Google Generative AI Leader 2026</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">IBM AI Developer Professional Cert</span>
                   <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">Google Analytics Certified</span>
-                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">AI-Powered Ads Certified</span>
-                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">10+ Years UX & AI Consulting</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">AI-Powered Ads & Shopping Certified</span>
+                  <span className="text-[10px] font-mono px-3 py-1.5 rounded-full border border-white/10 text-white/50">Google UX Design Certificate</span>
                 </div>
 
-                {/* What I do */}
+                {/* Stack */}
                 <div className="border border-white/10 bg-[#15151A]/60 p-6 rounded-sm">
-                  <div className="text-xs font-mono text-white/40 tracking-widest mb-4">// WHAT I DO</div>
-                  <div className="space-y-3">
+                  <div className="text-xs font-mono text-white/40 tracking-widest mb-4">// CURRENT STACK</div>
+                  <div className="space-y-2">
                     {[
-                      "Design System Architecture (Antigravity · Figma · skills.md)",
-                      "AI Solution Architecture & Tech Roadmaps",
-                      "AI Brand Kit Generation (brief to full identity, end-to-end)",
-                      "Chatbots & Automations (Claude API)",
-                      "UX Design & Research",
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm text-[#888891]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#F97316] shrink-0"></div>
-                        {item}
+                      { area: "Agents", tools: "Hermes · OpenClaw · OpenSwarm · Claude Code" },
+                      { area: "Frontend", tools: "React 19 · TypeScript · Next.js · Tailwind · Framer Motion" },
+                      { area: "Ads & Analytics", tools: "Google Ads · GA4 · BigQuery · Looker Studio" },
+                      { area: "Automation", tools: "n8n · Make.com · Claude API · Gemini API" },
+                      { area: "Design", tools: "Figma · Google Stitch · NotebookLM" },
+                    ].map((row, i) => (
+                      <div key={i} className="flex items-start gap-3 text-sm py-1.5 border-b border-white/5 last:border-0">
+                        <span className="font-mono text-[9px] text-[#F97316] tracking-widest shrink-0 mt-0.5 w-20">{row.area}</span>
+                        <span className="text-[#888891]">{row.tools}</span>
                       </div>
                     ))}
                   </div>
@@ -318,16 +313,16 @@ function App() {
               <div className="flex flex-col gap-8">
                 <div className="space-y-6 text-[#888891] text-base leading-relaxed">
                   <p>
-                    I'm the founder of <span className="text-white font-semibold">Severus Connects</span> — a creative technology agency helping startups, solopreneurs, and SMEs build design systems, AI-powered brand kits, and intelligent automations that actually ship.
+                    I'm the founder of <span className="text-white font-semibold">Severus Connects</span> — a London-based performance marketing agency built on a custom AI Agentic OS. I architect and deploy full multi-agent systems using Hermes, OpenClaw, and OpenSwarm — with persistent memory layers, permission governance, and n8n automations running 24/7.
                   </p>
                   <p>
-                    With 10+ years across UX design, financial services, and AI consulting, I sit at the intersection of strategy, design, and technology. Whether that's architecting a scalable component library in Figma, running AI solution sprints with NotebookLM and Gemini, or deploying a Claude-powered chatbot that handles onboarding 24/7 — I build systems, not just deliverables.
+                    If you're a founder who needs AI agents actually running your business — lead capture, onboarding, reporting, campaign management, client comms — I build that infrastructure. Not demos. Governed, memory-persistent, multi-agent pipelines that get work done while you sleep.
                   </p>
                   <p>
-                    Recognised as a <span className="text-white font-semibold">Google Generative AI Leader 2026</span>. Google-certified across Analytics, AI-Powered Ads, and Generative AI — I bring both the strategic and technical depth to make AI work for real businesses.
+                    Triple-certified in Google's AI-powered ad suite. Before I touch a campaign I audit your tracking — clean attribution first, then spend. Most clients see ROAS improvement within the first month. Google-certified across Analytics, AI-Powered Performance Ads, AI-Powered Shopping Ads, and Generative AI.
                   </p>
                   <p className="text-white font-medium">
-                    If you're building something and need a thinking partner who can also execute — let's talk.
+                    Funded founders and technical operators who need a full system built — not managed. Design it, build it, automate it, drive traffic to it.
                   </p>
                 </div>
 
@@ -1568,27 +1563,6 @@ function App() {
               </p>
             </div>
 
-            {/* Services Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 reveal-up">
-              {[
-                { icon: "🎬", name: "Cinematic Reels & UGC", desc: "Director-level video content enhanced by AI. From concept to cut in 48 hours.", price: "From £150", color: "#F97316" },
-                { icon: "💻", name: "Websites & Landing Pages", desc: "React-powered, mobile-first sites built at enterprise quality, priced for founders.", price: "From £350", color: "#3B82F6" },
-                { icon: "🤖", name: "AI Chatbots & Agents", desc: "Custom AI assistants that handle enquiries, bookings, and support 24/7.", price: "From £400", color: "#8B5CF6" },
-                { icon: "⚡", name: "AI Automation", desc: "n8n, Make.com, and custom workflows that eliminate repetitive business tasks.", price: "From £300", color: "#10B981" }
-              ].map((service) => (
-                <div key={service.name} className="bg-[#15151A] border border-white/10 p-6 hover:border-[#F97316]/40 transition-all group flex flex-col justify-between">
-                  <div>
-                    <div className="text-3xl mb-4">{service.icon}</div>
-                    <h3 className="text-lg font-sans font-bold text-white mb-2 group-hover:text-[#F97316] transition-colors">{service.name}</h3>
-                    <p className="text-[#888891] text-sm leading-relaxed mb-4">{service.desc}</p>
-                  </div>
-                  <div className="pt-4 border-t border-white/5">
-                    <span className="font-mono text-sm font-bold" style={{color: service.color}}>{service.price}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {/* Agency CTA */}
             <div className="mt-16 bg-gradient-to-r from-[#F97316]/10 to-transparent border border-[#F97316]/20 rounded-sm p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 reveal">
               <div>
@@ -1920,6 +1894,66 @@ function App() {
             </div>
           </div>
         </div>
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            SECTION: DEMOS
+        ═══════════════════════════════════════════════════════════════════ */}
+        <section id="demos" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0d0f12] to-[#0D0D12]">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-16 reveal">
+              <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">DEMOS // SEE IT LIVE</div>
+              <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Watch It<br />Work.</h2>
+              <p className="text-[#888891] text-base md:text-lg max-w-2xl leading-relaxed">
+                Three live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-up">
+              {[
+                {
+                  num: "01",
+                  src: "/demo-1.mp4",
+                  title: "Severus OS — Mission Control",
+                  desc: "Full walkthrough of the Overwatch dashboard: live kanban, agent registry, swarm runner, and London map. Everything the agency runs on, in one screen.",
+                  accent: "sky",
+                },
+                {
+                  num: "02",
+                  src: "/demo-2.mp4",
+                  title: "Multi-Agent Campaign Audit",
+                  desc: "Watch GA4 auditor, creative auditor, and compliance auditor run in parallel on a live campaign — each agent logs its findings in real time.",
+                  accent: "emerald",
+                },
+                {
+                  num: "03",
+                  src: "/demo-3.mp4",
+                  title: "System Architecture Walkthrough",
+                  desc: "The flow visualiser explained: how a client request moves from trigger to output, which agents handle what, and how the data store connects everything.",
+                  accent: "violet",
+                },
+              ].map(demo => (
+                <div key={demo.num} className={`bg-[#15151A] border border-white/10 hover:border-${demo.accent}-500/30 transition-all group overflow-hidden`}>
+                  <div className="relative aspect-video bg-black">
+                    <video
+                      src={demo.src}
+                      controls
+                      preload="metadata"
+                      className="w-full h-full object-cover"
+                      playsInline
+                    />
+                    <div className={`absolute top-3 left-3 font-mono text-[10px] text-${demo.accent}-400 bg-${demo.accent}-500/10 border border-${demo.accent}-500/20 px-2 py-0.5 rounded pointer-events-none`}>
+                      DEMO {demo.num}
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className={`font-sans font-bold text-white mb-2 group-hover:text-${demo.accent}-400 transition-colors`}>{demo.title}</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed">{demo.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Contact Section */}
         <section id="contact" className="py-40 px-6 text-center reveal">
