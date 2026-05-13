@@ -1904,15 +1904,15 @@ function App() {
               <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">DEMOS // SEE IT LIVE</div>
               <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Watch It<br />Work.</h2>
               <p className="text-[#888891] text-base md:text-lg max-w-2xl leading-relaxed">
-                Three live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
+                Four live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-up">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-up">
               {[
                 {
                   num: "01",
-                  src: "/demo-1.mp4",
+                  src: "/demo-4.mp4",
                   title: "Severus OS — Mission Control",
                   desc: "Full walkthrough of the Overwatch dashboard: live kanban, agent registry, swarm runner, and London map. Everything the agency runs on, in one screen.",
                   accent: "sky",
@@ -1930,6 +1930,13 @@ function App() {
                   title: "System Architecture Walkthrough",
                   desc: "The flow visualiser explained: how a client request moves from trigger to output, which agents handle what, and how the data store connects everything.",
                   accent: "violet",
+                },
+                {
+                  num: "04",
+                  src: "/portswigger-demo.mp4",
+                  title: "AI Legal Pioneer — PortSwigger Submission",
+                  desc: "The dual-LLM contract review pipeline in action: Claude drafts the risk analysis, Gemini cross-checks for bias. Submitted to PortSwigger's AI Legal Pioneer competition.",
+                  accent: "rose",
                 },
               ].map(demo => (
                 <div key={demo.num} className={`bg-[#15151A] border border-white/10 hover:border-${demo.accent}-500/30 transition-all group overflow-hidden`}>
