@@ -1354,6 +1354,207 @@ function App() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════
+            SECTION: SYSTEMS & TOOLS — DASHBOARDS
+        ═══════════════════════════════════════════════════════════════════ */}
+        <section id="systems" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0a0f0d] to-[#0D0D12]">
+          <div className="max-w-7xl mx-auto">
+
+            <div className="mb-20 reveal">
+              <div className="uppercase tracking-[0.3em] text-emerald-400 font-bold text-xs mb-4">007B // SYSTEMS</div>
+              <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Built Tools.<br />Not Just Outputs.</h2>
+              <p className="text-[#888891] text-base md:text-lg max-w-3xl leading-relaxed">
+                Every system below is live and in use. Not mockups — real infrastructure running daily client and agency work. Each one was built to solve a specific problem, then refined until it disappeared into the workflow.
+              </p>
+            </div>
+
+            {/* System Architecture Visualiser — featured top card */}
+            <div className="mb-8 reveal-up">
+              <div className="bg-[#15151A] border border-white/10 hover:border-amber-500/30 transition-all group overflow-hidden">
+                <div className="p-8 md:p-10 pb-0">
+                  <div className="flex items-start justify-between gap-6 mb-6">
+                    <div>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></div>
+                        <span className="font-mono text-[10px] text-amber-400/60 tracking-widest">INTERACTIVE — CLICK TO EXPLORE</span>
+                      </div>
+                      <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">System Architecture Visualiser</h3>
+                      <p className="text-[#888891] text-sm leading-relaxed max-w-2xl">
+                        Every piece of the Severus Connects system in one diagram — who does what, what talks to what, and how a client request flows from trigger to output. Select a workflow on the right to trace the exact data path. Built so clients can see the system, not just trust it exists.
+                      </p>
+                    </div>
+                    <div className="hidden md:flex flex-col gap-2 shrink-0">
+                      {["Run GA4 Audit", "Prospect Lookup", "Market Intelligence Brief"].map(flow => (
+                        <div key={flow} className="text-[10px] font-mono px-3 py-1.5 border border-amber-500/20 text-amber-400/60 rounded bg-amber-500/5 whitespace-nowrap">{flow}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {/* Live iframe */}
+                <div className="w-full h-[520px] border-t border-white/5">
+                  <iframe
+                    src="/system-architecture.html"
+                    className="w-full h-full"
+                    title="Severus Connects — System Architecture Visualiser"
+                    style={{ border: 'none', background: '#141414' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Severus Overwatch — featured wide card */}
+            <div className="mb-8 reveal-up">
+              <div className="bg-[#15151A] border border-white/10 p-8 md:p-10 hover:border-emerald-500/30 transition-all group">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+                      <span className="font-mono text-[10px] text-emerald-400/60 tracking-widest">LIVE — RUNNING DAILY</span>
+                    </div>
+                    <h3 className="text-2xl font-sans font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">Severus Overwatch</h3>
+                    <p className="text-[#888891] text-sm leading-relaxed mb-6">
+                      Agency mission control. One screen shows everything happening across clients, tasks, agents, and market signals — so nothing falls through the cracks and every decision has context.
+                    </p>
+                    <div className="space-y-3 mb-6">
+                      {[
+                        { tab: "Map", plain: "Live overview of London agency activity and client locations" },
+                        { tab: "Kanban", plain: "Drag-and-drop task board — Backlog → In Progress → Done" },
+                        { tab: "Agents", plain: "Live registry of every AI model connected to the system" },
+                        { tab: "Swarm", plain: "Dispatch multiple AI agents on a task and watch them run" },
+                        { tab: "Tactical AI", plain: "Strategy layer — brief an AI on a problem, get a structured plan" },
+                        { tab: "Markets", plain: "Real-time market signals to inform campaign timing" },
+                      ].map(item => (
+                        <div key={item.tab} className="flex items-start gap-3">
+                          <span className="font-mono text-[9px] text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 rounded shrink-0 mt-0.5">{item.tab}</span>
+                          <span className="text-[#888891] text-sm">{item.plain}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {["React", "TypeScript", "SQLite", "Node.js", "Claude API", "Framer Motion"].map(t => (
+                        <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-full border border-white/10 text-white/40">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Visual mockup of the dashboard */}
+                  <div className="w-full aspect-[16/10] rounded bg-[#0f1c2e] border border-slate-700/50 overflow-hidden flex flex-col">
+                    {/* Nav bar */}
+                    <div className="flex items-center gap-1 px-3 py-2 border-b border-slate-700/50 shrink-0" style={{background:"rgba(30,58,95,0.6)"}}>
+                      <div className="w-4 h-4 rounded" style={{background:"#C9A84C"}}></div>
+                      <span className="text-[9px] font-bold text-white ml-1 tracking-wide">Severus Overwatch</span>
+                      <div className="ml-auto flex gap-1">
+                        {["Map","Swarm","Agents","Kanban","Tactical","Markets"].map((t,i) => (
+                          <div key={t} className={`text-[7px] font-mono px-2 py-0.5 rounded ${i===3 ? 'text-amber-400 bg-amber-400/10' : 'text-slate-400'}`}>{t}</div>
+                        ))}
+                      </div>
+                    </div>
+                    {/* Kanban mockup */}
+                    <div className="flex-1 p-3 flex gap-2 overflow-hidden">
+                      {[
+                        { col: "BACKLOG", accent: "border-t-slate-500", cards: ["Research n8n triggers","Brief template v2"] },
+                        { col: "IN PROGRESS", accent: "border-t-amber-500", cards: ["GA4 audit — client A","Landing page copy"] },
+                        { col: "REVIEW", accent: "border-t-purple-500", cards: ["Agent stack docs"] },
+                        { col: "DONE", accent: "border-t-emerald-500", cards: ["Onboarding flow","Ad creative batch"] },
+                      ].map(col => (
+                        <div key={col.col} className={`flex-1 bg-slate-800/40 rounded border-t-2 ${col.accent} p-2 flex flex-col gap-1.5 min-w-0`}>
+                          <div className="font-mono text-[6px] text-slate-400 tracking-widest mb-1">{col.col}</div>
+                          {col.cards.map(c => (
+                            <div key={c} className="bg-slate-900/60 border border-slate-700/40 rounded p-1.5">
+                              <div className="text-[7px] text-slate-200 leading-tight">{c}</div>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Three smaller tool cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-up">
+
+              {/* Swarm Runner */}
+              <div className="bg-[#15151A] border border-white/10 p-6 hover:border-blue-500/30 transition-all group">
+                <div className="w-full aspect-[4/3] rounded bg-[#0a0d14] border border-white/5 mb-6 overflow-hidden flex flex-col p-3 gap-1.5">
+                  <div className="font-mono text-[7px] text-blue-400/60 tracking-widest mb-1">SWARM TASK RUNNER</div>
+                  {[
+                    { title: "Audit GA4 property", status: "done", agent: "analytics-auditor" },
+                    { title: "Draft campaign brief", status: "running", agent: "strategist" },
+                    { title: "Check ad compliance", status: "pending", agent: "compliance-auditor" },
+                  ].map(task => (
+                    <div key={task.title} className="bg-white/[0.03] border border-white/5 rounded p-2 flex items-center gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${task.status==='done'?'bg-emerald-400':task.status==='running'?'bg-blue-400 animate-pulse':'bg-white/20'}`}></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[7px] text-white/70 truncate">{task.title}</div>
+                        <div className="text-[6px] text-white/30 font-mono">{task.agent}</div>
+                      </div>
+                      <div className={`text-[6px] font-mono px-1.5 py-0.5 rounded-full border ${task.status==='done'?'border-emerald-700/40 text-emerald-300':task.status==='running'?'border-blue-700/40 text-blue-300':'border-slate-700/40 text-slate-400'}`}>{task.status}</div>
+                    </div>
+                  ))}
+                  <div className="mt-auto bg-blue-500/10 border border-blue-500/20 rounded p-2">
+                    <div className="font-mono text-[6px] text-blue-400/60">TERMINAL OUTPUT</div>
+                    <div className="font-mono text-[6px] text-blue-300 mt-0.5">→ Running compliance checks...</div>
+                  </div>
+                </div>
+                <h3 className="font-sans font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Swarm Runner</h3>
+                <p className="text-[#888891] text-sm leading-relaxed">Dispatch multiple AI agents on a single task and watch their live logs. One click runs a full campaign audit across GA4, creative, compliance, and budget simultaneously.</p>
+              </div>
+
+              {/* Agent Registry */}
+              <div className="bg-[#15151A] border border-white/10 p-6 hover:border-violet-500/30 transition-all group">
+                <div className="w-full aspect-[4/3] rounded bg-[#0a0d14] border border-white/5 mb-6 overflow-hidden flex flex-col p-3">
+                  <div className="font-mono text-[7px] text-violet-400/60 tracking-widest mb-2">AGENT REGISTRY</div>
+                  {[
+                    { name: "claude-opus-4-7", provider: "Claude", tier: "bg-purple-900/40 text-purple-300" },
+                    { name: "gemini-2.5-pro", provider: "Google", tier: "bg-blue-900/40 text-blue-300" },
+                    { name: "deepseek-r1", provider: "DeepSeek", tier: "bg-cyan-900/40 text-cyan-300" },
+                    { name: "llama-3.3-70b", provider: "Cerebras", tier: "bg-emerald-900/40 text-emerald-300" },
+                  ].map(agent => (
+                    <div key={agent.name} className="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-mono text-[7px] text-white/70 truncate">{agent.name}</div>
+                      </div>
+                      <span className={`text-[6px] font-mono px-1.5 py-0.5 rounded border border-white/5 ${agent.tier}`}>{agent.provider}</span>
+                    </div>
+                  ))}
+                </div>
+                <h3 className="font-sans font-bold text-white mb-2 group-hover:text-violet-400 transition-colors">Agent Registry</h3>
+                <p className="text-[#888891] text-sm leading-relaxed">Live view of every AI model wired into the system — Claude, Gemini, DeepSeek, and local models. Switch between them per task based on cost, speed, and capability.</p>
+              </div>
+
+              {/* Client Deck */}
+              <div className="bg-[#15151A] border border-white/10 p-6 hover:border-amber-500/30 transition-all group">
+                <div className="w-full aspect-[4/3] rounded bg-[#0f0e0a] border border-white/5 mb-6 overflow-hidden flex flex-col">
+                  {/* Slide preview */}
+                  <div className="flex-1 flex items-center justify-center p-4 relative">
+                    <div className="text-center">
+                      <div className="font-mono text-[7px] text-amber-400/50 tracking-widest mb-2">SLIDE 01 / 10</div>
+                      <div className="font-serif italic text-lg text-white leading-tight">Severus Connects</div>
+                      <div className="font-mono text-[7px] text-white/30 mt-1">AI Performance Marketing</div>
+                    </div>
+                    <div className="absolute bottom-2 right-2 flex gap-1">
+                      {[...Array(5)].map((_,i) => (
+                        <div key={i} className={`w-1 h-1 rounded-full ${i===0?'bg-amber-400':'bg-white/20'}`}></div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Slide nav */}
+                  <div className="border-t border-white/5 px-3 py-1.5 flex items-center justify-between">
+                    <div className="font-mono text-[6px] text-white/20">← → to navigate</div>
+                    <div className="font-mono text-[6px] text-amber-400/60">10 SLIDES</div>
+                  </div>
+                </div>
+                <h3 className="font-sans font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">Client Deck</h3>
+                <p className="text-[#888891] text-sm leading-relaxed">10-slide HTML presentation built for client meetings. Covers the problem, results, live tools, agent stack, and next steps — keyboard navigable, no PowerPoint required.</p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════════
             SECTION: SEVERUS CONNECTS AGENCY
         ═══════════════════════════════════════════════════════════════════ */}
         <section id="agency" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#13100d] to-[#0D0D12]">
