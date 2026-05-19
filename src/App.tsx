@@ -119,6 +119,7 @@ function App() {
             { href: "#agency", label: "Agency" },
             { href: "#demos", label: "Demos" },
             { href: "#contact", label: "Contact" },
+            { href: "/cv.html", label: "CV" },
           ].map(({ href, label }) => (
             <a key={href} href={href}
               className="hover-target px-3 py-1.5 rounded text-white/40 hover:text-white hover:bg-white/5 transition-all">
@@ -129,6 +130,8 @@ function App() {
         <div className="flex gap-3">
           <a href="https://www.linkedin.com/in/idrisbakare/" target="_blank" rel="noreferrer"
             className="hover-target text-[10px] font-mono uppercase tracking-widest border border-white/20 text-white/60 px-3 py-1.5 rounded hover:border-white/50 hover:text-white transition-all">LinkedIn</a>
+          <a href="/cv.html" target="_blank" rel="noreferrer"
+            className="hover-target text-[10px] font-mono uppercase tracking-widest border border-white/20 text-white/60 px-3 py-1.5 rounded hover:border-white/50 hover:text-white transition-all">CV</a>
           <a href="https://www.upwork.com/freelancers/~019206011393cf6c1b" target="_blank" rel="noreferrer"
             className="hover-target text-[10px] font-mono uppercase tracking-widest bg-[#F97316] text-white px-3 py-1.5 rounded hover:bg-[#ea6a0a] transition-all">Hire Me</a>
         </div>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Idris-Michael Bakare | Digital CV &amp; Portfolio</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-dim": "#9d9da6",
+                        "surface-container-low": "#131313",
+                        "on-tertiary-container": "#56565d",
+                        "tertiary-dim": "#e1dee7",
+                        "surface-bright": "#2c2c2c",
+                        "inverse-primary": "#5e5f60",
+                        "surface-tint": "#c6c6c7",
+                        "outline-variant": "#484848",
+                        "on-surface": "#e7e5e4",
+                        "on-secondary-container": "#bfbec8",
+                        "surface-container-lowest": "#000000",
+                        "on-secondary-fixed-variant": "#5a5b63",
+                        "on-error-container": "#ff9993",
+                        "surface-container-highest": "#262626",
+                        "on-primary-container": "#d0d0d0",
+                        "on-surface-variant": "#acabaa",
+                        "inverse-surface": "#fcf8f8",
+                        "error-container": "#7f2927",
+                        "on-secondary-fixed": "#3e3f46",
+                        "surface-container": "#1a1919",
+                        "surface": "#0e0e0e",
+                        "secondary-fixed": "#e2e1eb",
+                        "surface-variant": "#262626",
+                        "on-tertiary": "#5f5e66",
+                        "error": "#ee7d77",
+                        "on-tertiary-fixed-variant": "#626269",
+                        "surface-dim": "#0e0e0e",
+                        "outline": "#767575",
+                        "background": "#050505",
+                        "on-tertiary-fixed": "#46464d",
+                        "on-secondary": "#1e2027",
+                        "on-primary-fixed-variant": "#5a5c5c",
+                        "tertiary-container": "#eceaf3",
+                        "primary-fixed-dim": "#d4d4d4",
+                        "tertiary-fixed": "#efedf6",
+                        "secondary-container": "#3a3b42",
+                        "tertiary": "#fbf8ff",
+                        "on-primary-fixed": "#3e4040",
+                        "primary-container": "#454747",
+                        "primary": "#c6c6c7",
+                        "surface-container-high": "#202020",
+                        "inverse-on-surface": "#565554",
+                        "secondary-fixed-dim": "#d4d3dd",
+                        "primary-dim": "#b8b9b9",
+                        "primary-fixed": "#e2e2e2",
+                        "on-error": "#490106",
+                        "secondary": "#9d9da6",
+                        "error-dim": "#bb5551",
+                        "on-background": "#e7e5e4",
+                        "on-primary": "#3f4041",
+                        "tertiary-fixed-dim": "#e1dee7"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "2px",
+                        "xl": "4px",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "display": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #050505;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        @page {
+            margin: 0;
+            size: A4 portrait;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: #050505 !important;
+                color: #e7e5e4 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            html, body {
+                width: 1200px !important;
+                min-width: 1200px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background-color: #050505 !important;
+                color: #e7e5e4 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            main {
+                width: 1200px !important;
+                min-width: 1200px !important;
+                padding: 40px !important;
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                border: none !important;
+                background-color: #050505 !important;
+            }
+            /* Prevent weird clipping and gradient artifacts at page breaks */
+            .bg-surface-container, .bg-surface-container-low, .border-l-2, .border-l-4 {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            /* Ensure the bento grid stays side-by-side in print even if the width is simulated as narrow */
+            .grid-cols-1.lg\:grid-cols-12 {
+                display: grid !important;
+                grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+            }
+            .lg\:col-span-8 {
+                grid-column: span 8 / span 8 !important;
+            }
+            .lg\:col-span-4 {
+                grid-column: span 4 / span 4 !important;
+            }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #262626; }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-on-primary min-h-screen py-10 bg-[#050505]">
+
+    <!-- CV CONTAINER -->
+    <main class="max-w-[1200px] min-h-screen mx-auto bg-surface text-on-surface flex flex-col relative shadow-2xl border border-surface-container">
+        
+        <!-- TOP APP BAR (Shared Navigation - Hidden on print) -->
+        <header class="bg-surface/40 backdrop-blur-3xl docked full-width top-0 sticky z-50 no-border bg-surface-container-low/20 no-print">
+            <div class="flex justify-between items-center w-full px-12 py-5 max-w-[1200px] mx-auto">
+                <div class="text-xl font-headline font-bold tracking-tight text-primary">
+                    IDRIS-MICHAEL BAKARE
+                </div>
+                <nav class="hidden md:flex gap-8">
+                    <a class="text-primary font-bold border-b-2 border-primary pb-1 font-headline tracking-tighter uppercase text-xs" href="#">CV Document</a>
+                    <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-headline tracking-tighter uppercase text-xs" href="https://severus-six.vercel.app/" target="_blank">Live Portfolio</a>
+                </nav>
+                <div class="flex items-center gap-6">
+                    <button onclick="window.print()" class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded font-headline font-bold text-xs tracking-tighter uppercase active:scale-95 transition-all duration-200 cursor-pointer">
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN HERO HEADER -->
+        <section class="px-12 pt-10 pb-8 flex justify-between items-end">
+            <div class="max-w-2xl">
+                <h1 class="font-headline text-[4.8rem] font-bold tracking-tighter leading-[0.85] text-on-surface uppercase">
+                    IDRIS-MICHAEL<br/>BAKARE
+                </h1>
+            </div>
+            <div class="text-right flex flex-col gap-1 font-headline text-xs text-secondary-dim tracking-widest uppercase">
+                <p>London, UK | michaelbakare92@gmail.com</p>
+                <p>severus-six.vercel.app</p>
+                <p>linkedin.com/in/idrisbakare</p>
+            </div>
+        </section>
+
+        <!-- BENTO GRID CONTENT -->
+        <div class="flex-1 px-12 pb-12 grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            <!-- MAIN BODY (Left - 8 columns) -->
+            <div class="lg:col-span-8 flex flex-col gap-5">
+                
+                <!-- PROFESSIONAL SUMMARY -->
+                <div class="bg-surface-container-low p-6 rounded-[2rem] border border-primary/10 hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <h3 class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase text-secondary-dim mb-4 relative z-10">Professional Summary</h3>
+                    <p class="text-lg text-primary font-body italic leading-relaxed relative z-10 mb-4">
+                        "I build AI systems end to end — from agent architecture to the OS that runs them."
+                    </p>
+                    <p class="text-[12px] text-on-surface-variant font-body leading-relaxed relative z-10">
+                        Founder of Severus Connects — a creative technology agency built on a custom AI Agentic OS. Builder of Mount Severus OS — a production Claude-powered agentic operating system used daily to manage clients, agents, and pipelines. I architect and deploy full multi-agent systems using Hermes Gateway, OpenClaw, and OpenSwarm with persistent memory layers, permission governance, and n8n automations that run 24/7. With 10+ years across UX design, financial services, and AI consulting, I bridge the gap between visionary ideas and production-ready digital infrastructure. Recognised as a Google Generative AI Leader 2026. I don’t just build AI tools — I build the operating system that runs the business.
+                    </p>
+                </div>
+
+                <!-- KEY PROJECTS & PORTFOLIO -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-primary/10 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[2rem]"></div>
+                    <h3 class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase text-secondary-dim mb-6 relative z-10">Key Projects & Portfolio</h3>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <!-- Project 1 -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Mount Severus OS</h4>
+                            <p class="font-headline text-[10px] text-primary italic mt-1 mb-2">Stack: Claude API · TypeScript · SQLite · Vite · Obsidian</p>
+                            <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Production Claude-powered agentic operating system — the operational core of Severus Connects. Features an 8-panel dashboard with live SQLite backend, Obsidian vault integration, and real-time CLI streaming. Used daily to manage clients, agents, and automation pipelines.</p>
+                        </div>
+                        
+                        <!-- Project 2 -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Severus Connects Multi-Agent Pipeline</h4>
+                            <p class="font-headline text-[10px] text-primary italic mt-1 mb-2">Stack: 8 agents · n8n · claude-mem · Claude API · MCP</p>
+                            <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Tiered multi-agent orchestration system with permission-governed controls and persistent cross-session memory via claude-mem. Eight specialised agents cover intake, analytics, ads, reporting, and outreach — running autonomously with human-in-the-loop approval gates and full audit logging.</p>
+                        </div>
+
+                        <!-- Project 3 -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Upwork GA4 Delivery System</h4>
+                            <p class="font-headline text-[10px] text-primary italic mt-1 mb-2">Stack: GA4 · Google Tag Manager · n8n · Claude</p>
+                            <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Structured 5-phase analytics delivery framework (intake → audit → setup → verify → handoff) for live clients. GA4 attribution, event tracking, and conversion setup delivered consistently with full handoff documentation.</p>
+                        </div>
+
+                        <!-- Project 4 -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">CodeCraftHub</h4>
+                            <p class="font-headline text-[10px] text-primary italic mt-1 mb-2">Stack: Python · Django · Tailwind · Vercel</p>
+                            <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Python learning platform built to make programming education accessible through structured, project-based curriculum — guiding beginners from fundamentals to deployable applications.</p>
+                        </div>
+
+                        <!-- Project 5 -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Design System Architecture</h4>
+                            <p class="font-headline text-[10px] text-primary italic mt-1 mb-2">Stack: Antigravity · Claude Code · Figma · React · Next.js · Tailwind</p>
+                            <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Full design system delivery: component library, spacing/token system, and documentation — shipped to Vercel as part of Severus Connects client engagements. Lighthouse green, WCAG 2.1 compliant.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPERIENCE & ROLES -->
+                <div class="bg-surface-container-low p-8 rounded-[2rem] border border-primary/10 flex-1 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[2rem]"></div>
+                    <h3 class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase text-secondary-dim mb-6 relative z-10">Experience & Roles</h3>
+                    
+                    <div class="space-y-6 relative z-10">
+                        <!-- Role 1: Current -->
+                        <div class="bg-surface-container p-6 rounded-2xl border border-transparent hover:border-surface-variant transition-colors flex flex-col gap-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-headline text-lg font-bold tracking-tight text-on-surface">Founder & AI Agentic OS Architect</h4>
+                                    <p class="font-headline text-xs text-primary uppercase tracking-wider mt-1">Severus Connects | London</p>
+                                </div>
+                                <span class="font-headline text-[10px] text-on-surface-variant py-1 px-3 bg-surface-container-highest uppercase tracking-wider rounded-full whitespace-nowrap">2024 — Present</span>
+                            </div>
+                            <ul class="list-disc pl-5 text-[11px] text-on-surface-variant font-body leading-relaxed mt-4 space-y-2 marker:text-primary/50">
+                                <li>Architected and shipped Mount Severus OS — an 8-panel Claude-powered dashboard with live SQLite backend, Obsidian vault integration, and real-time CLI streaming.</li>
+                                <li>Built a multi-agent system with tiered permission controls, persistent cross-session memory (claude-mem), and 8 specialised agents handling intake, analytics, ads, reporting, and outreach.</li>
+                                <li>Deployed n8n automation pipelines for lead capture, client onboarding, GA4 setup, weekly reporting, and proposal generation.</li>
+                                <li>Delivered GA4 setup and conversion tracking for clients via a structured 5-phase framework: intake → audit → setup → verify → handoff.</li>
+                                <li>Architected a custom AI Agentic OS: Hermes Gateway (central orchestrator) + OpenClaw (whitelisted research agent) + OpenSwarm (multi-model coordinator supporting Claude, GPT, and local LLMs), with a three-layer persistent memory stack — 95.2% retrieval accuracy across 43 MCP tools.</li>
+                                <li>Built and deployed 9 production n8n automation workflows covering lead capture, client onboarding, GA4 reporting, proposal generation, invoice dispatch, and a Mon/Wed/Fri LinkedIn content pipeline — all running autonomously without human intervention.</li>
+                                <li>Designed and shipped an AI Brand Kit Generator: full brand identity (logo, colour system, typography, copy) from brief to delivery in a single Claude API-powered workflow — cut client delivery time from days to hours.</li>
+                                <li>Built production Claude API systems: Hermes-powered onboarding chatbot, brand kit generator, and Hermes Gateway orchestration layer — with WHITELIST permission governance, audit logging, and human-in-the-loop approval gates.</li>
+                                <li>Deliver Design System Architecture using Antigravity + Claude Code + Figma; full React/Next.js/Tailwind component libraries shipped to Vercel, Lighthouse green, WCAG 2.1 compliant.</li>
+                                <li>Serve funded founders and technical operators as a strategic AI consultant — AI solution architecture sprints, tech roadmaps, and LLM stack recommendations using Claude, NotebookLM, and OpenRouter.</li>
+                                <li>Triple-certified Google AI specialist (Performance Ads, Shopping Ads, Analytics); managed multi-brand Google Ads campaigns delivering consistent ROAS improvement within first 30 days of engagement.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Previous Roles Condensed -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-surface-container-highest mt-6">
+                            <div class="bg-surface-container p-4 rounded-xl border border-transparent hover:border-surface-variant transition-colors">
+                                <h5 class="font-headline text-sm font-bold text-on-surface">Associate UX</h5>
+                                <p class="text-[10px] text-primary uppercase mt-1 tracking-wider">Zenith Banking · 2019–2023</p>
+                                <p class="text-[10px] text-on-surface-variant font-body leading-relaxed mt-2">Led end-to-end UX redesigns and managed wealth platforms in a regulated financial environment.</p>
+                            </div>
+                            <div class="bg-surface-container p-4 rounded-xl border border-transparent hover:border-surface-variant transition-colors">
+                                <h5 class="font-headline text-sm font-bold text-on-surface">UI Designer</h5>
+                                <p class="text-[10px] text-primary uppercase mt-1 tracking-wider">Carphone Warehouse · 2017–2019</p>
+                                <p class="text-[10px] text-on-surface-variant font-body leading-relaxed mt-2">Crafted responsive e-commerce layouts and user interfaces for high-traffic retail digital touchpoints.</p>
+                            </div>
+                            <div class="bg-surface-container p-4 rounded-xl border border-transparent hover:border-surface-variant transition-colors">
+                                <h5 class="font-headline text-sm font-bold text-on-surface">Junior Designer</h5>
+                                <p class="text-[10px] text-primary uppercase mt-1 tracking-wider">Vodafone · 2015–2017</p>
+                                <p class="text-[10px] text-on-surface-variant font-body leading-relaxed mt-2">Supported senior design teams in producing digital assets, customer portals, and brand identity systems.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDE COLUMN (Right - 4 columns) -->
+            <div class="lg:col-span-4 flex flex-col gap-5">
+                
+                <!-- SKILLS & STACK -->
+                <div class="bg-surface-container-low p-6 rounded-[2rem] border border-primary/10 hover:-translate-y-1 transition-transform duration-300 group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[2rem]"></div>
+                    <h3 class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase text-secondary-dim mb-4 relative z-10">Skills & Stack</h3>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <div>
+                            <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface mb-1">AI & Automation:</h4>
+                            <p class="text-[10px] text-on-surface-variant font-body leading-relaxed">Hermes Gateway · OpenClaw · OpenSwarm · Claude API · Claude Code · Multi-Agent Orchestration · AgentMemory · MCP · n8n · SQLite · OpenRouter · NotebookLM · Ollama · Hermes3 · Gemma · Smithery CLI · Prompt Engineering · Conversational Design · Agent Permission Governance</p>
+                        </div>
+                        <div>
+                            <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface mb-1">Development:</h4>
+                            <p class="text-[10px] text-on-surface-variant font-body leading-relaxed">React 18 · Next.js · TypeScript · Tailwind CSS · Shadcn/ui · Framer Motion · Node.js · Git · Vite · Vercel</p>
+                        </div>
+                        <div>
+                            <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface mb-1">Design & UX:</h4>
+                            <p class="text-[10px] text-on-surface-variant font-body leading-relaxed">Figma · Design Systems · UX Research · Wireframing · Prototyping · WCAG 2.1 · Framer · Antigravity</p>
+                        </div>
+                        <div>
+                            <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface mb-1">Growth & Ads:</h4>
+                            <p class="text-[10px] text-on-surface-variant font-body leading-relaxed">Google Ads (AI-Powered) · Performance Max · Shopping Ads · GA4 · Attribution Modelling · A/B Testing</p>
+                        </div>
+                        <div>
+                            <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface mb-1">Strategy:</h4>
+                            <p class="text-[10px] text-on-surface-variant font-body leading-relaxed">IBM Enterprise Design Thinking · AI Solution Architecture · Agile · Client Discovery · Prompt Engineering</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDUCATION & CERTIFICATIONS -->
+                <div class="bg-surface-container-low p-6 rounded-[2rem] border border-primary/10 hover:-translate-y-1 transition-transform duration-300 group relative overflow-hidden flex-1">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-[2rem]"></div>
+                    <h3 class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase text-secondary-dim mb-4 relative z-10">Education & Certifications</h3>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">Google / Coursera</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">2025 – 2026</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">Google UX Design Certificate · Google Generative AI Leader Certificate · Google AI Professional Certificate</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">IBM / Coursera</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">2026</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">IBM AI Developer Professional Specialization</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">Google Skillshop</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">2026</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">AI-Powered Performance Ads Certification · AI-Powered Shopping Ads Certification · Google Analytics Certification</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">IBM SkillsBuild</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">2025</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">Enterprise Design Thinking Practitioner</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">DataCamp</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">Apr 2026</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">AI Ethics Certificate</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">CITA</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">Ongoing</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">Introduction to AI Ethics and Regulations · Algorithmic fairness, bias mitigation, EU AI Act 2024, UK AI Regulation White Paper</p>
+                        </div>
+
+                        <div class="border-l-2 border-primary/30 pl-3">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-headline text-[11px] font-bold tracking-tight text-on-surface">Kingston College</h4>
+                                <span class="font-headline text-[9px] text-secondary-dim italic whitespace-nowrap ml-2">2012 – 2015</span>
+                            </div>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">National Diploma in Computing</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER (Shared Component Logic - Hidden on print) -->
+        <footer class="bg-surface-container-lowest mt-auto border-t border-surface-container no-print">
+            <div class="flex flex-col md:flex-row justify-between items-center w-full px-12 py-8 max-w-[1200px] mx-auto gap-4">
+                <div class="text-xs font-headline font-bold text-on-surface uppercase tracking-widest">
+                    THE MONOLITH ARCHITECT
+                </div>
+                <div class="font-body text-[10px] tracking-widest uppercase text-secondary-dim text-center">
+                    © 2026 Idris-Michael Bakare. All rights reserved.
+                </div>
+                <nav class="flex gap-6 text-[10px] tracking-widest font-headline uppercase">
+                    <a class="text-secondary-dim hover:text-on-surface transition-colors duration-200" href="https://linkedin.com/in/idrisbakare" target="_blank">LinkedIn</a>
+                    <a class="text-secondary-dim hover:text-on-surface transition-colors duration-200" href="https://severus-six.vercel.app/" target="_blank">Portfolio</a>
+                </nav>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ATMOSPHERIC BACKGROUND EFFECTS -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] opacity-20 overflow-hidden no-print">
+        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-secondary-dim/5 blur-[100px] rounded-full"></div>
+    </div>
+
+    <script>
+        // Micro-interactions for technical gauges
+        document.querySelectorAll('.w-full.h-\\[2px\\]').forEach(gauge => {
+            gauge.addEventListener('mouseenter', () => {
+                const bar = gauge.querySelector('div');
+                bar.style.filter = 'brightness(1.5)';
+                bar.style.boxShadow = '0 0 10px var(--primary)';
+            });
+            gauge.addEventListener('mouseleave', () => {
+                const bar = gauge.querySelector('div');
+                bar.style.filter = 'none';
+                bar.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
