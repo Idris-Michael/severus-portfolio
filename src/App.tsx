@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { DemoOne } from '@/components/ui/demo';
+import { Slideshow } from '@/components/ui/Slideshow';
 
 function App() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [isUxOpen, setIsUxOpen] = useState(false);
+  const [selectedDeckId, setSelectedDeckId] = useState('agent-reach');
 
   // Stop body scrolling when lightboxes are open
   useEffect(() => {
@@ -21,86 +23,6 @@ function App() {
     'Uc3CKiFgesw',
     '_uVfZKlKs2A',
     'd0SiWn2EML0'
-  ];
-
-  const pdfFiles = [
-    { name: "Barbershop App - UX Case Study", file: "barbershop-ux-case-study.pdf" },
-    { name: "Dynamic Fitness App - UX Case Study", file: "dynamic-fitness-ux-case-study.pdf" },
-    { name: "Portfolio Project 1", file: "portfolio-project-1.pdf" }
-  ];
-
-  const fintechDesigns = [
-    {
-      name: "Neon Cyber",
-      tag: "DARK THEME",
-      color: "#39ff14",
-      bgColor: "#0a0f0a",
-      image: "images/fintech-neon-cyber.png",
-      overview: "A bold, high-energy fintech interface inspired by crypto trading terminals and cyberpunk aesthetics. Targets digital-native users who are comfortable with complex financial instruments and real-time data streams.",
-      designPhilosophy: "Dark-mode first. Neon green (#39FF14) as the primary accent creates an aggressive, futuristic energy. High-contrast data visualisation with terminal-style monospaced readouts. The interface feels alive — pulsing, glowing, always updating.",
-      keyFeatures: [
-        "Real-time portfolio tracking with animated sparkline charts",
-        "Crypto-native transaction flows with gas fee estimation",
-        "Biometric security gates with visual feedback loops",
-        "Dark glassmorphism cards with neon border accents"
-      ],
-      typography: "Inter for UI, JetBrains Mono for data. Bold weights throughout. Tight tracking on headlines, generous on metadata.",
-      palette: ["#0D0D0D", "#1A1A2E", "#39FF14", "#00D4AA", "#FF003C", "#FFFFFF"],
-      screens: [
-        { name: "Pricing", desc: "Tiered pricing with crypto payment options and real-time conversion rates" },
-        { name: "Tier Selection", desc: "Interactive plan comparison with feature matrix and volume discounts" },
-        { name: "Fee Calculator", desc: "Dynamic fee breakdown with sliders for transaction volume and asset class" },
-        { name: "Checkout", desc: "Streamlined payment flow with wallet connect and multi-chain support" },
-        { name: "Security", desc: "2FA setup with biometric fallback and session management" }
-      ]
-    },
-    {
-      name: "Soft Neo-Mint",
-      tag: "LIGHT THEME",
-      color: "#10b981",
-      bgColor: "#f0fdf4",
-      image: "images/fintech-soft-neo-mint.png",
-      overview: "A clean, approachable fintech experience built on soft mint and coral tones. Designed for mainstream retail banking users who prioritise simplicity, trust, and transparency.",
-      designPhilosophy: "Light, breathable, and confidence-inspiring. The soft mint palette communicates growth and financial health without the intimidation of traditional banking UI. Rounded components and generous whitespace reduce cognitive load.",
-      keyFeatures: [
-        "Progressive disclosure of complex pricing information",
-        "Friendly onboarding with contextual tooltips and micro-animations",
-        "Trust indicators embedded at every transaction step",
-        "Accessible colour contrast ratios meeting WCAG AAA"
-      ],
-      typography: "Plus Jakarta Sans for warmth and approachability. Medium weights for body, semibold for CTAs. Generous line-height for readability.",
-      palette: ["#F0FDF4", "#D1FAE5", "#10B981", "#059669", "#EF4444", "#1F2937"],
-      screens: [
-        { name: "Pricing", desc: "Clean card layout with highlighted recommended tier and transparent fee structure" },
-        { name: "Plan Comparison", desc: "Side-by-side feature comparison with checkmark matrix and savings callouts" },
-        { name: "Crypto Portfolio", desc: "Simplified asset overview with donut charts and percentage gains" },
-        { name: "Gateway", desc: "Payment gateway with progress stepper, card input, and instant confirmation" },
-        { name: "Security Setup", desc: "Guided security onboarding with friendly illustrations and plain-language explanations" }
-      ]
-    },
-    {
-      name: "Nordic Trust",
-      tag: "INSTITUTIONAL",
-      color: "#818cf8",
-      bgColor: "#0f0f2e",
-      image: "images/fintech-nordic-trust.png",
-      overview: "A premium, institutional-grade design language rooted in deep navy and muted indigo. Built for wealth management, high-net-worth advisory platforms, and enterprise treasury operations.",
-      designPhilosophy: "Restraint is luxury. The dark navy foundation communicates stability and authority. Subtle indigo accents add sophistication without frivolity. Every element is precisely measured — this is finance for people who manage serious capital.",
-      keyFeatures: [
-        "Institutional-grade data tables with sortable columns and export functionality",
-        "Compliance-first design with audit trail visibility at every step",
-        "White-glove onboarding flow with document verification and KYC integration",
-        "Structured grid system for dense information without visual clutter"
-      ],
-      typography: "DM Sans for corporate elegance. Light weights for large numerics, medium for navigation. Monospaced for financial data to ensure decimal alignment.",
-      palette: ["#0F0F2E", "#1E1E4A", "#818CF8", "#6366F1", "#F43F5E", "#E2E8F0"],
-      screens: [
-        { name: "Overview", desc: "Executive dashboard with transparent pricing, AUM summary, and advisory fee breakdown" },
-        { name: "Fee Breakdown", desc: "Granular fee schedule with basis point calculations and comparison benchmarks" },
-        { name: "Volume Tiers", desc: "Institutional volume pricing with custom negotiation thresholds and commitment discounts" },
-        { name: "Security Audit", desc: "Compliance dashboard with encryption status, penetration test results, and regulatory certifications" }
-      ]
-    }
   ];
 
   return (
@@ -197,8 +119,33 @@ function App() {
                   <div className="bg-[#15151A]/90 backdrop-blur-md p-8 border border-white/10">
                     <div className="text-xs font-mono text-[#F97316] mb-4 tracking-widest">001 // UI-UX</div>
                     <h3 className="font-sans font-bold text-3xl md:text-5xl uppercase tracking-tighter mb-6">User Interface</h3>
-                    <p className="text-white/70 mb-8">Pinnacle digital product design, merging psychological user-centric research with jaw-dropping, premium interfaces.</p>
-                    <button onClick={() => setIsUxOpen(true)} className="inline-block border-b border-[#F97316] pb-1 text-xs uppercase tracking-widest font-bold text-white hover:text-[#F97316] transition-colors hover-target">View Case Studies</button>
+                    <p className="text-white/70 mb-6">Pinnacle digital product design, merging psychological user-centric research with jaw-dropping, premium interfaces.</p>
+                    <div className="flex flex-wrap gap-x-6 gap-y-3 mt-4">
+                      <button 
+                        onClick={() => { setSelectedDeckId('agent-reach'); setIsUxOpen(true); }} 
+                        className="inline-block border-b border-[#F97316] pb-0.5 text-xs uppercase tracking-widest font-bold text-white hover:text-[#F97316] transition-colors hover-target"
+                      >
+                        [01] Agent Reach
+                      </button>
+                      <button 
+                        onClick={() => { setSelectedDeckId('endava'); setIsUxOpen(true); }} 
+                        className="inline-block border-b border-blue-400 pb-0.5 text-xs uppercase tracking-widest font-bold text-white hover:text-blue-400 transition-colors hover-target"
+                      >
+                        [02] GA4 &amp; Ads
+                      </button>
+                      <button 
+                        onClick={() => { setSelectedDeckId('legal-pioneer'); setIsUxOpen(true); }} 
+                        className="inline-block border-b border-purple-400 pb-0.5 text-xs uppercase tracking-widest font-bold text-white hover:text-purple-400 transition-colors hover-target"
+                      >
+                        [03] Legal Pioneer
+                      </button>
+                      <button 
+                        onClick={() => { setSelectedDeckId('portfolio'); setIsUxOpen(true); }} 
+                        className="inline-block border-b border-emerald-400 pb-0.5 text-xs uppercase tracking-widest font-bold text-white hover:text-emerald-400 transition-colors hover-target"
+                      >
+                        [04] Swarm HUD
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1889,197 +1836,10 @@ function App() {
 
       {/* Cinematic UX Slide Viewer Lightbox */}
       {isUxOpen && (
-        <div className="fixed inset-0 z-[100] bg-[#0D0D12]/98 backdrop-blur-3xl overflow-y-auto w-full transition-opacity duration-500 animate-in fade-in">
-          <div className="min-h-screen flex flex-col items-center py-24 px-6 md:px-12 relative w-full">
-            <button onClick={() => setIsUxOpen(false)} className="fixed top-8 right-8 z-[110] text-white hover:text-[#F97316] font-sans font-bold uppercase tracking-widest text-sm flex items-center gap-2 transition-colors hover-target">
-              [CLOSE]
-            </button>
-            <div className="w-full max-w-6xl mx-auto">
-              <h2 className="font-serif italic text-4xl md:text-6xl text-white mb-16 text-center border-b border-white/10 pb-8">UX Case Studies.</h2>
-              <div className="space-y-32">
-                {pdfFiles.map((pdf, index) => (
-                  <div key={pdf.name} className="reveal-ux animate-in fade-in slide-in-from-bottom-8 duration-700" style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'both' }}>
-                    <h4 className="font-sans font-bold text-xl uppercase tracking-widest text-[#F97316] mb-6">00{index + 1} // {pdf.name}</h4>
-                    <div className="w-full relative aspect-[4/3] md:aspect-[16/9] bg-white/5 rounded-sm border border-white/10 shadow-2xl p-2">
-                      <iframe src={pdf.file} className="w-full h-full rounded-sm border-0" title={pdf.name}></iframe>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Fintech Design Strategy — Full Showcase */}
-              <div className="mt-40 border-t border-white/10 pt-16">
-                <div className="mb-16">
-                  <div className="text-xs font-mono text-emerald-400 tracking-widest mb-4">004 // PRODUCT DESIGN</div>
-                  <h3 className="font-serif italic text-4xl md:text-6xl text-white mb-4">Fintech Design Strategy.</h3>
-                  <p className="text-white/70 text-base md:text-lg max-w-3xl leading-relaxed mb-4">
-                    A comprehensive multi-direction design exploration for a next-generation fintech platform. Three distinct visual identities — each grounded in competitive analysis, user psychology, and regulatory UX patterns — were developed from a single product requirements document to stress-test brand positioning across radically different market segments.
-                  </p>
-                  <p className="text-white/70 text-sm max-w-3xl leading-relaxed">
-                    Each direction includes a full PRD, mobile screen flows (pricing, tier selection, fee calculators, checkout, crypto portfolio, and security screens), a tailored colour palette, and component-level specifications. The strategy was synthesised using AI-assisted design tooling to rapidly iterate on layout, hierarchy, and interaction patterns at scale.
-                  </p>
-                </div>
-
-                {/* Strategy Document Header */}
-                <div className="bg-white/[0.03] border border-white/10 rounded-sm p-8 mb-16">
-                  <h4 className="font-sans font-bold text-lg text-white mb-2">Fintech Design Strategy: Three Directions</h4>
-                  <p className="text-white/70 text-sm leading-relaxed mb-6">
-                    This document establishes three design directions for a modern fintech product, each targeting a distinct market position and user psychology. The strategy was developed to present stakeholders with clear, contrasting approaches to visual identity, interaction patterns, and brand positioning.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className="border border-white/5 p-4 bg-white/[0.02]">
-                      <span className="font-mono text-[#39ff14] block mb-1">1. Neon Cyber (Dark &amp; Tech-Forward)</span>
-                      <span className="text-white/70">Aggressive, crypto-native aesthetic with high-energy data visualisation</span>
-                    </div>
-                    <div className="border border-white/5 p-4 bg-white/[0.02]">
-                      <span className="font-mono text-[#10b981] block mb-1">2. Soft Neo-Mint (Clean &amp; Approachable)</span>
-                      <span className="text-white/70">Trust-first retail banking UI with progressive disclosure and friendly hierarchy</span>
-                    </div>
-                    <div className="border border-white/5 p-4 bg-white/[0.02]">
-                      <span className="font-mono text-[#818cf8] block mb-1">3. Nordic Trust (Institutional &amp; Premium)</span>
-                      <span className="text-white/70">Enterprise wealth management with compliance-first design and restrained elegance</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Design Directions — Full Detail */}
-                <div className="space-y-32">
-                  {fintechDesigns.map((design, index) => (
-                    <div
-                      key={design.name}
-                      className="animate-in fade-in slide-in-from-bottom-8 duration-700"
-                      style={{ animationDelay: `${index * 200}ms`, animationFillMode: 'both' }}
-                    >
-                      {/* Direction Header */}
-                      <div className="flex items-center gap-4 mb-8">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: design.color }}></div>
-                        <div className="text-xs font-mono tracking-widest" style={{ color: design.color }}>
-                          DIRECTION 00{index + 1}
-                        </div>
-                        <div className="flex-1 h-px bg-white/10"></div>
-                        <div className="font-mono text-xs px-3 py-1 rounded-full border text-white" style={{ borderColor: design.color + '40', backgroundColor: design.color + '15' }}>
-                          {design.tag}
-                        </div>
-                      </div>
-
-                      {/* Two-column: PRD + Preview Image */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                        {/* PRD Document */}
-                        <div className="bg-white/[0.03] border border-white/10 rounded-sm p-8">
-                          <h4 className="font-sans font-bold text-2xl md:text-3xl text-white mb-2">{design.name}</h4>
-                          <div className="text-xs font-mono tracking-widest text-white/30 mb-6">PRODUCT REQUIREMENTS DOCUMENT</div>
-
-                          <div className="space-y-6">
-                            <div>
-                              <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Product Overview</h5>
-                              <p className="text-white/70 text-sm leading-relaxed">{design.overview}</p>
-                            </div>
-
-                            <div>
-                              <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Design Philosophy</h5>
-                              <p className="text-white/70 text-sm leading-relaxed">{design.designPhilosophy}</p>
-                            </div>
-
-                            <div>
-                              <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Key Features</h5>
-                              <ul className="space-y-2">
-                                {design.keyFeatures.map((feature, fIdx) => (
-                                  <li key={fIdx} className="text-white/70 text-sm flex items-start gap-2">
-                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: design.color }}></span>
-                                    {feature}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-
-                            <div>
-                              <h5 className="font-sans font-bold text-sm uppercase tracking-widest mb-2" style={{ color: design.color }}>Typography</h5>
-                              <p className="text-white/70 text-sm leading-relaxed">{design.typography}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Preview Image */}
-                        <div className="bg-black border border-white/10 rounded-sm overflow-hidden relative group">
-                          <img
-                            src={design.image}
-                            alt={`${design.name} — Design Preview`}
-                            className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 transition-all duration-700"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                            <div className="font-mono text-xs text-white/50">DESIGN PREVIEW</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Colour Palette */}
-                      <div className="mb-12">
-                        <div className="text-xs font-mono tracking-widest text-white/30 mb-4">COLOUR PALETTE</div>
-                        <div className="flex gap-2">
-                          {design.palette.map((swatch, sIdx) => (
-                            <div key={sIdx} className="group/swatch flex flex-col items-center gap-2">
-                              <div
-                                className="w-12 h-12 md:w-16 md:h-16 rounded-sm border border-white/10 transition-transform group-hover/swatch:scale-110"
-                                style={{ backgroundColor: swatch }}
-                              ></div>
-                              <span className="font-mono text-[10px] text-white/30">{swatch}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Annotated Screen Flows */}
-                      <div>
-                        <div className="text-xs font-mono tracking-widest text-white/30 mb-6">ANNOTATED SCREEN FLOWS</div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                          {design.screens.map((screen, sIdx) => (
-                            <div key={sIdx} className="group/screen">
-                              {/* Mini phone mockup */}
-                              <div
-                                className="aspect-[9/16] rounded-xl border-2 p-3 mb-3 transition-all group-hover/screen:scale-105"
-                                style={{ borderColor: design.color + '30', backgroundColor: design.bgColor + '10' }}
-                              >
-                                <div className="w-full h-full rounded-lg overflow-hidden flex flex-col gap-2 p-2" style={{ backgroundColor: design.bgColor }}>
-                                  {/* Status bar */}
-                                  <div className="flex justify-between items-center px-1">
-                                    <div className="w-6 h-1 rounded-full" style={{ backgroundColor: design.color + '40' }}></div>
-                                    <div className="flex gap-1">
-                                      <div className="w-2 h-1 rounded-full" style={{ backgroundColor: design.color + '30' }}></div>
-                                      <div className="w-2 h-1 rounded-full" style={{ backgroundColor: design.color + '30' }}></div>
-                                    </div>
-                                  </div>
-                                  {/* Screen content wireframe */}
-                                  <div className="w-3/4 h-2 rounded-sm mt-2" style={{ backgroundColor: design.color + '25' }}></div>
-                                  <div className="w-1/2 h-1.5 rounded-sm" style={{ backgroundColor: design.color + '15' }}></div>
-                                  <div className="flex-1 rounded-md mt-1" style={{ backgroundColor: design.color + '08' }}></div>
-                                  <div className="w-full h-6 rounded-md" style={{ backgroundColor: design.color + '20' }}></div>
-                                  <div className="flex gap-1">
-                                    <div className="flex-1 h-4 rounded-sm" style={{ backgroundColor: design.color + '10' }}></div>
-                                    <div className="flex-1 h-4 rounded-sm" style={{ backgroundColor: design.color + '10' }}></div>
-                                  </div>
-                                  <div className="flex-1 rounded-md" style={{ backgroundColor: design.color + '06' }}></div>
-                                  {/* Bottom nav */}
-                                  <div className="flex justify-around pt-1 border-t" style={{ borderColor: design.color + '15' }}>
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: design.color + '20' }}></div>
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: design.color + '40' }}></div>
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: design.color + '20' }}></div>
-                                  </div>
-                                </div>
-                              </div>
-                              {/* Annotation */}
-                              <div className="font-mono text-xs font-bold mb-1" style={{ color: design.color }}>{screen.name}</div>
-                              <p className="text-white/70 text-[11px] leading-relaxed">{screen.desc}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Slideshow 
+          initialDeckId={selectedDeckId} 
+          onClose={() => setIsUxOpen(false)} 
+        />
       )}
 
     </div>
