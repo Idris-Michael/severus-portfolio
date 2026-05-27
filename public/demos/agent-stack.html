@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Creative Agent Stack — Severus Connects | Idris Bakare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0D0D12;color:#F5F5F7;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.mono{font-family:'Courier New',monospace}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(13,13,18,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 32px;display:flex;justify-content:space-between;align-items:center}
+.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.15em;transition:color .2s}
+.back:hover{color:#7C3AED}
+.badge-stack{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:3px 10px;border-radius:4px}
+/* HERO */
+.hero{padding:60px 32px 40px;border-bottom:1px solid rgba(255,255,255,.06)}
+.eyebrow{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.3em;color:#7C3AED;margin-bottom:16px}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;margin-bottom:16px}
+h1 em{font-style:italic;color:#a78bfa;font-family:Georgia,serif;font-weight:400}
+.desc{color:rgba(255,255,255,.6);max-width:640px;line-height:1.7;font-size:15px}
+/* PIPELINE VIZ */
+.pipeline-bar{display:flex;align-items:center;gap:0;overflow-x:auto;padding:28px 32px;border-bottom:1px solid rgba(255,255,255,.06);background:#0a0a0f}
+.pipe-step{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:100px}
+.pipe-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,.1);background:#15151A}
+.pipe-label{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);text-align:center}
+.pipe-arrow{color:rgba(255,255,255,.15);font-size:18px;margin:0 4px;margin-bottom:22px;flex-shrink:0}
+.pipe-step.active .pipe-icon{border-color:#7C3AED;background:rgba(124,58,237,.12);box-shadow:0 0 16px rgba(124,58,237,.2)}
+.pipe-step.active .pipe-label{color:#a78bfa}
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:200px 1fr;height:calc(100vh - 260px);min-height:500px;border-top:1px solid rgba(255,255,255,.06)}
+aside{border-right:1px solid rgba(255,255,255,.06);padding:20px 0;background:#0a0a0f}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:12px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.03)}
+.nav-item.active{color:#a78bfa;border-left-color:#7C3AED;background:rgba(124,58,237,.05)}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+main{overflow-y:auto;padding:24px}
+.panel{display:none}
+.panel.active{display:block}
+.section-title{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+/* AGENT CARDS */
+.agent-grid{display:grid;gap:12px}
+.agent-card{background:#15151A;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:18px 20px;display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:start;transition:border-color .15s;cursor:default}
+.agent-card:hover{border-color:rgba(124,58,237,.35)}
+.agent-card.strategy .agent-icon{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3)}
+.agent-card.creative .agent-icon{background:rgba(236,72,153,.15);border-color:rgba(236,72,153,.3)}
+.agent-card.copy .agent-icon{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3)}
+.agent-card.audit .agent-icon{background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.3)}
+.agent-card.format .agent-icon{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3)}
+.agent-icon{width:48px;height:48px;border-radius:8px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.agent-name{font-size:13px;font-family:'Courier New',monospace;color:#fff;font-weight:700;margin-bottom:4px}
+.agent-role{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:8px}
+.agent-meta{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:3px}
+.tag-model{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);color:#a78bfa}
+.tag-tools{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4)}
+.tag-trigger{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#4ade80}
+.status-pill{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap;align-self:start}
+.status-live{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#22c55e}
+.status-ready{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:#a78bfa}
+.status-standby{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35)}
+/* FLOW VIEW */
+.flow{display:grid;gap:2px}
+.flow-step{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.flow-num{font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.25);padding-top:14px;text-align:right}
+.flow-card{background:#15151A;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px 16px;margin-bottom:2px}
+.flow-card:hover{border-color:rgba(124,58,237,.3)}
+.flow-agent{font-size:11px;font-family:'Courier New',monospace;color:#a78bfa;margin-bottom:4px}
+.flow-action{font-size:13px;color:#fff;font-weight:600;margin-bottom:4px}
+.flow-detail{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.flow-connector{width:2px;height:20px;background:rgba(124,58,237,.2);margin-left:15px}
+/* OUTPUTS VIEW */
+.output-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.output-card{background:#15151A;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:16px}
+.output-card:hover{border-color:rgba(124,58,237,.3)}
+.output-icon{font-size:24px;margin-bottom:10px}
+.output-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:4px}
+.output-desc{font-size:11px;color:rgba(255,255,255,.45);line-height:1.5}
+.output-tag{display:inline-block;margin-top:8px;font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);color:#a78bfa}
+/* AUDIT VIEW */
+.audit-grid{display:grid;gap:12px}
+.audit-card{background:#15151A;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
+.audit-card:hover{border-color:rgba(249,115,22,.3)}
+.audit-icon{font-size:22px}
+.audit-name{font-size:12px;font-family:'Courier New',monospace;color:#F97316;margin-bottom:4px}
+.audit-scope{font-size:13px;color:#fff;font-weight:600;margin-bottom:4px}
+.audit-checks{font-size:11px;color:rgba(255,255,255,.5);line-height:1.7}
+/* STATUS BAR */
+.statusbar{background:#0a0a0f;border-top:1px solid rgba(255,255,255,.06);padding:8px 32px;display:flex;justify-content:space-between;align-items:center;font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.3)}
+.pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:#7C3AED;animation:pulse 2s infinite;margin-right:6px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(max-width:640px){
+  .shell{grid-template-columns:1fr}
+  aside{display:flex;flex-wrap:wrap;padding:10px;border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav-item{border-left:none;border-bottom:2px solid transparent;padding:8px 12px}
+  .nav-item.active{border-bottom-color:#7C3AED;border-left:none;background:transparent}
+  .pipeline-bar{padding:16px}
+  .agent-card{grid-template-columns:40px 1fr;grid-template-rows:auto auto}
+  .status-pill{grid-column:2}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="back" href="/">← Back to Portfolio</a>
+  <div class="badge-stack">
+    <span class="badge">Claude Agents</span>
+    <span class="badge">Gemini</span>
+    <span class="badge">HF Inference</span>
+    <span class="badge">Multi-Agent</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Demo 03 // Creative Agent Stack</div>
+  <h1>10 Agents. One <em>Campaign.</em></h1>
+  <p class="desc">A coordinated multi-agent pipeline that takes a brand URL and produces a complete paid media campaign — strategy, copy, visuals, and format validation — without a human touching a brief.</p>
+</div>
+
+<!-- PIPELINE BAR -->
+<div class="pipeline-bar">
+  <div class="pipe-step active"><div class="pipe-icon">🧠</div><div class="pipe-label">Strategy</div></div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step active"><div class="pipe-icon">✍️</div><div class="pipe-label">Copy</div></div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step active"><div class="pipe-icon">🎨</div><div class="pipe-label">Visuals</div></div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step active"><div class="pipe-icon">📐</div><div class="pipe-label">Format</div></div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step"><div class="pipe-icon">🔍</div><div class="pipe-label">Audit</div></div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-step"><div class="pipe-icon">🚀</div><div class="pipe-label">Ready</div></div>
+</div>
+
+<div class="shell">
+  <aside>
+    <div class="nav-item active" onclick="show('agents')"><span class="nav-dot"></span>Agents</div>
+    <div class="nav-item" onclick="show('flow')"><span class="nav-dot"></span>Pipeline Flow</div>
+    <div class="nav-item" onclick="show('audits')"><span class="nav-dot"></span>Audit Suite</div>
+    <div class="nav-item" onclick="show('outputs')"><span class="nav-dot"></span>Outputs</div>
+  </aside>
+
+  <main>
+
+    <!-- AGENTS PANEL -->
+    <div class="panel active" id="agents">
+      <div class="section-title">Agent Registry — 10 agents</div>
+      <div class="agent-grid">
+
+        <div class="agent-card strategy">
+          <div class="agent-icon">🧠</div>
+          <div>
+            <div class="agent-name">creative-strategist</div>
+            <div class="agent-role">Reads brand-profile.json + audit results. Generates 3–5 campaign concepts with hypothesis, message pillar, visual direction, and image generation briefs per platform.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">opus</span>
+              <span class="tag tag-tools">Read · Write · Glob</span>
+              <span class="tag tag-trigger">starts pipeline</span>
+            </div>
+          </div>
+          <span class="status-pill status-live">live</span>
+        </div>
+
+        <div class="agent-card copy">
+          <div class="agent-icon">✍️</div>
+          <div>
+            <div class="agent-name">copy-writer</div>
+            <div class="agent-role">Reads campaign-brief.md. Writes platform-compliant headlines, primary text, descriptions, and CTAs. Validates character counts per platform before writing. Appends copy deck to campaign-brief.md.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Write · Glob</span>
+              <span class="tag tag-trigger">auto-spawned by /ads create</span>
+            </div>
+          </div>
+          <span class="status-pill status-live">live</span>
+        </div>
+
+        <div class="agent-card creative">
+          <div class="agent-icon">🎨</div>
+          <div>
+            <div class="agent-name">visual-designer</div>
+            <div class="agent-role">Reads campaign-brief.md and brand-profile.json. Constructs image generation prompts, calls generate_image.py for each platform asset, organises outputs into ad-assets/ directories, writes generation-manifest.json.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Write · Bash · Glob</span>
+              <span class="tag tag-trigger">auto-spawned by /ads generate</span>
+            </div>
+          </div>
+          <span class="status-pill status-live">live</span>
+        </div>
+
+        <div class="agent-card format">
+          <div class="agent-icon">📐</div>
+          <div>
+            <div class="agent-name">format-adapter</div>
+            <div class="agent-role">Reads generation-manifest.json. Verifies image dimensions meet platform requirements. Checks safe zone compliance. Reports missing formats. Writes format-report.md.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">haiku</span>
+              <span class="tag tag-tools">Read · Write · Bash · Glob</span>
+              <span class="tag tag-trigger">post-generation validation</span>
+            </div>
+          </div>
+          <span class="status-pill status-live">live</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">🔍</div>
+          <div>
+            <div class="agent-name">audit-creative</div>
+            <div class="agent-role">Audits ad creative across LinkedIn, TikTok, and Microsoft. Flags format diversity gaps, creative fatigue signals, platform-native content quality, and spec compliance issues.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit creative</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">💰</div>
+          <div>
+            <div class="agent-name">audit-budget</div>
+            <div class="agent-role">Audits budget allocation, bidding strategies, and learning phase health across LinkedIn, TikTok, and Microsoft. Flags under-spent campaigns, exit-learning issues, and audience over-segmentation.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit budget</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">⚖️</div>
+          <div>
+            <div class="agent-name">audit-compliance</div>
+            <div class="agent-role">Audits regulatory compliance, ad policies, privacy requirements, campaign settings, and performance benchmarks across LinkedIn, TikTok, and Microsoft.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit compliance</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">📊</div>
+          <div>
+            <div class="agent-name">audit-tracking</div>
+            <div class="agent-role">Audits pixel installation, server-side tracking, event configuration, and attribution across LinkedIn, TikTok, and Microsoft. Catches broken events before they waste budget.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit tracking</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">🟢</div>
+          <div>
+            <div class="agent-name">audit-google</div>
+            <div class="agent-role">Google Ads specialist. Analyses conversion tracking, wasted spend, account structure, keyword Quality Score, ad assets, PMax configuration, and Smart Bidding health.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit google</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+        <div class="agent-card audit">
+          <div class="agent-icon">🔵</div>
+          <div>
+            <div class="agent-name">audit-meta</div>
+            <div class="agent-role">Meta Ads specialist. Analyses Pixel/CAPI health, EMQ scores, creative diversity and fatigue, learning phase status, audience targeting, and Advantage+ campaign configuration.</div>
+            <div class="agent-meta">
+              <span class="tag tag-model">sonnet</span>
+              <span class="tag tag-tools">Read · Bash · Write · Glob · Grep</span>
+              <span class="tag tag-trigger">/ads audit meta</span>
+            </div>
+          </div>
+          <span class="status-pill status-ready">ready</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FLOW PANEL -->
+    <div class="panel" id="flow">
+      <div class="section-title">Pipeline: /ads create → campaign live</div>
+      <div class="flow">
+
+        <div class="flow-step">
+          <div class="flow-num">01</div>
+          <div>
+            <div class="flow-card">
+              <div class="flow-agent">creative-strategist</div>
+              <div class="flow-action">Read brand-profile.json + optional audit</div>
+              <div class="flow-detail">Generates 3–5 campaign concepts. Each includes: hypothesis, primary message, tone axis, visual direction, platform fit, CTA, and image generation brief per placement.</div>
+            </div>
+            <div class="flow-connector"></div>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-num">02</div>
+          <div>
+            <div class="flow-card">
+              <div class="flow-agent">copy-writer</div>
+              <div class="flow-action">Write copy deck from campaign-brief.md</div>
+              <div class="flow-detail">Platform-compliant headlines (30 chars LinkedIn / 100 chars Meta), primary text variants, descriptions, and CTAs. Character counts validated before writing. Appended to campaign-brief.md.</div>
+            </div>
+            <div class="flow-connector"></div>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-num">03</div>
+          <div>
+            <div class="flow-card">
+              <div class="flow-agent">visual-designer</div>
+              <div class="flow-action">Generate images via Gemini 2.5 Flash</div>
+              <div class="flow-detail">Reads image generation briefs from campaign-brief.md. Calls generate_image.py for each concept × platform combination. Outputs to ad-assets/ with structured naming. Writes generation-manifest.json.</div>
+            </div>
+            <div class="flow-connector"></div>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-num">04</div>
+          <div>
+            <div class="flow-card">
+              <div class="flow-agent">format-adapter</div>
+              <div class="flow-action">Validate dimensions and safe zones</div>
+              <div class="flow-detail">Reads generation-manifest.json. Checks each asset: dimensions match platform spec, copy zones are clear, no missing formats. Writes format-report.md with PASS/FLAG/MISSING status per asset.</div>
+            </div>
+            <div class="flow-connector"></div>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-num">05</div>
+          <div>
+            <div class="flow-card">
+              <div class="flow-agent">audit-creative · audit-meta · audit-google</div>
+              <div class="flow-action">Pre-launch audit sweep (on demand)</div>
+              <div class="flow-detail">Run before uploading to ad platforms. Creative audit checks format diversity and fatigue signals. Meta audit checks Pixel/CAPI and EMQ scores. Google audit checks conversion tracking and Quality Score health.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AUDITS PANEL -->
+    <div class="panel" id="audits">
+      <div class="section-title">Audit Suite — 6 specialists</div>
+      <div class="audit-grid">
+
+        <div class="audit-card">
+          <div class="audit-icon">🔍</div>
+          <div>
+            <div class="audit-name">audit-creative</div>
+            <div class="audit-scope">Creative Quality — LinkedIn · TikTok · Microsoft</div>
+            <div class="audit-checks">Format diversity across placements · Creative fatigue signals (CTR decay ↓20%) · Platform-native content vs. repurposed assets · Spec compliance per placement</div>
+          </div>
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-icon">💰</div>
+          <div>
+            <div class="audit-name">audit-budget</div>
+            <div class="audit-scope">Budget & Bidding — LinkedIn · TikTok · Microsoft</div>
+            <div class="audit-checks">Budget allocation vs. performance · Bidding strategy fit · Learning phase health · Audience over-segmentation · Campaign structure fragmentation</div>
+          </div>
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-icon">⚖️</div>
+          <div>
+            <div class="audit-name">audit-compliance</div>
+            <div class="audit-scope">Compliance & Policy — LinkedIn · TikTok · Microsoft</div>
+            <div class="audit-checks">Ad policy violations · Privacy requirements (GDPR/CCPA) · Restricted category settings · Performance benchmarks · Account health signals</div>
+          </div>
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-icon">📊</div>
+          <div>
+            <div class="audit-name">audit-tracking</div>
+            <div class="audit-scope">Conversion Tracking — LinkedIn · TikTok · Microsoft</div>
+            <div class="audit-checks">Pixel installation health · Server-side tracking (CAPI/UET) · Event configuration accuracy · Attribution window settings · Deduplication logic</div>
+          </div>
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-icon">🟢</div>
+          <div>
+            <div class="audit-name">audit-google</div>
+            <div class="audit-scope">Google Ads — Full Account</div>
+            <div class="audit-checks">Conversion tracking integrity · Wasted spend analysis · Keyword Quality Score · Ad asset coverage · PMax campaign configuration · Smart Bidding health · Account structure</div>
+          </div>
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-icon">🔵</div>
+          <div>
+            <div class="audit-name">audit-meta</div>
+            <div class="audit-scope">Meta Ads — Facebook · Instagram</div>
+            <div class="audit-checks">Pixel/CAPI event match quality (EMQ) · Creative diversity and fatigue · Learning phase status · Audience overlap and targeting efficiency · Advantage+ configuration</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- OUTPUTS PANEL -->
+    <div class="panel" id="outputs">
+      <div class="section-title">Pipeline Outputs</div>
+      <div class="output-grid">
+
+        <div class="output-card">
+          <div class="output-icon">📄</div>
+          <div class="output-name">campaign-brief.md</div>
+          <div class="output-desc">Brand DNA summary, all campaign concepts, image generation briefs, and copy deck in one file. The single source of truth for the campaign.</div>
+          <span class="output-tag">strategic-strategist + copy-writer</span>
+        </div>
+
+        <div class="output-card">
+          <div class="output-icon">🖼</div>
+          <div class="output-name">ad-assets/</div>
+          <div class="output-desc">Platform-native images generated per concept. Named by concept slug and placement (e.g. concept-1-meta-feed-1080x1350.png).</div>
+          <span class="output-tag">visual-designer</span>
+        </div>
+
+        <div class="output-card">
+          <div class="output-icon">📋</div>
+          <div class="output-name">generation-manifest.json</div>
+          <div class="output-desc">Machine-readable asset registry. Lists every generated file, its dimensions, concept, platform, and safe zone status. Read by format-adapter.</div>
+          <span class="output-tag">visual-designer</span>
+        </div>
+
+        <div class="output-card">
+          <div class="output-icon">✅</div>
+          <div class="output-name">format-report.md</div>
+          <div class="output-desc">Per-asset PASS / FLAG / MISSING status. Flags dimension mismatches, cluttered copy zones, and missing placements before upload.</div>
+          <span class="output-tag">format-adapter</span>
+        </div>
+
+        <div class="output-card">
+          <div class="output-icon">🔎</div>
+          <div class="output-name">ADS-AUDIT-REPORT.md</div>
+          <div class="output-desc">Consolidated findings from all active audit agents. Feeds back into the next campaign cycle — creative-strategist reads it to address identified weaknesses.</div>
+          <span class="output-tag">audit-* agents</span>
+        </div>
+
+        <div class="output-card">
+          <div class="output-icon">🧬</div>
+          <div class="output-name">brand-profile.json</div>
+          <div class="output-desc">Persistent brand DNA: voice axes, colour palette, imagery style, audience pain points, mood keywords. Created once, consumed by every agent on every run.</div>
+          <span class="output-tag">input — /ads dna</span>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="statusbar">
+  <span><span class="pulse"></span>10 agents · 4 production · 6 audit</span>
+  <span>models: opus · sonnet · haiku — tiered by task weight</span>
+  <span>trigger: /ads create &lt;url&gt;</span>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  event.currentTarget.classList.add('active')
+}
+</script>
+</body>
+</html>

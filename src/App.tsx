@@ -1339,6 +1339,36 @@ function App() {
                 <p className="text-white/70 text-sm leading-relaxed">Live view of every AI model wired into the system — Claude, Gemini, DeepSeek, and local models. Switch between them per task based on cost, speed, and capability.</p>
               </div>
 
+              {/* Creative Agent Stack */}
+              <div className="bg-[#15151A] border border-white/10 p-6 hover:border-violet-500/30 transition-all group">
+                <div className="w-full aspect-[4/3] rounded bg-[#0e0a18] border border-white/5 mb-6 overflow-hidden flex flex-col">
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-violet-400 animate-pulse"></div>
+                    <span className="font-mono text-[8px] text-violet-400/60 tracking-widest">10 AGENTS — FULL CAMPAIGN PIPELINE</span>
+                  </div>
+                  <div className="flex-1 p-4 flex flex-col gap-2">
+                    {[
+                      { agent: "creative-strategist", action: "3 campaign concepts", model: "opus" },
+                      { agent: "copy-writer", action: "Platform copy deck", model: "sonnet" },
+                      { agent: "visual-designer", action: "Gemini image gen", model: "sonnet" },
+                      { agent: "format-adapter", action: "Spec validation", model: "haiku" },
+                    ].map((row, i) => (
+                      <div key={i} className="flex items-center gap-2 bg-[#0a0814] border border-white/5 rounded px-3 py-1.5">
+                        <span className="font-mono text-[7px] text-violet-400 border border-violet-500/20 px-1.5 py-0.5 rounded bg-violet-500/5 shrink-0">{row.model}</span>
+                        <span className="font-mono text-[8px] text-white/80 shrink-0">{row.agent}</span>
+                        <span className="font-mono text-[7px] text-white/30 truncate ml-auto">{row.action}</span>
+                      </div>
+                    ))}
+                    <div className="mt-auto text-[7px] font-mono text-violet-400/40 pt-1">+ 6 audit agents: creative · budget · tracking · google · meta · compliance</div>
+                  </div>
+                </div>
+                <h3 className="font-sans font-bold text-white mb-2 group-hover:text-violet-400 transition-colors">Creative Agent Stack</h3>
+                <p className="text-white/70 text-sm leading-relaxed mb-4">10 coordinated agents that produce a full paid media campaign from a brand URL — strategy, copy, visuals, format validation, and pre-launch audit sweep. No human brief required.</p>
+                <a href="/demos/agent-stack.html" target="_blank" className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-violet-400 border border-violet-500/30 px-4 py-2 rounded hover:bg-violet-500/10 transition-colors">
+                  Explore Pipeline →
+                </a>
+              </div>
+
               {/* Client Deck */}
               <div className="bg-[#15151A] border border-white/10 p-6 hover:border-amber-500/30 transition-all group">
                 <div className="w-full aspect-[4/3] rounded bg-[#0f0e0a] border border-white/5 mb-6 overflow-hidden flex flex-col">
@@ -1726,6 +1756,21 @@ function App() {
               <p className="text-white/70 text-base md:text-lg max-w-2xl leading-relaxed">
                 Four live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
               </p>
+            </div>
+
+            {/* Interactive demo link */}
+            <div className="mb-8 reveal-up">
+              <a href="/demos/agent-stack.html" target="_blank" className="group flex items-center justify-between bg-[#15151A] border border-violet-500/20 hover:border-violet-500/50 transition-all p-6 rounded-sm">
+                <div className="flex items-center gap-5">
+                  <div className="w-12 h-12 rounded bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-2xl shrink-0">🤖</div>
+                  <div>
+                    <div className="font-mono text-[9px] text-violet-400/60 tracking-widest uppercase mb-1">Interactive Demo · 10 Agents</div>
+                    <div className="font-sans font-bold text-white group-hover:text-violet-400 transition-colors">Creative Agent Stack — Explore the Pipeline</div>
+                    <div className="text-white/50 text-sm mt-1">Strategy → Copy → Visuals → Format → Audit. Click through each stage and agent.</div>
+                  </div>
+                </div>
+                <div className="font-mono text-xs text-violet-400 border border-violet-500/30 px-4 py-2 rounded group-hover:bg-violet-500/10 transition-colors shrink-0 hidden md:block">Open →</div>
+              </a>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-up">
