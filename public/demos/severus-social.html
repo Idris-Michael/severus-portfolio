@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Severus Social — Instagram Pipeline | Idris Bakare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0D0D12;color:#F5F5F7;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(13,13,18,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 32px;display:flex;justify-content:space-between;align-items:center}
+.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.15em;transition:color .2s}
+.back:hover{color:#F97316}
+.badge-stack{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:3px 10px;border-radius:4px}
+.hero{padding:60px 32px 40px;border-bottom:1px solid rgba(255,255,255,.06);max-width:900px}
+.eyebrow{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.3em;color:#a855f7;margin-bottom:16px}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;margin-bottom:16px}
+h1 em{font-style:italic;color:#F97316;font-family:Georgia,serif;font-weight:400}
+.desc{color:rgba(255,255,255,.6);line-height:1.7;font-size:15px}
+.main{padding:40px 32px;max-width:1100px}
+/* PIPELINE STEPS */
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-bottom:48px}
+.pipeline::before{content:'';position:absolute;top:36px;left:calc(12.5% + 10px);right:calc(12.5% + 10px);height:2px;background:linear-gradient(90deg,#a855f7,#3b82f6,#22c55e,#F97316)}
+.step{text-align:center;position:relative;cursor:pointer}
+.step-circle{width:72px;height:72px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;transition:transform .2s,box-shadow .2s;position:relative;z-index:1;background:#0D0D12}
+.step:hover .step-circle{transform:scale(1.08)}
+.step-1 .step-circle{border-color:#a855f7;box-shadow:0 0 20px rgba(168,85,247,.2)}
+.step-2 .step-circle{border-color:#3b82f6;box-shadow:0 0 20px rgba(59,130,246,.2)}
+.step-3 .step-circle{border-color:#22c55e;box-shadow:0 0 20px rgba(34,197,94,.2)}
+.step-4 .step-circle{border-color:#F97316;box-shadow:0 0 20px rgba(249,115,22,.2)}
+.step-label{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.step-1 .step-label{color:#a855f7}
+.step-2 .step-label{color:#3b82f6}
+.step-3 .step-label{color:#22c55e}
+.step-4 .step-label{color:#F97316}
+.step-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:4px}
+/* DETAIL CARDS */
+.details{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:40px}
+.detail-card{background:#15151A;border:1px solid rgba(255,255,255,.07);padding:20px;border-radius:8px;transition:border-color .2s}
+.detail-card.purple{border-left:3px solid #a855f7}
+.detail-card.blue{border-left:3px solid #3b82f6}
+.detail-card.green{border-left:3px solid #22c55e}
+.detail-card.orange{border-left:3px solid #F97316}
+.detail-card:hover{border-color:rgba(255,255,255,.15)}
+.detail-num{font-size:10px;font-family:'Courier New',monospace;letter-spacing:.15em;margin-bottom:8px}
+.purple .detail-num{color:#a855f7}
+.blue .detail-num{color:#3b82f6}
+.green .detail-num{color:#22c55e}
+.orange .detail-num{color:#F97316}
+.detail-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:8px}
+.detail-desc{font-size:12px;color:rgba(255,255,255,.55);line-height:1.7}
+.detail-model{display:inline-block;margin-top:10px;font-size:10px;font-family:'Courier New',monospace;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:3px 8px;border-radius:3px;color:rgba(255,255,255,.5)}
+/* LIVE TERMINAL */
+.terminal{background:#0a0a0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
+.terminal-bar{background:#1a1a1f;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.dot{width:10px;height:10px;border-radius:50%}
+.terminal-title{font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,.4);margin-left:8px}
+.terminal-body{padding:20px;font-family:'Courier New',monospace;font-size:12px;line-height:2}
+.log-line{opacity:0;animation:fadein .3s forwards}
+.log-line:nth-child(1){animation-delay:.3s}
+.log-line:nth-child(2){animation-delay:.9s}
+.log-line:nth-child(3){animation-delay:1.5s}
+.log-line:nth-child(4){animation-delay:2.1s}
+.log-line:nth-child(5){animation-delay:2.7s}
+.log-line:nth-child(6){animation-delay:3.3s}
+.log-line:nth-child(7){animation-delay:3.9s}
+.log-line:nth-child(8){animation-delay:4.5s}
+@keyframes fadein{to{opacity:1}}
+.t-dim{color:rgba(255,255,255,.3)}
+.t-purple{color:#a855f7}
+.t-blue{color:#3b82f6}
+.t-green{color:#22c55e}
+.t-orange{color:#F97316}
+.t-white{color:#fff}
+.section-title{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.run-btn{margin-top:16px;padding:10px 24px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);color:#F97316;font-family:'Courier New',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;border-radius:4px;transition:all .2s}
+.run-btn:hover{background:rgba(249,115,22,.2)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="back" href="/">← Back to Portfolio</a>
+  <div class="badge-stack">
+    <span class="badge">TypeScript</span>
+    <span class="badge">Qwen3-32B</span>
+    <span class="badge">Gemini TTS</span>
+    <span class="badge">Hyperframes</span>
+    <span class="badge">Meta Graph API</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Demo 02 // Severus Social</div>
+  <h1>Instagram Content <em>Pipeline.</em></h1>
+  <p class="desc">Fully automated 4-layer pipeline: AI generates the script, Gemini clones the voice, Hyperframes renders the reel, and Telegram sends it for human approval before Meta publishes.</p>
+</div>
+
+<div class="main">
+  <div class="pipeline">
+    <div class="step step-1">
+      <div class="step-circle">✍️</div>
+      <div class="step-label">Script</div>
+      <div class="step-sub">Qwen3-32B</div>
+    </div>
+    <div class="step step-2">
+      <div class="step-circle">🎙️</div>
+      <div class="step-label">Voiceover</div>
+      <div class="step-sub">Gemini TTS</div>
+    </div>
+    <div class="step step-3">
+      <div class="step-circle">🎬</div>
+      <div class="step-label">Render</div>
+      <div class="step-sub">Hyperframes</div>
+    </div>
+    <div class="step step-4">
+      <div class="step-circle">📱</div>
+      <div class="step-label">Publish</div>
+      <div class="step-sub">Meta API</div>
+    </div>
+  </div>
+
+  <div class="details">
+    <div class="detail-card purple">
+      <div class="detail-num">01 // SCRIPT GENERATION</div>
+      <div class="detail-title">Hook-first copywriting via Qwen3-32B</div>
+      <div class="detail-desc">Generates 3 hook variants per post — social-proof, direct-offer, and curiosity-gap styles. Injects last 5 published hooks to prevent repetition. Output: 60-word script + caption + 10 hashtags.</div>
+      <span class="detail-model">HF Inference API · ~$0.00005/run</span>
+    </div>
+    <div class="detail-card blue">
+      <div class="detail-num">02 // VOICE SYNTHESIS</div>
+      <div class="detail-title">Cloud TTS with emotion tags via Gemini</div>
+      <div class="detail-desc">Converts script to MP3 using Google Gemini TTS. Supports BCP-47 voice tags for 40+ languages. Fallback to local Supertonic Flask server (port 8765) if Gemini is unavailable.</div>
+      <span class="detail-model">Gemini TTS · ~$0.000016/char</span>
+    </div>
+    <div class="detail-card green">
+      <div class="detail-num">03 // VIDEO RENDER</div>
+      <div class="detail-title">JSON-to-MP4 via Hyperframes</div>
+      <div class="detail-desc">Renders 9:16 reels from a Hyperframes JSON template. Combines voiceover audio, B-roll footage, captions, and brand overlays. Outputs 5 variants per run with different hook styles.</div>
+      <span class="detail-model">Hyperframes · Local render · $0</span>
+    </div>
+    <div class="detail-card orange">
+      <div class="detail-num">04 // APPROVAL + PUBLISH</div>
+      <div class="detail-title">Telegram gate → Meta Graph API</div>
+      <div class="detail-desc">Sends rendered variants to Telegram for human review with HMAC-signed approval links. On approval, uploads video to Meta via resumable upload API and schedules the reel.</div>
+      <span class="detail-model">Meta Graph API · Bot: @severus_connects</span>
+    </div>
+  </div>
+
+  <div class="section-title">Live Pipeline Log</div>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot" style="background:#ff5f57"></div>
+      <div class="dot" style="background:#febc2e"></div>
+      <div class="dot" style="background:#28c840"></div>
+      <span class="terminal-title">severus-social · heartbeat.ts</span>
+    </div>
+    <div class="terminal-body" id="log">
+      <div class="log-line"><span class="t-dim">[07:00:01]</span> <span class="t-orange">heartbeat</span> <span class="t-white">OpenClaw cron fired — deciding next post</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:02]</span> <span class="t-purple">generateScript</span> <span class="t-white">Calling Qwen3-32B · slot: @mikeb.io</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:08]</span> <span class="t-purple">generateScript</span> <span class="t-green">✓ 3 hook variants generated</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:09]</span> <span class="t-blue">generateVoiceover</span> <span class="t-white">Gemini TTS · en-GB-Neural2-B</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:14]</span> <span class="t-blue">generateVoiceover</span> <span class="t-green">✓ voiceover.mp3 · 47s · 28.4 KB</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:15]</span> <span class="t-green">renderReel</span> <span class="t-white">Hyperframes rendering 5 variants...</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:41]</span> <span class="t-green">renderReel</span> <span class="t-green">✓ reel_v1-v5.mp4 rendered</span></div>
+      <div class="log-line"><span class="t-dim">[07:00:42]</span> <span class="t-orange">approvalServer</span> <span class="t-white">Telegram notification sent → awaiting approval</span></div>
+    </div>
+  </div>
+  <button class="run-btn" onclick="replayLog()">↺ Replay Pipeline</button>
+</div>
+
+<script>
+function replayLog() {
+  const lines = document.querySelectorAll('.log-line');
+  lines.forEach((l,i) => {
+    l.style.animation = 'none';
+    l.style.opacity = '0';
+    setTimeout(() => {
+      l.style.animation = `fadein .3s forwards`;
+      l.style.animationDelay = `${i * 0.6}s`;
+    }, 50);
+  });
+}
+</script>
+</body>
+</html>

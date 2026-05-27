@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>n8n Workflows — Agency Automation | Idris Bakare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0D0D12;color:#F5F5F7;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(13,13,18,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 32px;display:flex;justify-content:space-between;align-items:center}
+.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.15em;transition:color .2s}.back:hover{color:#F97316}
+.badge-stack{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:3px 10px;border-radius:4px}
+.hero{padding:60px 32px 40px;border-bottom:1px solid rgba(255,255,255,.06);max-width:900px}
+.eyebrow{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.3em;color:#f472b6;margin-bottom:16px}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;margin-bottom:16px}
+h1 em{font-style:italic;color:#F97316;font-family:Georgia,serif;font-weight:400}
+.desc{color:rgba(255,255,255,.6);line-height:1.7;font-size:15px}
+.main{padding:40px 32px}
+.section-title{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.wf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:48px}
+.wf-card{background:#15151A;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.wf-card:hover{border-color:rgba(255,255,255,.18)}
+.wf-card.active{border-color:#F97316}
+.wf-header{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.wf-num{font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.3)}
+.wf-status{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.ready{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#22c55e}
+.pending{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);color:#F97316}
+.wf-body{padding:14px 16px}
+.wf-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:6px}
+.wf-desc{font-size:11px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:10px}
+.wf-nodes{display:flex;gap:6px;flex-wrap:wrap}
+.node{font-size:9px;font-family:'Courier New',monospace;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:2px 7px;border-radius:3px}
+.flow-panel{background:#0a0a0f;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:28px;margin-bottom:40px}
+.flow-title{font-size:12px;font-family:'Courier New',monospace;color:#F97316;margin-bottom:20px;text-transform:uppercase;letter-spacing:.1em}
+.flow-row{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:12px}
+.flow-node{background:#15151A;border:1px solid rgba(255,255,255,.1);padding:8px 14px;border-radius:4px;font-size:11px;font-family:'Courier New',monospace;color:#fff;white-space:nowrap}
+.flow-node.trigger{border-color:rgba(249,115,22,.4);color:#F97316}
+.flow-node.action{border-color:rgba(59,130,246,.3);color:#93c5fd}
+.flow-node.output{border-color:rgba(34,197,94,.3);color:#86efac}
+.flow-arrow{color:rgba(255,255,255,.2);font-size:16px;padding:0 8px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="back" href="/">← Back to Portfolio</a>
+  <div class="badge-stack">
+    <span class="badge">n8n</span>
+    <span class="badge">Gmail OAuth2</span>
+    <span class="badge">Stripe</span>
+    <span class="badge">Calendly</span>
+    <span class="badge">Claude API</span>
+  </div>
+</nav>
+<div class="hero">
+  <div class="eyebrow">Demo 04 // n8n Workflows</div>
+  <h1>8 Automation <em>Workflows.</em></h1>
+  <p class="desc">Complete agency automation stack built in n8n. Lead capture to invoice — every step of the client journey is automated. Click any workflow to inspect its node flow.</p>
+</div>
+<div class="main">
+  <div class="section-title">Workflow Library — 8 workflows</div>
+  <div class="wf-grid">
+    <div class="wf-card active" onclick="showFlow(0,this)">
+      <div class="wf-header"><span class="wf-num">WF-01</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">Lead Capture & Routing</div><div class="wf-desc">LinkedIn/WhatsApp/email → classify intent → route to correct agent</div><div class="wf-nodes"><span class="node">Webhook</span><span class="node">Claude</span><span class="node">Router</span><span class="node">Telegram</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(1,this)">
+      <div class="wf-header"><span class="wf-num">WF-02</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">Client Onboarding</div><div class="wf-desc">Form submission → NotebookLM KB → Calendly invite → welcome email</div><div class="wf-nodes"><span class="node">Typeform</span><span class="node">NotebookLM</span><span class="node">Calendly</span><span class="node">Gmail</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(2,this)">
+      <div class="wf-header"><span class="wf-num">WF-03</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">GA4 Setup Automation</div><div class="wf-desc">Trigger Analytics agent → GTM install → DebugView verify → report</div><div class="wf-nodes"><span class="node">Trigger</span><span class="node">Analytics Agent</span><span class="node">GA4 API</span><span class="node">Slack</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(3,this)">
+      <div class="wf-header"><span class="wf-num">WF-04</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">Campaign Pipeline</div><div class="wf-desc">Quality gate check → create campaigns → monitor first 48h → alert</div><div class="wf-nodes"><span class="node">Gate Check</span><span class="node">Google Ads</span><span class="node">Monitor</span><span class="node">Telegram</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(4,this)">
+      <div class="wf-header"><span class="wf-num">WF-05</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">Weekly Reporting</div><div class="wf-desc">Friday 9am cron → pull GA4 + Ads data → Claude summarises → email client</div><div class="wf-nodes"><span class="node">Cron</span><span class="node">GA4</span><span class="node">Claude</span><span class="node">Gmail</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(5,this)">
+      <div class="wf-header"><span class="wf-num">WF-06</span><span class="wf-status pending">Pending</span></div>
+      <div class="wf-body"><div class="wf-title">Lead Nurture Sequence</div><div class="wf-desc">30-day cold prospect automation — 6 touchpoints, Claude-written copy</div><div class="wf-nodes"><span class="node">Schedule</span><span class="node">Claude</span><span class="node">Gmail</span><span class="node">CRM</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(6,this)">
+      <div class="wf-header"><span class="wf-num">WF-07</span><span class="wf-status ready">Ready</span></div>
+      <div class="wf-body"><div class="wf-title">Proposal Generation</div><div class="wf-desc">Brief complete → Proposer agent → PDF → send via Gmail → track open</div><div class="wf-nodes"><span class="node">Trigger</span><span class="node">Proposer</span><span class="node">PDF</span><span class="node">Gmail</span></div></div>
+    </div>
+    <div class="wf-card" onclick="showFlow(7,this)">
+      <div class="wf-header"><span class="wf-num">WF-08</span><span class="wf-status pending">Pending</span></div>
+      <div class="wf-body"><div class="wf-title">Invoice & Payment</div><div class="wf-desc">Proposal approved → Stripe invoice → payment received → auto-kickoff</div><div class="wf-nodes"><span class="node">Approval</span><span class="node">Stripe</span><span class="node">Webhook</span><span class="node">Kickoff</span></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Node Flow Inspector</div>
+  <div class="flow-panel" id="flowPanel">
+    <div class="flow-title" id="flowTitle">WF-01 — Lead Capture & Routing</div>
+    <div id="flowBody"></div>
+  </div>
+</div>
+
+<script>
+const flows = [
+  {title:"WF-01 — Lead Capture & Routing", nodes:[
+    [{t:"trigger",l:"Webhook (LinkedIn/WA/Email)"},{t:"action",l:"Claude — Classify intent"},{t:"action",l:"Router — Match agent"},{t:"output",l:"Telegram — Notify"}]
+  ]},
+  {title:"WF-02 — Client Onboarding", nodes:[
+    [{t:"trigger",l:"Typeform submission"},{t:"action",l:"NotebookLM — Create KB"},{t:"action",l:"Calendly — Send invite"},{t:"output",l:"Gmail — Welcome email"}]
+  ]},
+  {title:"WF-03 — GA4 Setup Automation", nodes:[
+    [{t:"trigger",l:"Manual trigger"},{t:"action",l:"Analytics Agent"},{t:"action",l:"GA4 API — Verify"},{t:"output",l:"Slack — Report"}]
+  ]},
+  {title:"WF-04 — Campaign Pipeline", nodes:[
+    [{t:"trigger",l:"Quality gate check"},{t:"action",l:"Google Ads — Create"},{t:"action",l:"Monitor 48h"},{t:"output",l:"Telegram — Alert"}]
+  ]},
+  {title:"WF-05 — Weekly Reporting", nodes:[
+    [{t:"trigger",l:"Cron — Friday 9am"},{t:"action",l:"GA4 + Ads pull"},{t:"action",l:"Claude — Summarise"},{t:"output",l:"Gmail — Client report"}]
+  ]},
+  {title:"WF-06 — Lead Nurture Sequence", nodes:[
+    [{t:"trigger",l:"Schedule — Day 1"},{t:"action",l:"Claude — Write copy"},{t:"action",l:"Gmail — Send"},{t:"output",l:"CRM — Log touch"}],
+    [{t:"trigger",l:"Schedule — Day 7"},{t:"action",l:"Claude — Follow-up"},{t:"action",l:"Gmail — Send"},{t:"output",l:"CRM — Update"}]
+  ]},
+  {title:"WF-07 — Proposal Generation", nodes:[
+    [{t:"trigger",l:"Brief complete"},{t:"action",l:"Proposer Agent"},{t:"action",l:"PDF render"},{t:"output",l:"Gmail — Send + track"}]
+  ]},
+  {title:"WF-08 — Invoice & Payment", nodes:[
+    [{t:"trigger",l:"Proposal approved"},{t:"action",l:"Stripe — Create invoice"},{t:"action",l:"Webhook — Payment received"},{t:"output",l:"Auto-kickoff workflow"}]
+  ]}
+];
+
+function showFlow(i, el) {
+  document.querySelectorAll('.wf-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const f = flows[i];
+  document.getElementById('flowTitle').textContent = f.title;
+  document.getElementById('flowBody').innerHTML = f.nodes.map(row =>
+    `<div class="flow-row">${row.map((n,j)=>`${j>0?'<span class="flow-arrow">→</span>':''}<div class="flow-node ${n.t}">${n.l}</div>`).join('')}</div>`
+  ).join('');
+}
+showFlow(0, document.querySelector('.wf-card'));
+</script>
+</body>
+</html>

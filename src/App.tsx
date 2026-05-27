@@ -1751,77 +1751,41 @@ function App() {
         <section id="demos" className="py-32 px-6 md:px-12 border-t border-white/5 bg-gradient-to-b from-[#0D0D12] via-[#0d0f12] to-[#0D0D12]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-16 reveal">
-              <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">DEMOS // SEE IT LIVE</div>
-              <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Watch It<br />Work.</h2>
+              <div className="uppercase tracking-[0.3em] text-sky-400 font-bold text-xs mb-4">DEMOS // INTERACTIVE</div>
+              <h2 className="font-serif italic text-5xl md:text-7xl text-white mb-4">Try It<br />Live.</h2>
               <p className="text-white/70 text-base md:text-lg max-w-2xl leading-relaxed">
-                Four live recordings of the system in action. No slides, no pitch — just the actual tools running real tasks.
+                Seven interactive demos — real infrastructure, real data, real workflows. Click any card to explore the system.
               </p>
             </div>
 
-            {/* Interactive demo link */}
-            <div className="mb-8 reveal-up">
-              <a href="/demos/agent-stack.html" target="_blank" className="group flex items-center justify-between bg-[#15151A] border border-violet-500/20 hover:border-violet-500/50 transition-all p-6 rounded-sm">
-                <div className="flex items-center gap-5">
-                  <div className="w-12 h-12 rounded bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-2xl shrink-0">🤖</div>
-                  <div>
-                    <div className="font-mono text-[9px] text-violet-400/60 tracking-widest uppercase mb-1">Interactive Demo · 10 Agents</div>
-                    <div className="font-sans font-bold text-white group-hover:text-violet-400 transition-colors">Creative Agent Stack — Explore the Pipeline</div>
-                    <div className="text-white/50 text-sm mt-1">Strategy → Copy → Visuals → Format → Audit. Click through each stage and agent.</div>
-                  </div>
-                </div>
-                <div className="font-mono text-xs text-violet-400 border border-violet-500/30 px-4 py-2 rounded group-hover:bg-violet-500/10 transition-colors shrink-0 hidden md:block">Open →</div>
-              </a>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-up">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal-up">
               {[
-                {
-                  num: "01",
-                  src: "/demo-4.mp4",
-                  title: "Severus OS — Mission Control",
-                  desc: "Full walkthrough of the Overwatch dashboard: live kanban, agent registry, swarm runner, and London map. Everything the agency runs on, in one screen.",
-                  accent: "sky",
-                },
-                {
-                  num: "02",
-                  src: "/demo-2.mp4",
-                  title: "Multi-Agent Campaign Audit",
-                  desc: "Watch GA4 auditor, creative auditor, and compliance auditor run in parallel on a live campaign — each agent logs its findings in real time.",
-                  accent: "emerald",
-                },
-                {
-                  num: "03",
-                  src: "/demo-3.mp4",
-                  title: "System Architecture Walkthrough",
-                  desc: "The flow visualiser explained: how a client request moves from trigger to output, which agents handle what, and how the data store connects everything.",
-                  accent: "violet",
-                },
-                {
-                  num: "04",
-                  src: "/portswigger-demo.mp4",
-                  title: "AI Legal Pioneer — PortSwigger Submission",
-                  desc: "The dual-LLM contract review pipeline in action: Claude drafts the risk analysis, Gemini cross-checks for bias. Submitted to PortSwigger's AI Legal Pioneer competition.",
-                  accent: "rose",
-                },
+                { num: "01", href: "/demos/hermes-os.html", title: "Hermes OS — Mission Control", desc: "Live kanban, agent registry, run log, and CRM. The full agency operating system in one dashboard.", accent: "sky", tags: ["React", "TypeScript", "SQLite"] },
+                { num: "02", href: "/demos/severus-social.html", title: "Instagram Pipeline", desc: "4-layer content pipeline: Qwen3-32B script → Gemini TTS → Hyperframes render → Meta publish.", accent: "purple", tags: ["Qwen3-32B", "Gemini TTS", "Hyperframes"] },
+                { num: "03", href: "/demos/agent-stack.html", title: "8-Agent Permission Framework", desc: "Permission-gated multi-agent system. Gateway routing, permission matrix, and quality gates.", accent: "yellow", tags: ["Claude Code", "CLAUDE.md", "8 Agents"] },
+                { num: "04", href: "/demos/n8n-workflows.html", title: "n8n Automation Workflows", desc: "8 agency automation workflows — lead capture to invoice. Click any to inspect the node flow.", accent: "pink", tags: ["n8n", "Gmail", "Stripe"] },
+                { num: "05", href: "/demos/ga4-audit.html", title: "GA4 Audit Dashboard", desc: "Automated analytics audit tool. Switch clients to see live audit scores, checklists, and event tables.", accent: "emerald", tags: ["GA4 API", "GTM", "Claude API"] },
+                { num: "06", href: "/demos/triple-tool.html", title: "Video Flywheel Pipeline", desc: "OpenScreen + Voicebox + OpenShorts — one command from record to Upwork proof video and 9:16 reel.", accent: "cyan", tags: ["OpenScreen", "Voicebox", "FastAPI"] },
+                { num: "07", href: "/demos/portswigger.html", title: "AI Legal Pioneer", desc: "Dual-LLM contract review: Claude drafts, Gemini cross-checks. PortSwigger AI competition submission.", accent: "rose", tags: ["Claude API", "Gemini API", "Dual-LLM"] },
               ].map(demo => (
-                <div key={demo.num} className={`bg-[#15151A] border border-white/10 hover:border-${demo.accent}-500/30 transition-all group overflow-hidden`}>
-                  <div className="relative aspect-video bg-black">
-                    <video
-                      src={demo.src}
-                      controls
-                      preload="metadata"
-                      className="w-full h-full object-cover"
-                      playsInline
-                    />
-                    <div className={`absolute top-3 left-3 font-mono text-[10px] text-${demo.accent}-400 bg-${demo.accent}-500/10 border border-${demo.accent}-500/20 px-2 py-0.5 rounded pointer-events-none`}>
+                <a key={demo.num} href={demo.href} target="_blank" rel="noreferrer"
+                  className={`bg-[#15151A] border border-white/10 hover:border-${demo.accent}-500/40 transition-all group overflow-hidden block no-underline`}>
+                  <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                    <span className={`font-mono text-[10px] text-${demo.accent}-400 bg-${demo.accent}-500/10 border border-${demo.accent}-500/20 px-2 py-0.5 rounded`}>
                       DEMO {demo.num}
-                    </div>
+                    </span>
+                    <span className="font-mono text-[10px] text-white/20 group-hover:text-white/50 transition-colors">↗ OPEN</span>
                   </div>
                   <div className="p-6">
                     <h3 className={`font-sans font-bold text-white mb-2 group-hover:text-${demo.accent}-400 transition-colors`}>{demo.title}</h3>
-                    <p className="text-white/70 text-sm leading-relaxed">{demo.desc}</p>
+                    <p className="text-white/60 text-sm leading-relaxed mb-4">{demo.desc}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {demo.tags.map(t => (
+                        <span key={t} className="font-mono text-[9px] text-white/30 border border-white/10 px-2 py-0.5 rounded">{t}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
