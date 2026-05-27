@@ -125,6 +125,13 @@ export const Slideshow: React.FC<SlideshowProps> = ({ initialDeckId = 'agent-rea
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  // Focus slideshow container on mount for immediate keyboard control
+  useEffect(() => {
+    if (slideshowRef.current) {
+      slideshowRef.current.focus();
+    }
+  }, []);
+
   // Theme styling helpers based on deck
   const getDeckColor = (deckId: string) => {
     switch (deckId) {
@@ -141,7 +148,8 @@ export const Slideshow: React.FC<SlideshowProps> = ({ initialDeckId = 'agent-rea
   return (
     <div 
       ref={slideshowRef}
-      className="fixed inset-0 z-[100] bg-[#0A0A0E] text-white flex flex-col font-sans select-none overflow-hidden"
+      tabIndex={0}
+      className="fixed inset-0 z-[100] bg-[#0A0A0E] text-white flex flex-col font-sans select-none overflow-hidden outline-none"
     >
       {/* Background Cybernetic Grid / Glow Effect */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13131F] via-[#0A0A0F] to-[#050508] pointer-events-none z-0" />
