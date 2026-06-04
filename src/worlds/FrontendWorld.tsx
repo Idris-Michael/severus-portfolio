@@ -73,11 +73,12 @@ function PhoneEnv({ label, src }: { label: string; src: string }) {
   );
 }
 
-export function FrontendWorld() {
+export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
   return (
     <main className="relative z-10 min-h-screen" style={{ color: 'var(--fg)' }}>
       <WorldNav
         world="frontend"
+        onSwitch={onSwitch}
         links={[
           { href: '#work', label: 'Work' },
           { href: '#design-concepts', label: 'Design' },

@@ -1,11 +1,10 @@
-import { useWorld, type World } from '@/context/WorldContext';
+import type { World } from '@/context/WorldContext';
 import { Reveal } from './Reveal';
 
 const ACCENT = '#F97316';
 
 /** Slim themed top bar shared by both worlds. */
-export function WorldNav({ world, links }: { world: World; links: { href: string; label: string }[] }) {
-  const { setWorld } = useWorld();
+export function WorldNav({ world, links, onSwitch }: { world: World; links: { href: string; label: string }[]; onSwitch?: () => void }) {
   const other: World = world === 'frontend' ? 'backend' : 'frontend';
   return (
     <nav
@@ -27,7 +26,7 @@ export function WorldNav({ world, links }: { world: World; links: { href: string
       </div>
       <div className="flex gap-2">
         <button
-          onClick={() => setWorld(other)}
+          onClick={() => onSwitch?.()}
           data-magnetic
           className="hover-target font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded transition-colors"
           style={{ color: ACCENT, border: `1px solid ${ACCENT}` }}
