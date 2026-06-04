@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Docker Infrastructure — Hermes OS | Idris Bakare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#04100e;--panel:#07180f;--surface:#0e2018;--surface2:#132818;--line:rgba(45,212,191,.1);
+  --fg:#e0fff8;--muted:#4a8070;--teal:#2dd4bf;--green:#34d399;--amber:#fbbf24;
+  --red:#f87171;--blue:#60a5fa;--violet:#a78bfa;--mono:'Courier New',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-rows:48px 1fr 32px;height:100vh}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.back{color:var(--muted);text-decoration:none;font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.15em;transition:color .15s}.back:hover{color:var(--teal)}
+.sep{color:var(--line);margin:0 12px}
+.ttitle{font-size:12px;font-weight:600}
+.topbar-right{display:flex;gap:6px;align-items:center}
+.badge{font-size:9px;font-family:var(--mono);text-transform:uppercase;border:1px solid var(--line);color:var(--muted);padding:2px 8px;border-radius:3px}
+.badge.t{border-color:rgba(45,212,191,.35);color:var(--teal);background:rgba(45,212,191,.06)}
+.uptime{font-size:10px;font-family:var(--mono);color:var(--green);display:flex;align-items:center;gap:5px}
+.uptime::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse-g 2s ease-in-out infinite}
+@keyframes pulse-g{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* BODY */
+.body{display:grid;grid-template-columns:1fr 300px;overflow:hidden}
+
+/* MAIN: Topology canvas */
+.topology{display:flex;flex-direction:column;overflow:hidden}
+.topo-toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0}
+.topo-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;color:var(--muted)}
+.compose-btn{padding:6px 14px;background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.25);border-radius:4px;color:var(--teal);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .15s}.compose-btn:hover{background:rgba(45,212,191,.18)}
+.compose-btn.active{background:var(--teal);color:#000}
+.topo-canvas{flex:1;overflow:hidden;position:relative}
+.topo-canvas::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(45,212,191,.06) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;z-index:0}
+
+/* SERVICE CARDS in topology */
+.svc-card{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .2s,box-shadow .2s;z-index:2;min-width:160px}
+.svc-card:hover,.svc-card.active{border-color:var(--teal);box-shadow:0 0 20px rgba(45,212,191,.15)}
+.svc-card.active{border-color:var(--teal)}
+.svc-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.svc-icon{font-size:18px}
+.svc-name{font-size:12px;font-weight:700;color:var(--fg);font-family:var(--mono)}
+.svc-port{font-size:9px;font-family:var(--mono);color:var(--muted);margin-top:1px}
+.svc-health{display:flex;align-items:center;gap:5px;font-size:9px;font-family:var(--mono);text-transform:uppercase}
+.hd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.h-up{background:var(--green);box-shadow:0 0 6px rgba(52,211,153,.5);animation:pulse-g 2s ease-in-out infinite}
+.h-warn{background:var(--amber)}
+.h-down{background:var(--red)}
+.svc-image{font-size:9px;font-family:var(--mono);color:var(--muted);margin-top:6px}
+
+/* Network bubble */
+.network{position:absolute;border:1px dashed rgba(45,212,191,.2);border-radius:12px;z-index:1;pointer-events:none;display:flex;align-items:flex-start;justify-content:flex-end;padding:8px 12px}
+.net-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;color:rgba(45,212,191,.35)}
+
+/* Compose view overlay */
+.compose-view{position:absolute;inset:0;background:var(--bg);z-index:10;overflow-y:auto;padding:20px;display:none}
+.compose-view.show{display:block}
+.compose-view::-webkit-scrollbar{width:3px}
+.compose-view::-webkit-scrollbar-thumb{background:var(--surface2)}
+.code-block{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;font-family:var(--mono);font-size:11px;line-height:1.7;color:rgba(224,255,248,.75);overflow-x:auto;tab-size:2}
+.code-block .c-key{color:var(--teal)}
+.code-block .c-val{color:rgba(224,255,248,.6)}
+.code-block .c-str{color:var(--amber)}
+.code-block .c-com{color:var(--muted)}
+.code-block .c-num{color:var(--green)}
+
+/* RIGHT: Service detail */
+.detail{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:16px}
+.detail::-webkit-scrollbar{width:3px}
+.detail::-webkit-scrollbar-thumb{background:var(--surface2)}
+.d-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.d-name{font-size:16px;font-weight:900;color:var(--teal);font-family:var(--mono);margin-bottom:4px}
+.d-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+
+/* Metric grid */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.metric{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 10px}
+.metric-val{font-size:1rem;font-weight:900;font-family:var(--mono);margin-bottom:1px}
+.metric-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;color:var(--muted)}
+
+/* Env vars */
+.env-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.env-item{background:var(--surface2);border-radius:4px;padding:6px 10px;font-family:var(--mono);font-size:10px}
+.env-key{color:var(--teal)}
+.env-val{color:var(--amber)}
+
+/* Volume list */
+.vol-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.vol{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:7px 10px;font-size:10px;font-family:var(--mono);color:var(--muted)}
+.vol b{color:var(--fg)}
+
+/* Depends */
+.dep-list{display:flex;flex-wrap:wrap;gap:5px}
+.dep{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;border:1px solid rgba(45,212,191,.25);color:var(--teal);background:rgba(45,212,191,.06)}
+
+/* BOTTOM BAR */
+.bottombar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--panel);border-top:1px solid var(--line);font-size:10px;font-family:var(--mono);color:var(--muted)}
+
+@media(max-width:700px){.detail{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div style="display:flex;align-items:center">
+      <a class="back" href="/">← Portfolio</a>
+      <span class="sep">|</span>
+      <span class="ttitle">Docker Infrastructure — Hermes OS</span>
+    </div>
+    <div class="topbar-right">
+      <span class="badge">Docker</span>
+      <span class="badge">Compose</span>
+      <span class="badge">Node 22</span>
+      <span class="badge">Python 3.12</span>
+      <span class="badge t">4 Services</span>
+      <span class="uptime">All systems nominal</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- TOPOLOGY -->
+    <div class="topology">
+      <div class="topo-toolbar">
+        <span class="topo-label">Service Topology · Click any container to inspect</span>
+        <button class="compose-btn" id="composeToggle" onclick="toggleCompose()">View docker-compose.yml</button>
+      </div>
+      <div class="topo-canvas" id="topoCanvas">
+
+        <!-- Network bubble -->
+        <div class="network" style="left:30px;top:30px;right:30px;bottom:30px">
+          <span class="net-label">hermes-network · bridge</span>
+        </div>
+
+        <!-- hermes-hub -->
+        <div class="svc-card active" id="card-hub" style="left:60px;top:70px" onclick="selectSvc('hub')">
+          <div class="svc-header">
+            <span class="svc-icon">🧠</span>
+            <div>
+              <div class="svc-name">hermes-hub</div>
+              <div class="svc-port">:3000 → 3000</div>
+            </div>
+          </div>
+          <div class="svc-health"><span class="hd h-up"></span><span style="color:var(--green)">Running</span></div>
+          <div class="svc-image">node:22-alpine</div>
+        </div>
+
+        <!-- severus-social -->
+        <div class="svc-card" id="card-social" style="left:280px;top:70px" onclick="selectSvc('social')">
+          <div class="svc-header">
+            <span class="svc-icon">📱</span>
+            <div>
+              <div class="svc-name">severus-social</div>
+              <div class="svc-port">internal · no port</div>
+            </div>
+          </div>
+          <div class="svc-health"><span class="hd h-up"></span><span style="color:var(--green)">Running</span></div>
+          <div class="svc-image">node:22-alpine</div>
+        </div>
+
+        <!-- supertonic -->
+        <div class="svc-card" id="card-tts" style="left:60px;top:240px" onclick="selectSvc('tts')">
+          <div class="svc-header">
+            <span class="svc-icon">🎙️</span>
+            <div>
+              <div class="svc-name">supertonic</div>
+              <div class="svc-port">:8765 → 8765</div>
+            </div>
+          </div>
+          <div class="svc-health"><span class="hd h-up"></span><span style="color:var(--green)">Running</span></div>
+          <div class="svc-image">python:3.12-slim</div>
+        </div>
+
+        <!-- seedance -->
+        <div class="svc-card" id="card-seedance" style="left:280px;top:240px" onclick="selectSvc('seedance')">
+          <div class="svc-header">
+            <span class="svc-icon">🎬</span>
+            <div>
+              <div class="svc-name">seedance</div>
+              <div class="svc-port">:8099 → 8099</div>
+            </div>
+          </div>
+          <div class="svc-health"><span class="hd h-warn"></span><span style="color:var(--amber)">Partial</span></div>
+          <div class="svc-image">python:3.12-slim</div>
+        </div>
+
+        <!-- Connection lines SVG -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none" id="connSvg"></svg>
+
+        <!-- Compose view -->
+        <div class="compose-view" id="composeView">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--teal);margin-bottom:16px;text-transform:uppercase;letter-spacing:.15em">docker-compose.yml · Hermes OS</div>
+          <div class="code-block">
+<span class="c-key">version</span>: <span class="c-str">'3.9'</span>
+
+<span class="c-key">services</span>:
+
+  <span class="c-key">hermes-hub</span>:
+    <span class="c-key">image</span>: <span class="c-str">node:22-alpine</span>
+    <span class="c-key">working_dir</span>: <span class="c-str">/app</span>
+    <span class="c-key">command</span>: <span class="c-str">sh -c "npm install && npm run dev"</span>
+    <span class="c-key">ports</span>:
+      - <span class="c-str">"3000:3000"</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./hermes-hub:/app</span>
+      - <span class="c-str">hub-data:/app/data</span>
+    <span class="c-key">environment</span>:
+      - <span class="c-str">ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}</span>
+      - <span class="c-str">TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}</span>
+      - <span class="c-str">APPROVAL_HMAC_SECRET=${APPROVAL_HMAC_SECRET}</span>
+      - <span class="c-str">NODE_ENV=production</span>
+    <span class="c-key">networks</span>:
+      - <span class="c-str">hermes-network</span>
+    <span class="c-key">restart</span>: <span class="c-val">unless-stopped</span>
+
+  <span class="c-key">severus-social</span>:
+    <span class="c-key">image</span>: <span class="c-str">node:22-alpine</span>
+    <span class="c-key">working_dir</span>: <span class="c-str">/app</span>
+    <span class="c-key">command</span>: <span class="c-str">sh -c "npm install && npx tsx pipeline/heartbeat.ts"</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./severus-social:/app</span>
+      - <span class="c-str">social-data:/app/data</span>
+      - <span class="c-str">renders:/app/renders</span>
+    <span class="c-key">environment</span>:
+      - <span class="c-str">HF_API_TOKEN=${HF_API_TOKEN}</span>
+      - <span class="c-str">GEMINI_API_KEY=${GEMINI_API_KEY}</span>
+      - <span class="c-str">META_IG_TOKEN=${META_IG_TOKEN}</span>
+      - <span class="c-str">TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}</span>
+      - <span class="c-str">TELEGRAM_CHAT_ID=2026143737</span>
+      - <span class="c-str">HUB_BASE_URL=http://hermes-hub:3000</span>
+    <span class="c-key">depends_on</span>:
+      - <span class="c-val">hermes-hub</span>
+      - <span class="c-val">supertonic</span>
+    <span class="c-key">networks</span>:
+      - <span class="c-str">hermes-network</span>
+
+  <span class="c-key">supertonic</span>:
+    <span class="c-key">image</span>: <span class="c-str">python:3.12-slim</span>
+    <span class="c-key">working_dir</span>: <span class="c-str">/app</span>
+    <span class="c-key">command</span>: <span class="c-str">sh -c "pip install -r requirements.txt && python py/server.py"</span>
+    <span class="c-key">ports</span>:
+      - <span class="c-str">"8765:8765"</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./supertonic:/app</span>
+      - <span class="c-str">tts-models:/app/models</span>
+    <span class="c-key">networks</span>:
+      - <span class="c-str">hermes-network</span>
+    <span class="c-key">restart</span>: <span class="c-val">unless-stopped</span>
+
+  <span class="c-key">seedance</span>:
+    <span class="c-key">image</span>: <span class="c-str">python:3.12-slim</span>
+    <span class="c-key">working_dir</span>: <span class="c-str">/app</span>
+    <span class="c-key">ports</span>:
+      - <span class="c-str">"8099:8099"</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./seedance:/app</span>
+    <span class="c-key">networks</span>:
+      - <span class="c-str">hermes-network</span>
+
+<span class="c-key">volumes</span>:
+  <span class="c-key">hub-data</span>:    <span class="c-com"># SQLite DB persistence</span>
+  <span class="c-key">social-data</span>: <span class="c-com"># Social pipeline DB</span>
+  <span class="c-key">renders</span>:     <span class="c-com"># Hyperframes video output</span>
+  <span class="c-key">tts-models</span>:  <span class="c-com"># Kokoro 82M cached weights</span>
+
+<span class="c-key">networks</span>:
+  <span class="c-key">hermes-network</span>:
+    <span class="c-key">driver</span>: <span class="c-val">bridge</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DETAIL PANEL -->
+    <div class="detail">
+      <div class="d-label">Container Inspector</div>
+      <div id="detailContent">
+        <div class="d-name" id="dName">hermes-hub</div>
+        <div class="d-desc" id="dDesc">Central dashboard, REST API, agent orchestration layer, and Vite frontend. The primary entrypoint for all Hermes OS interactions.</div>
+
+        <div class="d-label" style="margin-top:14px">Runtime Metrics</div>
+        <div class="metric-grid" id="dMetrics">
+          <div class="metric"><div class="metric-val" style="color:var(--green)">Running</div><div class="metric-label">Status</div></div>
+          <div class="metric"><div class="metric-val" style="color:var(--teal)">:3000</div><div class="metric-label">Port</div></div>
+          <div class="metric"><div class="metric-val">node:22</div><div class="metric-label">Base image</div></div>
+          <div class="metric"><div class="metric-val" style="color:var(--teal)">Express 4</div><div class="metric-label">Runtime</div></div>
+        </div>
+
+        <div class="d-label">Environment Variables</div>
+        <div class="env-list" id="dEnv">
+          <div class="env-item"><span class="env-key">ANTHROPIC_API_KEY</span>=<span class="env-val">sk-ant-***</span></div>
+          <div class="env-item"><span class="env-key">TELEGRAM_BOT_TOKEN</span>=<span class="env-val">***</span></div>
+          <div class="env-item"><span class="env-key">APPROVAL_HMAC_SECRET</span>=<span class="env-val">***</span></div>
+          <div class="env-item"><span class="env-key">NODE_ENV</span>=<span class="env-val">production</span></div>
+        </div>
+
+        <div class="d-label">Volumes</div>
+        <div class="vol-list" id="dVolumes">
+          <div class="vol"><b>./hermes-hub</b> → /app (source)</div>
+          <div class="vol"><b>hub-data</b> → /app/data (SQLite)</div>
+        </div>
+
+        <div class="d-label">Depends On</div>
+        <div class="dep-list" id="dDepends">
+          <span class="dep">none (root service)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottombar">
+    <span id="statusText">4 containers · 2 Node.js · 2 Python · 1 bridge network · 4 named volumes</span>
+    <span>Docker · Compose · node:22-alpine · python:3.12-slim</span>
+  </div>
+</div>
+
+<script>
+const SERVICES = {
+  hub: {
+    name:'hermes-hub', desc:'Central dashboard, REST API, agent orchestration layer, and Vite frontend. The primary entrypoint for all Hermes OS interactions.',
+    status:'Running', port:':3000', image:'node:22-alpine', runtime:'Express 4 + Vite',
+    env:[
+      {k:'ANTHROPIC_API_KEY',v:'sk-ant-***'},
+      {k:'TELEGRAM_BOT_TOKEN',v:'***'},
+      {k:'APPROVAL_HMAC_SECRET',v:'***'},
+      {k:'NODE_ENV',v:'production'},
+    ],
+    volumes:['./hermes-hub → /app (source)','hub-data → /app/data (SQLite)'],
+    depends:['none (root service)'],
+  },
+  social: {
+    name:'severus-social', desc:'Instagram content pipeline. Runs heartbeat.ts: Qwen3-32B script → Gemini TTS voiceover → Hyperframes render → Meta Graph publish.',
+    status:'Running', port:'internal', image:'node:22-alpine', runtime:'tsx + FFmpeg',
+    env:[
+      {k:'HF_API_TOKEN',v:'hf-***'},
+      {k:'GEMINI_API_KEY',v:'***'},
+      {k:'META_IG_TOKEN',v:'***'},
+      {k:'HUB_BASE_URL',v:'http://hermes-hub:3000'},
+    ],
+    volumes:['./severus-social → /app (source)','social-data → /app/data (SQLite)','renders → /app/renders (video output)'],
+    depends:['hermes-hub','supertonic'],
+  },
+  tts: {
+    name:'supertonic', desc:'Local TTS fallback server. Python Flask + Kokoro 82M model. Provides zero-cost text-to-speech when Gemini Cloud TTS is unavailable.',
+    status:'Running', port:':8765', image:'python:3.12-slim', runtime:'Flask + Kokoro 82M',
+    env:[
+      {k:'PORT',v:'8765'},
+      {k:'MODEL_PATH',v:'/app/models/kokoro-v0_19.pth'},
+    ],
+    volumes:['./supertonic → /app (source)','tts-models → /app/models (Kokoro weights)'],
+    depends:['none (standalone)'],
+  },
+  seedance: {
+    name:'seedance', desc:'UGC generation pipeline — partial. A/B test control centre for video format experiments. Runs on port 8099.',
+    status:'Partial', port:':8099', image:'python:3.12-slim', runtime:'Python scripts',
+    env:[
+      {k:'PORT',v:'8099'},
+      {k:'HUB_URL',v:'http://hermes-hub:3000'},
+    ],
+    volumes:['./seedance → /app (source)'],
+    depends:['hermes-hub'],
+  },
+};
+
+let activeSvc = 'hub';
+
+function selectSvc(id) {
+  document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-'+id).classList.add('active');
+  activeSvc = id;
+  const s = SERVICES[id];
+  document.getElementById('dName').textContent = s.name;
+  document.getElementById('dDesc').textContent = s.desc;
+
+  const statusColor = s.status === 'Running' ? 'var(--green)' : s.status === 'Partial' ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('dMetrics').innerHTML = `
+    <div class="metric"><div class="metric-val" style="color:${statusColor}">${s.status}</div><div class="metric-label">Status</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--teal)">${s.port}</div><div class="metric-label">Port</div></div>
+    <div class="metric"><div class="metric-val">${s.image}</div><div class="metric-label">Base image</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--teal)">${s.runtime}</div><div class="metric-label">Runtime</div></div>
+  `;
+  document.getElementById('dEnv').innerHTML = s.env.map(e =>
+    `<div class="env-item"><span class="env-key">${e.k}</span>=<span class="env-val">${e.v}</span></div>`
+  ).join('');
+  document.getElementById('dVolumes').innerHTML = s.volumes.map(v =>
+    `<div class="vol"><b>${v.split('→')[0].trim()}</b> → ${v.split('→')[1]?.trim()||''}</div>`
+  ).join('');
+  document.getElementById('dDepends').innerHTML = s.depends.map(d =>
+    `<span class="dep">${d}</span>`
+  ).join('');
+
+  document.getElementById('statusText').textContent = `${s.name} · ${s.runtime} · ${s.port} · ${s.image}`;
+  drawConnections();
+}
+
+function drawConnections() {
+  const svg = document.getElementById('connSvg');
+  svg.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  // hub → social, hub → supertonic, social → supertonic, hub → seedance
+  const conns = [
+    {from:'card-hub',to:'card-social',active:activeSvc==='hub'||activeSvc==='social'},
+    {from:'card-hub',to:'card-tts',active:activeSvc==='hub'||activeSvc==='tts'},
+    {from:'card-social',to:'card-tts',active:activeSvc==='social'||activeSvc==='tts'},
+    {from:'card-hub',to:'card-seedance',active:activeSvc==='hub'||activeSvc==='seedance'},
+  ];
+  conns.forEach(conn => {
+    const fe = document.getElementById(conn.from);
+    const te = document.getElementById(conn.to);
+    if (!fe||!te) return;
+    const fr = fe.getBoundingClientRect();
+    const tr = te.getBoundingClientRect();
+    const pr = svg.getBoundingClientRect();
+    const fx = fr.left+fr.width/2 - pr.left, fy = fr.top+fr.height/2 - pr.top;
+    const tx = tr.left+tr.width/2 - pr.left, ty = tr.top+tr.height/2 - pr.top;
+    const path = document.createElementNS(ns,'path');
+    const mx = (fx+tx)/2;
+    path.setAttribute('d',`M${fx},${fy} C${mx},${fy} ${mx},${ty} ${tx},${ty}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',conn.active?'rgba(45,212,191,.45)':'rgba(45,212,191,.1)');
+    path.setAttribute('stroke-width',conn.active?'2':'1');
+    path.setAttribute('stroke-dasharray',conn.active?'none':'5 4');
+    svg.appendChild(path);
+  });
+}
+
+function toggleCompose() {
+  const btn = document.getElementById('composeToggle');
+  const view = document.getElementById('composeView');
+  const show = !view.classList.contains('show');
+  view.classList.toggle('show', show);
+  btn.classList.toggle('active', show);
+  btn.textContent = show ? 'Hide compose file' : 'View docker-compose.yml';
+}
+
+selectSvc('hub');
+window.addEventListener('resize', drawConnections);
+</script>
+</body>
+</html>

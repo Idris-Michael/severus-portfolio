@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RAG Memory Architecture — Idris Bakare</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#070510;--panel:#0d0b18;--surface:#13112a;--surface2:#1a1730;--line:rgba(167,139,250,.1);
+  --fg:#ede8ff;--muted:#7b74a8;--violet:#a78bfa;--indigo:#818cf8;--pink:#f472b6;
+  --teal:#2dd4bf;--amber:#fbbf24;--green:#34d399;--mono:'Courier New',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-rows:48px 1fr 32px;height:100vh}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.back{color:var(--muted);text-decoration:none;font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.15em;transition:color .15s}.back:hover{color:var(--violet)}
+.sep{color:var(--line);margin:0 12px}
+.ttitle{font-size:12px;font-weight:600}
+.topbar-right{display:flex;gap:6px}
+.badge{font-size:9px;font-family:var(--mono);text-transform:uppercase;border:1px solid var(--line);color:var(--muted);padding:2px 8px;border-radius:3px}
+.badge.v{border-color:rgba(167,139,250,.35);color:var(--violet);background:rgba(167,139,250,.07)}
+
+/* BODY */
+.body{display:grid;grid-template-columns:200px 1fr 280px;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column}
+.sb-label{padding:14px 16px 8px;font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;color:var(--muted);border-bottom:1px solid var(--line);flex-shrink:0}
+.layer-item{padding:10px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .12s;border-bottom:1px solid rgba(255,255,255,.03)}
+.layer-item:hover{background:rgba(167,139,250,.04)}
+.layer-item.active{border-left-color:var(--violet);background:rgba(167,139,250,.08)}
+.li-name{font-size:11px;font-weight:600;color:var(--fg);margin-bottom:2px}
+.li-sub{font-size:9px;font-family:var(--mono);color:var(--muted)}
+
+/* MAIN CANVAS */
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg)}
+.canvas-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(800px 500px at 50% 40%,rgba(129,140,248,.06),transparent 65%);pointer-events:none;z-index:0}
+svg.pipeline{position:absolute;inset:0;width:100%;height:100%}
+
+/* Node styles */
+.pnode{cursor:pointer}
+.pnode rect{rx:8;ry:8;stroke-width:1.5;transition:filter .2s}
+.pnode:hover rect{filter:brightness(1.3)}
+.pnode.active rect{stroke-width:2.5;filter:brightness(1.2)}
+.pnode text{pointer-events:none}
+
+/* Screenshot panel inside main */
+.screen-panel{position:absolute;bottom:16px;left:16px;right:16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;opacity:0;transition:opacity .3s;pointer-events:none;max-height:220px}
+.screen-panel.show{opacity:1;pointer-events:auto}
+.sp-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.sp-title{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--violet)}
+.sp-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1}.sp-close:hover{color:var(--fg)}
+.sp-img{width:100%;object-fit:cover;max-height:170px;display:block}
+
+/* RIGHT PANEL */
+.right{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:16px}
+.right::-webkit-scrollbar{width:3px}
+.right::-webkit-scrollbar-thumb{background:var(--surface2)}
+.rp-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+/* Query simulator */
+.query-box{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.qb-header{padding:8px 12px;border-bottom:1px solid var(--line);font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--violet)}
+.qb-input-wrap{display:flex;align-items:center;padding:10px 12px;gap:8px}
+.qb-input{flex:1;background:none;border:none;color:var(--fg);font-family:var(--mono);font-size:11px;outline:none}
+.qb-input::placeholder{color:var(--muted)}
+.qb-btn{padding:5px 12px;background:var(--violet);border:none;border-radius:4px;color:#fff;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:opacity .2s}.qb-btn:hover{opacity:.85}
+.qb-results{padding:0 12px 12px}
+.qr-item{background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:8px 10px;margin-bottom:6px;opacity:0;transform:translateY(4px);transition:all .3s}
+.qr-item.show{opacity:1;transform:none}
+.qr-score{font-size:9px;font-family:var(--mono);color:var(--violet);margin-bottom:3px}
+.qr-text{font-size:10px;color:rgba(237,232,255,.65);line-height:1.55}
+.qr-source{font-size:9px;font-family:var(--mono);color:var(--muted);margin-top:4px}
+/* Stats */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;text-align:center}
+.stat-val{font-size:1.1rem;font-weight:900;font-family:var(--mono);margin-bottom:2px}
+.stat-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;color:var(--muted)}
+/* Tech stack chips */
+.chip-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.chip{font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid}
+.chip-v{color:var(--violet);border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.07)}
+.chip-i{color:var(--indigo);border-color:rgba(129,140,248,.3);background:rgba(129,140,248,.07)}
+.chip-t{color:var(--teal);border-color:rgba(45,212,191,.3);background:rgba(45,212,191,.07)}
+.chip-p{color:var(--pink);border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.07)}
+/* Flow steps */
+.flow-steps{display:flex;flex-direction:column;gap:6px}
+.fs{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 12px;display:flex;align-items:start;gap:8px}
+.fs-num{font-size:9px;font-family:var(--mono);color:var(--violet);flex-shrink:0;width:18px;text-align:right}
+.fs-title{font-size:11px;font-weight:600;color:var(--fg);margin-bottom:2px}
+.fs-body{font-size:10px;color:var(--muted);line-height:1.5}
+
+/* BOTTOM BAR */
+.bottombar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--panel);border-top:1px solid var(--line);font-size:10px;font-family:var(--mono);color:var(--muted)}
+.bd{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}
+
+@media(max-width:800px){
+  .body{grid-template-columns:1fr}
+  .sidebar,.right{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div style="display:flex;align-items:center">
+      <a class="back" href="/">← Portfolio</a>
+      <span class="sep">|</span>
+      <span class="ttitle">RAG Memory Architecture</span>
+    </div>
+    <div class="topbar-right">
+      <span class="badge">RAG</span>
+      <span class="badge">LangChain</span>
+      <span class="badge">Obsidian</span>
+      <span class="badge">NotebookLM</span>
+      <span class="badge v">Vector Memory</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- SIDEBAR: Layers -->
+    <div class="sidebar">
+      <div class="sb-label">Architecture Layers</div>
+      <div class="layer-item active" onclick="focusLayer('ingest',this)" id="li-ingest">
+        <div class="li-name">1 · Ingestion</div>
+        <div class="li-sub">Obsidian → Chunks</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('embed',this)" id="li-embed">
+        <div class="li-name">2 · Embedding</div>
+        <div class="li-sub">Vectors → Store</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('retrieve',this)" id="li-retrieve">
+        <div class="li-name">3 · Retrieval</div>
+        <div class="li-sub">Semantic search</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('augment',this)" id="li-augment">
+        <div class="li-name">4 · Augmentation</div>
+        <div class="li-sub">Context injection</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('generate',this)" id="li-generate">
+        <div class="li-name">5 · Generation</div>
+        <div class="li-sub">LLM response</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('memory',this)" id="li-memory">
+        <div class="li-name">Memory Plane</div>
+        <div class="li-sub">Constellation view</div>
+      </div>
+      <div class="layer-item" onclick="focusLayer('notebooklm',this)" id="li-notebooklm">
+        <div class="li-name">NotebookLM</div>
+        <div class="li-sub">Research pipeline</div>
+      </div>
+    </div>
+
+    <!-- MAIN: Pipeline SVG diagram -->
+    <div class="main">
+      <div class="canvas-wrap">
+        <svg class="pipeline" id="psvg" viewBox="0 0 760 440"></svg>
+
+        <!-- Screenshot overlay -->
+        <div class="screen-panel" id="screenPanel">
+          <div class="sp-header">
+            <span class="sp-title" id="spTitle">Memory Constellation</span>
+            <button class="sp-close" onclick="closeScreen()">✕</button>
+          </div>
+          <img class="sp-img" id="spImg" src="" alt=""/>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Query simulator + details -->
+    <div class="right">
+      <div class="rp-label">Semantic Search Simulator</div>
+
+      <div class="query-box">
+        <div class="qb-header">Query vault</div>
+        <div class="qb-input-wrap">
+          <input class="qb-input" id="queryInput" placeholder="ask anything…" onkeydown="if(event.key==='Enter')runQuery()"/>
+          <button class="qb-btn" onclick="runQuery()">Search</button>
+        </div>
+        <div class="qb-results" id="queryResults"></div>
+      </div>
+
+      <div class="rp-label">Vault Stats</div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-val" style="color:var(--violet)">312</div><div class="stat-label">Notes</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--indigo)">18k</div><div class="stat-label">Chunks</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--teal)">1536</div><div class="stat-label">Dimensions</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">47</div><div class="stat-label">Runs logged</div></div>
+      </div>
+
+      <div class="rp-label">Tech Stack</div>
+      <div class="chip-list">
+        <span class="chip chip-v">Obsidian MCP</span>
+        <span class="chip chip-i">LangChain</span>
+        <span class="chip chip-t">ChromaDB</span>
+        <span class="chip chip-p">NotebookLM</span>
+        <span class="chip chip-v">Claude API</span>
+        <span class="chip chip-i">text-embedding-3</span>
+        <span class="chip chip-t">SQLite</span>
+        <span class="chip chip-p">n8n</span>
+        <span class="chip chip-v">React + Three.js</span>
+      </div>
+
+      <div class="rp-label">Pipeline Steps</div>
+      <div class="flow-steps">
+        <div class="fs"><span class="fs-num">01</span><div><div class="fs-title">Obsidian Vault Sync</div><div class="fs-body">725 markdown notes auto-indexed. Tags, frontmatter, backlinks preserved as metadata.</div></div></div>
+        <div class="fs"><span class="fs-num">02</span><div><div class="fs-title">Chunk + Embed</div><div class="fs-body">512-token chunks with 64-token overlap. OpenAI text-embedding-3-small (1536d). ChromaDB local store.</div></div></div>
+        <div class="fs"><span class="fs-num">03</span><div><div class="fs-title">Semantic Retrieval</div><div class="fs-body">Cosine similarity top-k=5. Reranking via cross-encoder. Returns chunks + source note + confidence.</div></div></div>
+        <div class="fs"><span class="fs-num">04</span><div><div class="fs-title">Context Injection</div><div class="fs-body">Retrieved chunks injected into system prompt. LangChain ConversationBufferMemory maintains thread.</div></div></div>
+        <div class="fs"><span class="fs-num">05</span><div><div class="fs-title">Claude Generation</div><div class="fs-body">claude-haiku-4-5 reasons over context. Output stored back to vault as a linked note.</div></div></div>
+        <div class="fs"><span class="fs-num">06</span><div><div class="fs-title">NotebookLM Synthesis</div><div class="fs-body">Selected vault notes → NotebookLM → audio briefing, slide deck, or mind map artifact.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottombar">
+    <span><span class="bd"></span><span id="statusText">Click any node to inspect · Click layer buttons to focus pipeline</span></span>
+    <span>RAG · LangChain · ChromaDB · Obsidian MCP · NotebookLM · Claude API</span>
+  </div>
+</div>
+
+<script>
+const NODES = [
+  // Row 1: Sources
+  {id:'vault',label:'Obsidian Vault',sub:'725 notes · MCP',x:80,y:80,w:140,h:52,fill:'rgba(167,139,250,.12)',stroke:'#a78bfa',layer:'ingest',
+    desc:'The primary knowledge source. 725 markdown notes across client briefs, research, prompts, and agent specs. Indexed via Obsidian MCP tool.',
+    screen:null},
+  {id:'docs',label:'Raw Documents',sub:'PDF · DOCX · MD',x:80,y:180,w:140,h:52,fill:'rgba(129,140,248,.1)',stroke:'#818cf8',layer:'ingest',
+    desc:'External documents ingested on demand — PDFs, DOCX proposals, client briefs — chunked and merged into the ChromaDB collection.',
+    screen:null},
+  {id:'runs',label:'Run History',sub:'47 sessions · SQLite',x:80,y:280,w:140,h:52,fill:'rgba(45,212,191,.1)',stroke:'#2dd4bf',layer:'ingest',
+    desc:'Every agent run logged to SQLite with prompt, output, token count, and duration. Used as episodic memory for session continuity.',
+    screen:null},
+
+  // Row 2: Processing
+  {id:'chunk',label:'Chunker',sub:'512 tok · 64 overlap',x:290,y:80,w:140,h:52,fill:'rgba(167,139,250,.1)',stroke:'#a78bfa',layer:'embed',
+    desc:'LangChain RecursiveCharacterTextSplitter. 512-token chunks with 64-token overlap to preserve semantic continuity at boundaries.',
+    screen:null},
+  {id:'embed',label:'Embedding Model',sub:'text-embedding-3-small',x:290,y:180,w:140,h:52,fill:'rgba(129,140,248,.12)',stroke:'#818cf8',layer:'embed',
+    desc:'OpenAI text-embedding-3-small. 1536-dimensional vectors. ~$0.00002/1k tokens. Batch processed, cached locally for zero re-embedding on unchanged notes.',
+    screen:null},
+  {id:'store',label:'ChromaDB',sub:'Vector store · local',x:290,y:280,w:140,h:52,fill:'rgba(45,212,191,.12)',stroke:'#2dd4bf',layer:'embed',
+    desc:'Local ChromaDB collection. Persistent on disk. Cosine similarity search. Metadata filters by agent tag, date, or source type.',
+    screen:null},
+
+  // Row 3: Retrieval
+  {id:'query',label:'Query Encoder',sub:'Semantic similarity',x:500,y:80,w:140,h:52,fill:'rgba(244,114,182,.1)',stroke:'#f472b6',layer:'retrieve',
+    desc:'User query encoded with same embedding model. Cosine similarity against ChromaDB. Top-k=5 retrieved with confidence scores.',
+    screen:null},
+  {id:'rerank',label:'Reranker',sub:'Cross-encoder filter',x:500,y:180,w:140,h:52,fill:'rgba(251,191,36,.1)',stroke:'#fbbf24',layer:'retrieve',
+    desc:'Cross-encoder reranking filters false positives. LangChain ContextualCompressionRetriever removes irrelevant chunks before injection.',
+    screen:null},
+
+  // Row 4: Generation
+  {id:'claude',label:'Claude API',sub:'claude-haiku-4-5',x:500,y:280,w:140,h:52,fill:'rgba(167,139,250,.14)',stroke:'#a78bfa',layer:'generate',
+    desc:'Augmented context injected into system prompt alongside ConversationBufferMemory (last 10 turns). claude-haiku-4-5 for speed and cost.',
+    screen:null},
+
+  // Memory constellation node
+  {id:'memory',label:'Memory Graph',sub:'3D constellation · Three.js',x:290,y:370,w:180,h:52,fill:'rgba(129,140,248,.15)',stroke:'#818cf8',layer:'memory',
+    desc:'React Three Fiber force-directed graph of all project nodes, prompt links, and decision edges. Live in Hermes OS.',
+    screen:{url:'/slides/hermes-os/Screenshot 2026-05-24 090913.png',title:'Memory — Semantic Vector Map'}},
+
+  // NotebookLM
+  {id:'nlm',label:'NotebookLM',sub:'Audio · Slides · Mindmap',x:500,y:370,w:180,h:52,fill:'rgba(244,114,182,.12)',stroke:'#f472b6',layer:'notebooklm',
+    desc:'Selected vault notes sent to NotebookLM via MCP. Generates audio briefings, slide decks, infographics, and mind maps for client-facing output.',
+    screen:{url:'/slides/hermes-os/Screenshot 2026-05-24 091343.png',title:'Knowledge Base — 3D Constellation'}},
+];
+
+const EDGES = [
+  ['vault','chunk'],['docs','chunk'],['runs','store'],
+  ['chunk','embed'],['embed','store'],
+  ['store','query'],['query','rerank'],['rerank','claude'],
+  ['embed','memory'],['store','nlm'],
+];
+
+let activeLayer = 'ingest';
+let activeNode = null;
+
+function renderSVG() {
+  const svg = document.getElementById('psvg');
+  const W = svg.clientWidth || 760, H = svg.clientHeight || 440;
+  svg.innerHTML = '';
+
+  const ns = 'http://www.w3.org/2000/svg';
+  // scale nodes
+  const scaleX = (W - 20) / 760, scaleY = (H - 20) / 440;
+
+  function sx(x){return 10 + x * scaleX;}
+  function sy(y){return 10 + y * scaleY;}
+  function sw(w){return w * scaleX;}
+  function sh(h){return h * scaleY;}
+
+  // draw edges
+  EDGES.forEach(([f,t]) => {
+    const fn = NODES.find(n=>n.id===f);
+    const tn = NODES.find(n=>n.id===t);
+    if (!fn||!tn) return;
+    const fx = sx(fn.x + fn.w), fy = sy(fn.y + fn.h/2);
+    const tx = sx(tn.x), ty = sy(tn.y + tn.h/2);
+    const mx = (fx + tx)/2;
+    const path = document.createElementNS(ns,'path');
+    path.setAttribute('d',`M${fx},${fy} C${mx},${fy} ${mx},${ty} ${tx},${ty}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',activeLayer && fn.layer===activeLayer?'rgba(167,139,250,.5)':'rgba(255,255,255,.07)');
+    path.setAttribute('stroke-width','1.5');
+    path.setAttribute('stroke-dasharray','4 3');
+    svg.appendChild(path);
+  });
+
+  // draw nodes
+  NODES.forEach(node => {
+    const g = document.createElementNS(ns,'g');
+    g.setAttribute('class','pnode'+(node.id===activeNode?' active':''));
+    g.onclick = () => selectNode(node);
+
+    const dimmed = activeLayer && node.layer !== activeLayer;
+    const rect = document.createElementNS(ns,'rect');
+    rect.setAttribute('x', sx(node.x)); rect.setAttribute('y', sy(node.y));
+    rect.setAttribute('width', sw(node.w)); rect.setAttribute('height', sh(node.h));
+    rect.setAttribute('rx', 8); rect.setAttribute('ry', 8);
+    rect.setAttribute('fill', dimmed ? 'rgba(255,255,255,.03)' : node.fill);
+    rect.setAttribute('stroke', dimmed ? 'rgba(255,255,255,.06)' : node.stroke);
+    rect.setAttribute('stroke-width', node.id === activeNode ? '2.5' : '1.5');
+    rect.setAttribute('class','node-rect');
+
+    const label = document.createElementNS(ns,'text');
+    label.setAttribute('x', sx(node.x + node.w/2));
+    label.setAttribute('y', sy(node.y + node.h/2 - 6));
+    label.setAttribute('text-anchor','middle');
+    label.setAttribute('fill', dimmed ? 'rgba(255,255,255,.2)' : 'rgba(237,232,255,.9)');
+    label.setAttribute('font-size', Math.floor(11 * scaleX * 1.3));
+    label.setAttribute('font-weight','700');
+    label.setAttribute('font-family','Segoe UI,system-ui,sans-serif');
+    label.textContent = node.label;
+
+    const sub = document.createElementNS(ns,'text');
+    sub.setAttribute('x', sx(node.x + node.w/2));
+    sub.setAttribute('y', sy(node.y + node.h/2 + 10));
+    sub.setAttribute('text-anchor','middle');
+    sub.setAttribute('fill', dimmed ? 'rgba(255,255,255,.1)' : 'rgba(167,139,250,.6)');
+    sub.setAttribute('font-size', Math.floor(9 * scaleX * 1.3));
+    sub.setAttribute('font-family','Courier New,monospace');
+    sub.textContent = node.sub;
+
+    g.append(rect, label, sub);
+    svg.appendChild(g);
+  });
+}
+
+function selectNode(node) {
+  activeNode = node.id;
+  document.getElementById('statusText').textContent = node.label + ' — ' + node.desc;
+  if (node.screen) {
+    const panel = document.getElementById('screenPanel');
+    document.getElementById('spImg').src = node.screen.url;
+    document.getElementById('spTitle').textContent = node.screen.title;
+    panel.classList.add('show');
+  } else {
+    document.getElementById('screenPanel').classList.remove('show');
+  }
+  renderSVG();
+}
+
+function closeScreen() {
+  document.getElementById('screenPanel').classList.remove('show');
+}
+
+function focusLayer(layer, el) {
+  document.querySelectorAll('.layer-item').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+  activeLayer = layer;
+  activeNode = null;
+  document.getElementById('screenPanel').classList.remove('show');
+  document.getElementById('statusText').textContent = 'Focusing layer: ' + layer;
+  renderSVG();
+}
+
+// Query simulator
+const MOCK_RESULTS = {
+  default: [
+    {score:'0.94',text:'Agent memory is stored as tagged Obsidian notes with backlinks to source prompts and run IDs.',source:'agents/memory-spec.md'},
+    {score:'0.89',text:'ChromaDB collection "hermes-vault" persists between sessions. Re-indexing triggered on vault change.',source:'infra/chroma-config.md'},
+    {score:'0.82',text:'Retrieval uses cosine similarity. Top-5 chunks reranked by cross-encoder before injection.',source:'rag/retrieval-design.md'},
+  ],
+  ga4: [
+    {score:'0.96',text:'GA4 conversion events: purchase, add_to_cart, begin_checkout. All three required for Smart Bidding.',source:'clients/ozbarbers-ga4-setup.md'},
+    {score:'0.91',text:'DebugView active on OzBarbers property. Disable before campaign launch to clean production data.',source:'clients/ozbarbers-audit.md'},
+    {score:'0.84',text:'Bloom & Wild: 5/5 events firing. ROAS 2.4x. Full ecommerce funnel tracked post-implementation.',source:'clients/bloom-wild-report.md'},
+  ],
+  agent: [
+    {score:'0.97',text:'Severus-Gateway routes all requests through permission matrix. No agent bypasses quality gates.',source:'agents/pantheon-manifest.md'},
+    {score:'0.93',text:'Analytics agent specialises in GA4 setup, GTM, conversion tracking, and DebugView verification.',source:'agents/analytics-spec.md'},
+    {score:'0.87',text:'Proposer agent generates scoped proposals from brief JSON. Output: markdown → PDF → Gmail.',source:'agents/proposer-spec.md'},
+  ],
+};
+
+function runQuery() {
+  const q = document.getElementById('queryInput').value.toLowerCase().trim();
+  if (!q) return;
+  const results = q.includes('ga4') || q.includes('analytics') || q.includes('google')
+    ? MOCK_RESULTS.ga4
+    : q.includes('agent') || q.includes('permission') || q.includes('memory')
+    ? MOCK_RESULTS.agent
+    : MOCK_RESULTS.default;
+  const container = document.getElementById('queryResults');
+  container.innerHTML = '';
+  results.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'qr-item';
+    div.innerHTML = `<div class="qr-score">similarity: ${r.score}</div><div class="qr-text">${r.text}</div><div class="qr-source">${r.source}</div>`;
+    container.appendChild(div);
+    setTimeout(() => div.classList.add('show'), 80 + i * 100);
+  });
+}
+
+renderSVG();
+window.addEventListener('resize', renderSVG);
+</script>
+</body>
+</html>

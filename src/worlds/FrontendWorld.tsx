@@ -55,6 +55,7 @@ const DEMOS_LIST = [
   { num: '10', title: 'Figma Prototype Flow', desc: 'Two clickable user flows with glowing hotspot navigation and completion rate comparison.', href: '/demos/figma-prototype-flow.html', tag: 'Figma · UX' },
   { num: '11', title: 'Stitch Component Gen', desc: 'Prompt to 3 AI variants to 7-day A/B simulation with live metrics.', href: '/demos/stitch-ab-gen.html', tag: 'Stitch · AI' },
   { num: '12', title: 'Stitch Landing Builder', desc: 'Two AI landing page variants in phone frames with funnel metrics and winner badge.', href: '/demos/stitch-landing-builder.html', tag: 'Stitch · A/B' },
+  { num: '13', title: 'SDLC — Frontend & Backend', desc: 'Full lifecycle documented: Design → Build → Test → Deploy → Monitor on the FE; Architecture → API → DB → Docker → Observe on the BE.', href: '/demos/sdlc.html', tag: 'SDLC · Full Stack' },
 ];
 
 const PRODUCTS = [

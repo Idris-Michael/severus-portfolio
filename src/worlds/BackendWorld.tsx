@@ -5,15 +5,19 @@ const ACCENT = 'var(--accent)';
 
 const STACK = [
   { title: 'Hermes OS', tag: 'Multi-agent OS', desc: 'A custom operating system for an AI-run agency: agents, memory, permissions, telemetry on one surface.', href: '/demos/mission-control.html', cta: 'Open Mission Control' },
+  { title: 'RAG Memory System', tag: 'RAG · LangChain · ChromaDB', desc: 'Obsidian vault → LangChain chunker → ChromaDB vector store → semantic retrieval → Claude context injection. 312 notes, 18k chunks, 1536-dimensional embeddings.', href: '/demos/rag-memory.html', cta: 'Inspect pipeline' },
+  { title: 'Docker Infrastructure', tag: 'DevOps · Containers', desc: '4-service containerised stack: hermes-hub (Node 22), severus-social (tsx), supertonic (Python TTS), seedance (UGC). Bridge network, named volumes.', href: '/demos/docker-infra.html', cta: 'View topology' },
   { title: 'Dual-LLM Contract Review', tag: 'AI Product', desc: 'Two frontier models read a contract in parallel; agreement builds confidence, divergence flags risk.', href: '/demos/portswigger.html', cta: 'Open demo' },
-  { title: '8-Agent Permission Framework', tag: 'IAM', desc: 'Role-based access control across a Pantheon of agents, with a live audit log and conflict detection.', href: '/demos/agent-stack.html', cta: 'Open demo' },
 ];
 
 const DEMOS = [
   { num: '01', title: 'Mission Control', desc: 'Operations console: Kanban, CRM, live agent status, and run logs on one surface.', href: '/demos/mission-control.html', tag: 'System Arch' },
-  { num: '02', title: 'Automation Node Inspector', desc: 'Eight live n8n workflows read node by node, with an animated dataflow schematic.', href: '/demos/n8n-workflows.html', tag: 'Technical UI' },
-  { num: '03', title: 'Pipeline Monitor', desc: 'Live terminal plus step tracker for a four-stage content automation pipeline.', href: '/demos/severus-social.html', tag: 'DevEx' },
-  { num: '04', title: 'Agent Permission Framework', desc: 'IAM matrix for 8 agents: live toggles, role viewer, conflict detection, audit log.', href: '/demos/agent-stack.html', tag: 'Enterprise IAM' },
+  { num: '02', title: 'RAG Memory Architecture', desc: 'Full RAG pipeline: Obsidian vault → LangChain chunks → ChromaDB vectors → semantic retrieval → Claude generation. Live query simulator.', href: '/demos/rag-memory.html', tag: 'RAG · LangChain' },
+  { num: '03', title: 'Docker Infrastructure', desc: 'Hermes OS container topology — 4 services, bridge network, named volumes. Interactive compose file viewer.', href: '/demos/docker-infra.html', tag: 'Docker · DevOps' },
+  { num: '04', title: 'Automation Node Inspector', desc: 'Eight live n8n workflows read node by node, with an animated dataflow schematic.', href: '/demos/n8n-workflows.html', tag: 'Technical UI' },
+  { num: '05', title: 'SDLC — Frontend & Backend', desc: 'Full software development lifecycle for both worlds: design → build → test → deploy → observe. Real Hermes stack at every phase.', href: '/demos/sdlc.html', tag: 'SDLC' },
+  { num: '06', title: 'Pipeline Monitor', desc: 'Live terminal plus step tracker for a four-stage content automation pipeline.', href: '/demos/severus-social.html', tag: 'DevEx' },
+  { num: '07', title: 'Agent Permission Framework', desc: 'IAM matrix for 8 agents: live toggles, role viewer, conflict detection, audit log.', href: '/demos/agent-stack.html', tag: 'Enterprise IAM' },
 ];
 
 const TOOLS = [
