@@ -29,11 +29,12 @@ const VIDEOS = [
   { num: '04', src: '/portswigger-demo.mp4', title: 'AI Legal Pioneer', desc: 'The dual-LLM contract review pipeline in action. PortSwigger competition submission.' },
 ];
 
-export function BackendWorld() {
+export function BackendWorld({ onSwitch }: { onSwitch?: () => void }) {
   return (
     <main className="relative z-10 min-h-screen" style={{ color: 'var(--fg)' }}>
       <WorldNav
         world="backend"
+        onSwitch={onSwitch}
         links={[
           { href: '#stack', label: 'Stack' },
           { href: '#systems', label: 'Systems' },

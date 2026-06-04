@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import App from './App';
+import { BackendWorld } from './worlds/BackendWorld';
 import { FrontendWorld } from './worlds/FrontendWorld';
+import { Chatbot } from './components/Chatbot';
 
 type World = 'backend' | 'frontend';
 
@@ -226,6 +227,14 @@ export default function WorldRoot() {
   }, [world]);
 
   if (world === null) return <WorldGate onEnter={handleEnter} />;
-  if (world === 'frontend') return <FrontendWorld onSwitch={handleSwitch} />;
-  return <App />;  // Backend: original portfolio, all effects intact
+
+  return (
+    <>
+      {world === 'frontend'
+        ? <FrontendWorld onSwitch={handleSwitch} />
+        : <BackendWorld onSwitch={handleSwitch} />
+      }
+      <Chatbot />
+    </>
+  );
 }
