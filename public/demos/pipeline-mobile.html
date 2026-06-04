@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipeline Command — Mobile</title>
+  <meta name="description" content="The Instagram automation pipeline, controlled from your phone. Approve, trigger, monitor.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    :root{
+      --bg:#0a0c12; --bg2:#0e1018; --pcard:#12151f; --pline:rgba(160,180,230,.1);
+      --ptext:#e8ebf2; --pmuted:#9aa3bd; --pfaint:#5f6680;
+      --acc:#5b8cff; --acc2:#7ba3ff; --acc-dim:rgba(91,140,255,.14);
+      --screen:#0c0e16; --surf:#141826; --surf2:#1a1f30; --line:rgba(160,180,230,.1); --line2:rgba(160,180,230,.055);
+      --ink:#e8ebf2; --muted:#8b93ac; --faint:#5b6480;
+      --pending:#f5a623; --ok:#34d399; --queued:#5b8cff; --failed:#f87171; --sched:#8b93ac;
+      --disp:'Outfit',system-ui,sans-serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+      --e:cubic-bezier(.22,1,.36,1);
+      --pw:392px; --ph:844px; --status:46px; --sys:30px; --navh:62px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{font-family:var(--sans);background:var(--bg);color:var(--ptext);line-height:1.55;overflow-x:hidden;
+      background-image:radial-gradient(900px 500px at 80% -10%,rgba(91,140,255,.1),transparent 60%)}
+    ::selection{background:var(--acc);color:#06101f}
+    :focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--disp);letter-spacing:-.02em;text-wrap:balance}
+
+    .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 28px}
+    .nav-brand{font-family:var(--disp);font-weight:700;font-size:15px;display:flex;align-items:center;gap:9px}
+    .nav-brand .g{width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 12px var(--acc)}
+    .nav-back{font-size:13px;font-weight:500;color:var(--pmuted);transition:color .3s var(--e)}.nav-back:hover{color:var(--ptext)}
+
+    .stage{max-width:1180px;margin:0 auto;min-height:100vh;display:grid;grid-template-columns:1fr auto;align-items:center;gap:56px;padding:110px 32px 60px}
+    @media(max-width:880px){.stage{grid-template-columns:1fr;justify-items:center;text-align:center;gap:40px}}
+    .pitch-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc2);margin-bottom:24px;display:inline-flex;align-items:center;gap:11px;opacity:0}
+    .pitch-eyebrow::before{content:"";width:26px;height:1px;background:var(--acc2)}
+    @media(max-width:880px){.pitch-eyebrow::before{display:none}}
+    .pitch h1{font-size:clamp(38px,5.5vw,72px);font-weight:700;line-height:1.02}
+    .pitch h1 em{font-style:normal;color:var(--acc)}
+    .pitch p{max-width:430px;margin:24px 0 0;font-size:clamp(16px,1.4vw,19px);color:var(--pmuted);opacity:0}
+    @media(max-width:880px){.pitch p{margin-inline:auto}}
+    .pitch p b{color:var(--ptext);font-weight:600}
+    .feat-list{margin-top:30px;display:flex;flex-direction:column;gap:13px;opacity:0}
+    @media(max-width:880px){.feat-list{align-items:center}}
+    .fli{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--pmuted)}
+    .fli .ck{width:22px;height:22px;border-radius:7px;background:var(--acc-dim);color:var(--acc2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .pitch-meta{margin-top:30px;font-family:var(--mono);font-size:12px;color:var(--pmuted);opacity:0}.pitch-meta b{color:var(--ptext)}
+
+    .phone{position:relative;width:var(--pw);flex-shrink:0;background:#05070d;border-radius:46px;padding:9px;box-shadow:0 50px 130px -40px rgba(0,0,0,.85),0 0 0 1px rgba(160,180,230,.06);opacity:0;will-change:transform}
+    .screen{width:100%;height:var(--ph);border-radius:38px;overflow:hidden;position:relative;background:var(--screen)}
+    .sb{position:absolute;top:0;left:0;right:0;height:var(--status);display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 9px;z-index:20;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+    .sb .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:108px;height:26px;background:#05070d;border-radius:0 0 16px 16px}
+    .sb-ic{display:flex;align-items:center;gap:6px}
+
+    .sys{position:absolute;top:var(--status);left:0;right:0;height:var(--sys);display:flex;align-items:center;gap:9px;padding:0 20px;z-index:19;background:var(--screen);border-bottom:1px solid var(--line2)}
+    .sys .d{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--muted)}
+    .sys.idle .d{background:var(--muted)}
+    .sys.running .d{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+    .sys.running .d{animation:pul 1s infinite}
+    @keyframes pul{50%{opacity:.4}}
+    .sys .t{font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .sys .t b{color:var(--ink);font-weight:600}
+
+    .view{position:absolute;top:calc(var(--status) + var(--sys));bottom:var(--navh);left:0;right:0;overflow-y:auto;display:none;scrollbar-width:none}
+    .view::-webkit-scrollbar{display:none}.view.on{display:block}
+    .navbar{position:absolute;bottom:0;left:0;right:0;height:var(--navh);background:var(--bg2);border-top:1px solid var(--line2);display:flex;z-index:20}
+    .nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;cursor:pointer;color:var(--faint);font-family:var(--sans);font-size:10px;font-weight:600;min-height:44px}
+    .nb[aria-current="page"]{color:var(--acc2)}.nb .ic{font-size:18px;line-height:1}
+
+    .vh{padding:16px 20px 6px}.vh h2{font-size:22px;font-weight:700}.vh .sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .group-h{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:14px 20px 8px}
+    .plist{padding:0 16px}
+    .pc{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;transition:opacity .3s var(--e),border-color .25s var(--e)}
+    .pc.approved{border-color:rgba(52,211,153,.35)}
+    .pc.rejected{opacity:.45}
+    .pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:9px}
+    .pc-time{font-family:var(--disp);font-weight:700;font-size:17px;line-height:1}
+    .pc-acct{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+    .pill{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:100px;white-space:nowrap}
+    .pl-pending{background:rgba(245,166,35,.14);color:var(--pending)}
+    .pl-approved{background:rgba(52,211,153,.14);color:var(--ok)}
+    .pl-queued{background:var(--acc-dim);color:var(--acc2)}
+    .pl-sched{background:rgba(139,147,172,.14);color:var(--sched)}
+    .pl-published{background:rgba(139,147,172,.12);color:var(--muted)}
+    .pl-failed{background:rgba(248,113,113,.14);color:var(--failed)}
+    .pc-hook{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .pc-act{display:flex;gap:9px}
+    .ap{flex:1;height:40px;border-radius:11px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;border:1px solid;transition:background .2s var(--e)}
+    .ap-yes{background:rgba(52,211,153,.14);color:var(--ok);border-color:rgba(52,211,153,.4)}.ap-yes:hover{background:rgba(52,211,153,.22)}
+    .ap-no{background:rgba(248,113,113,.1);color:var(--failed);border-color:rgba(248,113,113,.35)}.ap-no:hover{background:rgba(248,113,113,.18)}
+
+    .hrow{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line2)}
+    .hrow .dt{font-family:var(--mono);font-size:12px;color:var(--muted);width:64px;flex-shrink:0}
+    .hrow .ac{font-family:var(--mono);font-size:12px;flex:1}
+
+    .fab{position:absolute;bottom:calc(var(--navh) + 18px);right:18px;width:56px;height:56px;border-radius:50%;background:var(--acc);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:23px;color:#fff;z-index:25;box-shadow:0 12px 28px -8px rgba(91,140,255,.6);transition:transform .2s var(--e)}
+    .fab:hover{transform:scale(1.08)}.fab:active{transform:scale(.94)}
+
+    .sheet-bd{position:absolute;inset:0;background:rgba(5,7,13,.6);z-index:30;opacity:0;pointer-events:none;transition:opacity .3s var(--e)}
+    .sheet-bd.on{opacity:1;pointer-events:auto}
+    .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surf);border-radius:24px 24px 0 0;border-top:1px solid var(--line);z-index:31;transform:translateY(100%);transition:transform .35s var(--e);padding:0 22px 28px}
+    .sheet.on{transform:translateY(0)}
+    .sheet .grab{width:38px;height:4px;background:var(--surf2);border-radius:100px;margin:12px auto 18px}
+    .sheet h3{font-size:18px;font-weight:700;margin-bottom:8px}
+    .sheet .rec{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:22px}
+    .sheet .row{display:flex;flex-direction:column;gap:10px}
+    .sheet .go{height:48px;border-radius:13px;border:none;background:var(--acc);color:#fff;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:background .2s var(--e)}.sheet .go:hover{background:var(--acc2)}
+    .sheet .cancel{height:44px;border-radius:13px;border:1px solid var(--line);background:none;color:var(--muted);font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer}
+
+    .proof{border-top:1px solid var(--pline);background:var(--pcard)}
+    .proof-in{max-width:1180px;margin:0 auto;padding:60px 32px;display:grid;grid-template-columns:.8fr 1.2fr;gap:38px}
+    @media(max-width:820px){.proof-in{grid-template-columns:1fr;gap:22px}}
+    .proof h3{font-size:clamp(23px,3vw,32px)}
+    .proof .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc2);margin-bottom:16px}
+    .pp{display:flex;gap:13px;margin-bottom:17px}.pp .n{font-family:var(--mono);font-size:12px;color:var(--acc2);padding-top:3px}
+    .pp .t b{display:block;font-weight:600;margin-bottom:3px}.pp .t p{color:var(--pmuted);font-size:14px}
+    .proof-for{margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--pmuted)}.proof-for b{color:var(--ptext)}
+    .footer{border-top:1px solid var(--pline);padding:26px 32px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--pmuted);flex-wrap:wrap;gap:12px}
+    .footer a:hover{color:var(--acc2)}
+
+    .reveal-y{opacity:0;transform:translateY(28px);will-change:transform,opacity}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}
+      .reveal-y,.pitch-eyebrow,.pitch p,.feat-list,.pitch-meta,.phone{opacity:1!important;transform:none!important}}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="https://severus-six.vercel.app"><span class="g"></span>Pipeline Command</a>
+    <a class="nav-back" href="https://severus-six.vercel.app">← Portfolio</a>
+  </nav>
+
+  <main class="stage">
+    <div class="pitch">
+      <span class="pitch-eyebrow" id="eyebrow">Shipped SaaS · Mobile Control Surface</span>
+      <h1>Run the pipeline<br><em>from anywhere.</em></h1>
+      <p id="pp">The Instagram automation pipeline, controlled from your phone. <b>Approve the morning posts, trigger an emergency run, see system status</b> without opening a laptop.</p>
+      <div class="feat-list" id="feats">
+        <div class="fli"><span class="ck">✓</span>Approve or reject scheduled posts in one tap</div>
+        <div class="fli"><span class="ck">✓</span>Trigger a manual run, with a confirmation guard</div>
+        <div class="fli"><span class="ck">✓</span>Pipeline status visible on every screen</div>
+      </div>
+      <p class="pitch-meta" id="meta">Part of the <b>Instagram Pipeline</b> product family. Built for quick, twice-daily checks.</p>
+    </div>
+
+    <div class="phone" id="phone">
+      <div class="screen">
+        <div class="sb"><div class="notch"></div><span id="clock">9:41</span><span class="sb-ic">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="4.5" width="3" height="6.5" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1" opacity=".35"/></svg>
+          <svg width="24" height="11" viewBox="0 0 24 11" fill="currentColor"><rect x="0" y=".5" width="20" height="10" rx="2.5" stroke="currentColor" fill="none" opacity=".5"/><rect x="20.5" y="3.5" width="2" height="4" rx="1" opacity=".5"/><rect x="1.5" y="2" width="15.5" height="7" rx="1.5"/></svg>
+        </span></div>
+
+        <div class="sys idle" id="sys"><span class="d"></span><span class="t">System: <b id="sys-state">Idle</b></span></div>
+
+        <!-- TODAY -->
+        <section class="view on" id="v-today" aria-label="Today">
+          <div class="vh"><h2>Today</h2><div class="sub" id="today-sub"></div></div>
+          <div class="group-h">Pending approval</div>
+          <div class="plist" id="pending"></div>
+          <div class="group-h" id="queued-h" style="display:none">Queued</div>
+          <div class="plist" id="queued"></div>
+          <div class="group-h">Scheduled</div>
+          <div class="plist" id="scheduled"></div>
+          <div style="height:24px"></div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="view" id="v-hist" aria-label="History">
+          <div class="vh"><h2>History</h2><div class="sub">Last 7 days</div></div>
+          <div id="hlist" style="margin-top:6px"></div>
+        </section>
+
+        <button class="fab" id="fab" onclick="openConfirm()" aria-label="Run pipeline now">⚡</button>
+
+        <div class="sheet-bd" id="cbd" onclick="closeConfirm()"></div>
+        <div class="sheet" id="confirm" role="dialog" aria-modal="true" aria-label="Run pipeline">
+          <div class="grab"></div>
+          <h3>Run pipeline now?</h3>
+          <p class="rec">This generates and queues 3 new reels for @severus_connects. Content is submitted for approval before publishing.</p>
+          <div class="row"><button class="go" onclick="confirmRun()">Run pipeline</button><button class="cancel" onclick="closeConfirm()">Cancel</button></div>
+        </div>
+
+        <nav class="navbar" aria-label="App navigation">
+          <button class="nb" id="nb-today" aria-current="page" onclick="go('today')"><span class="ic">◷</span>Today</button>
+          <button class="nb" id="nb-hist" onclick="go('hist')"><span class="ic">≡</span>History</button>
+        </nav>
+      </div>
+    </div>
+  </main>
+
+  <section class="proof">
+    <div class="proof-in">
+      <div>
+        <div class="kicker reveal-y">For recruiters &amp; hiring managers</div>
+        <h3 class="reveal-y">What this demonstrates</h3>
+        <p class="proof-for reveal-y">Best for: <b>Mobile Product Design</b>, <b>Control-Surface UX</b></p>
+      </div>
+      <div>
+        <div class="pp reveal-y"><span class="n">01</span><div class="t"><b>Control surface, not a dashboard</b><p>A monitoring tool observes; this one acts. The primary action, triggering a run, lives in a FAB with a confirmation guard.</p></div></div>
+        <div class="pp reveal-y"><span class="n">02</span><div class="t"><b>Navigation matched to behaviour</b><p>Two tabs, not four. The app is checked twice a day for specific tasks, so the IA reflects real usage instead of a feature inventory.</p></div></div>
+        <div class="pp reveal-y"><span class="n">03</span><div class="t"><b>Persistent operational context</b><p>The pipeline status bar sits on every screen, so an operator never navigates away to learn whether a run is in progress.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><span>SEVERUS CONNECTS &middot; PIPELINE COMMAND</span><a href="https://severus-six.vercel.app">severus-six.vercel.app</a></footer>
+
+  <script>
+    var posts=[
+      {time:'09:00',acct:'@severus_connects',hook:'The one GA4 setting most agencies miss, and it is quietly costing clients thousands in wasted ad spend.',status:'pending'},
+      {time:'11:30',acct:'@mikeb.io',hook:'I built an AI agent to run my entire Instagram pipeline. Here is what actually happened after 30 days.',status:'pending'},
+      {time:'14:00',acct:'@severus_connects',hook:'Your Google Ads ROAS is probably a lie. How brand keyword contamination inflates performance metrics.',status:'queued'},
+      {time:'16:30',acct:'@mikeb.io',hook:'Consent Mode v2 goes live next month. Here is the 3-step checklist to be ready.',status:'scheduled'},
+      {time:'18:00',acct:'@severus_connects',hook:'Why we switched from 4-tab navigation to 2 tabs plus a FAB, and what the data showed.',status:'scheduled'}
+    ];
+    var history=[
+      {dt:'01 Jun',ac:'@severus_connects',st:'published'},{dt:'01 Jun',ac:'@mikeb.io',st:'published'},
+      {dt:'31 May',ac:'@severus_connects',st:'published'},{dt:'31 May',ac:'@mikeb.io',st:'failed'},
+      {dt:'30 May',ac:'@severus_connects',st:'published'},{dt:'30 May',ac:'@mikeb.io',st:'published'},
+      {dt:'29 May',ac:'@severus_connects',st:'published'}
+    ];
+    function pcls(s){return{pending:'pl-pending',approved:'pl-approved',queued:'pl-queued',scheduled:'pl-sched',published:'pl-published',failed:'pl-failed'}[s]||'pl-queued';}
+    function plbl(s){return{pending:'Pending',approved:'Approved',queued:'Queued',scheduled:'Scheduled',published:'Published',failed:'Failed'}[s]||s;}
+    function card(p,i){
+      var act=p.status==='pending'?'<div class="pc-act"><button class="ap ap-yes" onclick="approve('+i+')">Approve</button><button class="ap ap-no" onclick="reject('+i+')">Reject</button></div>':'';
+      return '<div class="pc '+(p.status==='approved'?'approved':'')+(p.status==='rejected'?'rejected':'')+'" id="pc-'+i+'">'
+        +'<div class="pc-top"><div><div class="pc-time">'+p.time+'</div><div class="pc-acct">'+p.acct+'</div></div><span class="pill '+pcls(p.status)+'">'+plbl(p.status)+'</span></div>'
+        +'<div class="pc-hook">'+p.hook+'</div>'+act+'</div>';
+    }
+    function renderToday(){
+      var pend=document.getElementById('pending'),q=document.getElementById('queued'),sc=document.getElementById('scheduled');
+      pend.innerHTML='';q.innerHTML='';sc.innerHTML='';var hasQ=false,np=0;
+      posts.forEach(function(p,i){var h=card(p,i);if(p.status==='pending'){pend.innerHTML+=h;np++;}else if(p.status==='approved'||p.status==='queued'){q.innerHTML+=h;hasQ=true;}else if(p.status!=='rejected'){sc.innerHTML+=h;}});
+      document.getElementById('queued-h').style.display=hasQ?'block':'none';
+      document.getElementById('today-sub').textContent=np+' awaiting your approval';
+    }
+    function approve(i){posts[i].status='approved';renderToday();setTimeout(function(){posts[i].status='queued';renderToday();},650);}
+    function reject(i){posts[i].status='rejected';renderToday();}
+    function renderHist(){var l=document.getElementById('hlist');l.innerHTML='';history.forEach(function(h){l.innerHTML+='<div class="hrow"><span class="dt">'+h.dt+'</span><span class="ac">'+h.ac+'</span><span class="pill '+pcls(h.st)+'">'+plbl(h.st)+'</span></div>';});}
+    function go(v){['today','hist'].forEach(function(n){document.getElementById('v-'+n).classList.toggle('on',n===v);var b=document.getElementById('nb-'+n);if(b)b.setAttribute('aria-current',n===v?'page':'false');});}
+    function openConfirm(){document.getElementById('confirm').classList.add('on');document.getElementById('cbd').classList.add('on');}
+    function closeConfirm(){document.getElementById('confirm').classList.remove('on');document.getElementById('cbd').classList.remove('on');}
+    function confirmRun(){
+      closeConfirm();var sys=document.getElementById('sys');sys.className='sys running';document.getElementById('sys-state').textContent='Running';
+      setTimeout(function(){
+        [{time:'20:00',acct:'@severus_connects',hook:'The conversion tracking mistake in 90% of e-commerce GA4 setups.',status:'pending'},
+         {time:'21:00',acct:'@severus_connects',hook:'Server-side tagging in 2025: what it does and when you actually need it.',status:'pending'},
+         {time:'22:00',acct:'@severus_connects',hook:'How we cut cost-per-lead by 40% by fixing one attribution setting.',status:'pending'}].forEach(function(p){posts.push(p);});
+        renderToday();sys.className='sys idle';document.getElementById('sys-state').textContent='Idle';
+      },3000);
+    }
+    (function(){var c=document.getElementById('clock');var d=new Date();c.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0');})();
+    renderToday();renderHist();
+
+    (function(){
+      var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce||typeof gsap==='undefined'){document.querySelectorAll('.reveal-y,.pitch-eyebrow,.pitch p,.feat-list,.pitch-meta,.phone').forEach(function(e){e.style.opacity=1;e.style.transform='none';});return;}
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.set(['#pp','#feats','#meta'],{y:18});
+      var tl=gsap.timeline({defaults:{ease:'power3.out'}});
+      tl.to('#eyebrow',{opacity:1,duration:.7},.1).to('#pp',{opacity:1,y:0,duration:.8},.5).to('#feats',{opacity:1,y:0,duration:.8},.65).to('#meta',{opacity:1,y:0,duration:.8},.8).to('#phone',{opacity:1,duration:1,ease:'power2.out'},.3);
+      gsap.from('#phone',{y:50,duration:1.1,ease:'power3.out'});
+      var ph=document.getElementById('phone');ph.style.transformPerspective='1200px';
+      var px=gsap.quickTo('#phone','rotationY',{duration:1,ease:'power3'}),py=gsap.quickTo('#phone','rotationX',{duration:1,ease:'power3'});
+      ph.addEventListener('mousemove',function(e){var r=ph.getBoundingClientRect();px((e.clientX-r.left-r.width/2)/r.width*10);py(-(e.clientY-r.top-r.height/2)/r.height*10);});
+      ph.addEventListener('mouseleave',function(){px(0);py(0);});
+      gsap.utils.toArray('.reveal-y').forEach(function(el){gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});});
+    })();
+  </script>
+</body>
+</html>

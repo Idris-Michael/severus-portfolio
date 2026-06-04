@@ -66,19 +66,54 @@
   }
 }
 
+/* ── Two-World design tokens (shared accent + fonts, inverted bg/fg) ── */
+:root {
+  --accent: #F97316;
+  --accent-glow: rgba(249, 115, 22, 0.4);
+  --font-ui: 'Space Grotesk', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  /* default = backend (dark) so the current render is unchanged */
+  --bg: #0D0D12;
+  --surface: #15151A;
+  --fg: #F5F5F7;
+  --muted: #A1A1AA;
+  --line: rgba(255, 255, 255, 0.08);
+  --hud: rgba(255, 255, 255, 0.6);
+}
+
+html[data-world="frontend"] {
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --fg: #0E0E12;
+  --muted: #52525B;
+  --line: rgba(0, 0, 0, 0.10);
+  --hud: rgba(0, 0, 0, 0.55);
+}
+
+html[data-world="backend"] {
+  --bg: #0D0D12;
+  --surface: #15151A;
+  --fg: #F5F5F7;
+  --muted: #A1A1AA;
+  --line: rgba(255, 255, 255, 0.08);
+  --hud: rgba(255, 255, 255, 0.6);
+}
+
 @layer base {
 
   body,
   html {
-    @apply m-0 p-0 bg-[#0D0D12] text-[#F5F5F7] overflow-x-hidden;
+    @apply m-0 p-0 overflow-x-hidden;
   }
 
   * {
-    @apply border-white/10;
+    border-color: var(--line);
   }
 
   body {
-    @apply bg-[#0D0D12] text-[#F5F5F7];
+    background-color: var(--bg);
+    color: var(--fg);
+    transition: background-color 0.6s ease, color 0.6s ease;
   }
 }
 
@@ -97,22 +132,35 @@
 .cursor-dot {
   width: 8px;
   height: 8px;
-  background-color: var(--tw-colors-accent);
+  background-color: var(--accent);
 }
 
 .cursor-outline {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(249, 115, 22, 0.5);
-  transition: width 0.2s, height 0.2s, border-color 0.2s;
+  border: 1px solid var(--accent-glow);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s, background-color 0.25s;
 }
 
 .cursor-hover .cursor-outline {
-  width: 80px;
-  height: 80px;
-  background-color: rgba(249, 115, 22, 0.1);
-  border-color: rgba(249, 115, 22, 1);
-  backdrop-filter: blur(2px);
+  width: 64px;
+  height: 64px;
+  background-color: rgba(249, 115, 22, 0.08);
+  border-color: var(--accent);
+}
+
+/* hide the OS cursor only when our custom one is active */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+
+/* full-bleed WebGL background layer */
+.world-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Noise Overlay for texture */
@@ -171,4 +219,113 @@
   100% {
     transform: translateX(-50%);
   }
+}
+
+/* ===== Entry Gate — split-screen → 3D glass explode ===== */
+.gate-stage {
+  perspective: 1500px;
+  perspective-origin: 50% 44%;
+}
+.gate-world {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.gate-half3d {
+  transform-style: preserve-3d;
+}
+.gate-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+.gate-glass-light {
+  background: rgba(250, 250, 248, 0.5);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.gate-glass-dark {
+  background: rgba(16, 16, 22, 0.42);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.gate-grid {
+  position: absolute;
+  left: 50%;
+  top: 64%;
+  width: 240%;
+  height: 220%;
+  transform: translate(-50%, 0) rotateX(84deg);
+  transform-origin: 50% 0;
+  background-image:
+    linear-gradient(var(--gate-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gate-grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 8%, transparent 64%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 8%, transparent 64%);
+}
+@keyframes gate-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.014); }
+}
+.gate-breathe { animation: gate-breathe 6.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .gate-breathe { animation: none; }
+}
+
+/* Scroll reveal (IntersectionObserver adds .in) */
+.rv {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* HUD scanline sweep */
+@keyframes hud-scan {
+  0% { transform: translateY(-10vh); }
+  100% { transform: translateY(100vh); }
+}
+
+.hud-scanline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 90;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.18;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hud-scanline {
+    animation: hud-scan 7s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-scanline { display: none; }
 }

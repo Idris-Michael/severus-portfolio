@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Figma A/B Variant Comparator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_phone-shell.css" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e1e2e;--bg2:#252536;--panel:#2a2a3d;--border:rgba(255,255,255,.08);
+  --fg:#e2e8f0;--muted:#94a3b8;--purple:#7c3aed;--violet:#a78bfa;
+  --green:#34d399;--amber:#f59e0b;--red:#f87171;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:'Inter',sans-serif;font-size:14px}
+.workspace{display:grid;grid-template-columns:220px 1fr 300px;height:100vh;overflow:hidden}
+
+/* LEFT SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-hdr{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.figma-logo{width:24px;height:24px;flex-shrink:0}
+.sidebar-title{font-size:13px;font-weight:600;color:var(--fg)}
+.sidebar-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:.08em}
+.variant-card{margin:4px 8px;padding:12px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .2s;background:var(--panel)}
+.variant-card.active{border-color:var(--purple)}
+.variant-card:hover:not(.active){border-color:rgba(124,58,237,.4)}
+.vc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.vc-label{font-size:12px;font-weight:600}
+.vc-dot{width:8px;height:8px;border-radius:50%}
+.vc-thumb{height:56px;border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative}
+.vc-stats{display:flex;gap:12px}
+.vc-stat{display:flex;flex-direction:column;gap:2px}
+.vc-sv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600}
+.vc-sk{font-size:10px;color:var(--muted)}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+.btn-declare{width:100%;padding:10px;border-radius:8px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;opacity:.5}
+.btn-declare.ready{opacity:1}
+.btn-declare.ready:hover{background:#6d28d9;transform:translateY(-1px)}
+
+/* CENTRE */
+.centre{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;overflow:auto;background:radial-gradient(circle at 50% 40%,rgba(124,58,237,.08) 0%,transparent 60%)}
+.centre-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.phone-env{--frame-w:260px;--frame-h:530px}
+.screen-wrap{position:relative;width:100%;height:100%;overflow:hidden}
+.screen-a,.screen-b{position:absolute;inset:0;transition:opacity .35s var(--ease)}
+.screen-b{opacity:0}
+
+/* CSS screens */
+.mock-screen{width:100%;height:100%;display:flex;flex-direction:column;font-family:'Inter',sans-serif}
+/* Variant A — orange CTA */
+.va{background:linear-gradient(160deg,#0f172a 0%,#1e293b 100%)}
+.va .hero{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;background:linear-gradient(to bottom,transparent,rgba(0,0,0,.6))}
+.va .hero-img{position:absolute;inset:0;background:linear-gradient(135deg,#1e3a5f 0%,#0f2744 100%);z-index:-1}
+.va .tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);background:rgba(245,158,11,.12);padding:4px 8px;border-radius:4px;width:fit-content;margin-bottom:8px}
+.va h2{font-size:18px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px}
+.va p{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:16px}
+.va .cta{background:var(--amber);color:#000;font-size:12px;font-weight:700;padding:10px 20px;border-radius:24px;text-align:center}
+.va .bottom-nav{height:52px;background:rgba(15,23,42,.9);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-around;padding:0 8px}
+.nav-ico{width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:12px}
+.nav-ico.active{background:rgba(245,158,11,.2);color:var(--amber)}
+/* Variant B — violet CTA */
+.vb{background:#fff}
+.vb .hero{flex:1;display:flex;flex-direction:column;padding:20px;position:relative;overflow:hidden}
+.vb .bg-blob{position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,#7c3aed22,#a78bfa11);z-index:0}
+.vb .tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);background:rgba(124,58,237,.1);padding:4px 8px;border-radius:4px;width:fit-content;margin-bottom:8px;position:relative;z-index:1}
+.vb h2{font-size:18px;font-weight:700;color:#111;line-height:1.2;margin-bottom:8px;position:relative;z-index:1}
+.vb p{font-size:11px;color:#64748b;margin-bottom:auto;position:relative;z-index:1}
+.vb .feature-list{display:flex;flex-direction:column;gap:6px;margin:12px 0;position:relative;z-index:1}
+.vb .feat{font-size:10px;color:#475569;display:flex;align-items:center;gap:6px}
+.vb .feat::before{content:'✓';color:var(--purple);font-weight:700}
+.vb .cta{background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:10px 20px;border-radius:24px;text-align:center;position:relative;z-index:1}
+.vb .bottom-nav{height:52px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-around;padding:0 8px}
+.vb .nav-ico{background:#f1f5f9}
+.vb .nav-ico.active{background:rgba(124,58,237,.1);color:var(--purple)}
+
+/* RIGHT PANEL */
+.inspector{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.insp-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.insp-title{font-size:12px;font-weight:600}
+.insp-breadcrumb{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);padding:8px 16px 0}
+.insp-section{padding:12px 16px;border-bottom:1px solid var(--border)}
+.insp-section-title{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.prop-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prop-key{font-size:11px;color:var(--muted)}
+.prop-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg)}
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.metric-tile{background:var(--panel);border-radius:8px;padding:10px;border:1px solid var(--border)}
+.metric-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin-bottom:2px}
+.metric-key{font-size:10px;color:var(--muted)}
+.metric-tile.winner .metric-val{color:var(--green)}
+.sig-bar-wrap{margin-bottom:8px}
+.sig-bar-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:var(--muted)}
+.sig-bar-track{height:6px;background:var(--panel);border-radius:3px;overflow:hidden}
+.sig-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--violet));border-radius:3px;transition:width 1.2s var(--ease);width:0}
+.sig-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:right;margin-top:4px}
+.sample-note{font-size:10px;color:var(--amber);background:rgba(245,158,11,.08);padding:8px 10px;border-radius:6px;border-left:2px solid var(--amber);line-height:1.5}
+.sample-note.confident{color:var(--green);background:rgba(52,211,153,.08);border-color:var(--green)}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;animation:conf-fall 1.2s ease-in forwards}
+@keyframes conf-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(500px) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="workspace">
+
+  <!-- LEFT: Variant list -->
+  <aside class="sidebar">
+    <div class="sidebar-hdr">
+      <svg class="figma-logo" viewBox="0 0 38 57" fill="none">
+        <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" fill="#1ABCFE"/>
+        <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0z" fill="#0ACF83"/>
+        <path d="M19 0v19h9.5a9.5 9.5 0 0 0 0-19H19z" fill="#FF7262"/>
+        <path d="M0 9.5A9.5 9.5 0 0 1 9.5 0H19v19H9.5A9.5 9.5 0 0 1 0 9.5z" fill="#F24E1E"/>
+        <path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5z" fill="#A259FF"/>
+      </svg>
+      <span class="sidebar-title">A/B Variant Review</span>
+    </div>
+    <div class="sidebar-sub">Variants</div>
+
+    <div class="variant-card active" data-variant="a" onclick="selectVariant('a',this)" role="button" aria-pressed="true">
+      <div class="vc-top">
+        <span class="vc-label" style="color:#f59e0b">Variant A — Control</span>
+        <span class="vc-dot" style="background:#f59e0b"></span>
+      </div>
+      <div class="vc-thumb" style="background:linear-gradient(135deg,#1e3a5f,#0f2744)">
+        <div style="position:absolute;bottom:8px;left:8px;right:8px;height:12px;background:#f59e0b;border-radius:6px;opacity:.8"></div>
+      </div>
+      <div class="vc-stats">
+        <div class="vc-stat"><span class="vc-sv" id="cvr-a">3.2%</span><span class="vc-sk">CVR</span></div>
+        <div class="vc-stat"><span class="vc-sv">1,240</span><span class="vc-sk">Visitors</span></div>
+      </div>
+    </div>
+
+    <div class="variant-card" data-variant="b" onclick="selectVariant('b',this)" role="button" aria-pressed="false">
+      <div class="vc-top">
+        <span class="vc-label" style="color:#a78bfa">Variant B — Test</span>
+        <span class="vc-dot" style="background:#a78bfa"></span>
+      </div>
+      <div class="vc-thumb" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe)">
+        <div style="position:absolute;bottom:8px;left:8px;right:8px;height:12px;background:#7c3aed;border-radius:6px;opacity:.8"></div>
+      </div>
+      <div class="vc-stats">
+        <div class="vc-stat"><span class="vc-sv" id="cvr-b">4.7%</span><span class="vc-sk">CVR</span></div>
+        <div class="vc-stat"><span class="vc-sv">1,186</span><span class="vc-sk">Visitors</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-declare" id="btn-declare" onclick="declareWinner()" aria-label="Declare winning variant">
+        Declare Winner
+      </button>
+    </div>
+  </aside>
+
+  <!-- CENTRE: Phone preview -->
+  <main class="centre" role="main">
+    <div class="centre-label" id="variant-lbl">Variant A — Control</div>
+    <div class="phone-env" id="phone-env">
+      <div class="phone-chassis">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="phone-statusbar">
+          <span id="clock">9:41</span>
+          <div class="phone-status-icons">
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><rect x="0" y="5" width="2" height="5" rx="1"/><rect x="3" y="3" width="2" height="7" rx="1"/><rect x="6" y="1" width="2" height="9" rx="1"/><rect x="9" y="0" width="2" height="10" rx="1"/></svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="white" opacity="0.4"/></svg>
+          </div>
+        </div>
+        <div class="phone-screen">
+          <div class="screen-wrap">
+            <div class="screen-a" id="screen-a">
+              <div class="mock-screen va" style="position:relative">
+                <div class="hero-img"></div>
+                <div class="hero">
+                  <div class="tag">Fitness App</div>
+                  <h2>Train Smarter, Not Harder</h2>
+                  <p>AI-powered workouts tailored to your goals and schedule.</p>
+                  <div class="cta">Start Free Trial →</div>
+                </div>
+                <div class="bottom-nav">
+                  <div class="nav-ico active">🏠</div>
+                  <div class="nav-ico">📊</div>
+                  <div class="nav-ico">🏋️</div>
+                  <div class="nav-ico">👤</div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-b" id="screen-b">
+              <div class="mock-screen vb">
+                <div class="hero">
+                  <div class="bg-blob"></div>
+                  <div class="tag">Fitness App</div>
+                  <h2>Your Personal Training OS</h2>
+                  <p>Smarter plans. Better results. Proven by 50k+ athletes.</p>
+                  <div class="feature-list">
+                    <div class="feat">AI workout personalisation</div>
+                    <div class="feat">Real-time form feedback</div>
+                    <div class="feat">7-day free trial</div>
+                  </div>
+                  <div class="cta">Get Started Free →</div>
+                </div>
+                <div class="bottom-nav">
+                  <div class="nav-ico active" style="color:#7c3aed">🏠</div>
+                  <div class="nav-ico">📊</div>
+                  <div class="nav-ico">🏋️</div>
+                  <div class="nav-ico">👤</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-home"></div>
+      </div>
+      <div class="phone-toolbar" id="phone-toolbar"></div>
+    </div>
+  </main>
+
+  <!-- RIGHT: Inspector -->
+  <aside class="inspector" role="complementary" aria-label="Figma inspector">
+    <div class="insp-hdr">
+      <span class="insp-title">Inspector</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">A/B Test</span>
+    </div>
+    <div class="insp-breadcrumb" id="breadcrumb">Page 1 / CTA Screen / Hero Section</div>
+    <div class="insp-section">
+      <div class="insp-section-title">Component</div>
+      <div class="prop-row"><span class="prop-key">Name</span><span class="prop-val" id="comp-name">CTA_Button_A</span></div>
+      <div class="prop-row"><span class="prop-key">Fill</span><span class="prop-val" id="comp-fill">#F59E0B</span></div>
+      <div class="prop-row"><span class="prop-key">Radius</span><span class="prop-val">24px</span></div>
+      <div class="prop-row"><span class="prop-key">Font</span><span class="prop-val">Inter 700 12px</span></div>
+    </div>
+    <div class="insp-section">
+      <div class="insp-section-title">A/B Metrics</div>
+      <div class="metrics-grid">
+        <div class="metric-tile" id="tile-cvr">
+          <div class="metric-val" id="m-cvr">3.2%</div>
+          <div class="metric-key">CVR</div>
+        </div>
+        <div class="metric-tile" id="tile-lift">
+          <div class="metric-val" id="m-lift">—</div>
+          <div class="metric-key">Lift</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-val" id="m-conf">—</div>
+          <div class="metric-key">Confidence</div>
+        </div>
+        <div class="metric-tile">
+          <div class="metric-val" id="m-visitors">1,240</div>
+          <div class="metric-key">Visitors</div>
+        </div>
+      </div>
+    </div>
+    <div class="insp-section">
+      <div class="insp-section-title">Statistical Significance</div>
+      <div class="sig-bar-wrap">
+        <div class="sig-bar-label">
+          <span>Significance</span>
+          <span id="sig-pct">0%</span>
+        </div>
+        <div class="sig-bar-track"><div class="sig-bar-fill" id="sig-fill"></div></div>
+        <div class="sig-label" id="sig-label" style="color:var(--muted)">Collecting data…</div>
+      </div>
+      <div class="sample-note" id="sample-note">
+        Need <strong id="need-more">847</strong> more visitors for 95% confidence.
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script src="_phone-shell.js"></script>
+<script>
+// Wilson score approximation
+function wilsonScore(conversions, n) {
+  if (n === 0) return 0;
+  const z = 1.96;
+  const p = conversions / n;
+  const denom = 1 + (z * z) / n;
+  const centre = p + (z * z) / (2 * n);
+  const margin = z * Math.sqrt((p * (1 - p) + (z * z) / (4 * n)) / n);
+  return { lo: (centre - margin) / denom, hi: (centre + margin) / denom };
+}
+
+function computeConfidence(cvrA, nA, cvrB, nB) {
+  const convA = Math.round(cvrA * nA / 100);
+  const convB = Math.round(cvrB * nB / 100);
+  const wA = wilsonScore(convA, nA);
+  const wB = wilsonScore(convB, nB);
+  const overlap = Math.max(0, Math.min(wA.hi, wB.hi) - Math.max(wA.lo, wB.lo));
+  const range = Math.max(wA.hi, wB.hi) - Math.min(wA.lo, wB.lo);
+  const separation = range > 0 ? 1 - (overlap / range) : 0;
+  return Math.min(99, Math.round(separation * 140));
+}
+
+const STATE = {
+  variant: 'a',
+  data: {
+    a: { cvr: 3.2, visitors: 1240, color: '#f59e0b', label: 'Variant A — Control', comp: 'CTA_Button_A', fill: '#F59E0B' },
+    b: { cvr: 4.7, visitors: 1186, color: '#a78bfa', label: 'Variant B — Test',    comp: 'CTA_Button_B', fill: '#7C3AED' }
+  }
+};
+
+function selectVariant(v, el) {
+  STATE.variant = v;
+  document.querySelectorAll('.variant-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.variant === v);
+    c.setAttribute('aria-pressed', c.dataset.variant === v ? 'true' : 'false');
+  });
+  const d = STATE.data[v];
+  document.getElementById('variant-lbl').textContent = d.label;
+  document.getElementById('screen-a').style.opacity = v === 'a' ? '1' : '0';
+  document.getElementById('screen-b').style.opacity = v === 'b' ? '1' : '0';
+  // Inspector
+  document.getElementById('breadcrumb').textContent = `Page 1 / CTA Screen / Hero Section`;
+  document.getElementById('comp-name').textContent = d.comp;
+  document.getElementById('comp-fill').textContent = d.fill;
+  document.getElementById('m-cvr').textContent = d.cvr + '%';
+  document.getElementById('m-visitors').textContent = d.visitors.toLocaleString();
+  updateStats();
+}
+
+function updateStats() {
+  const da = STATE.data.a, db = STATE.data.b;
+  const lift = (((db.cvr - da.cvr) / da.cvr) * 100).toFixed(1);
+  const conf = computeConfidence(da.cvr, da.visitors, db.cvr, db.visitors);
+  const sigPct = Math.min(100, conf);
+  const minSample = Math.max(0, Math.round((1 - sigPct / 100) * 1000));
+
+  document.getElementById('m-lift').textContent = (lift > 0 ? '+' : '') + lift + '%';
+  document.getElementById('m-conf').textContent = conf + '%';
+  document.getElementById('sig-pct').textContent = sigPct + '%';
+
+  setTimeout(() => {
+    document.getElementById('sig-fill').style.width = sigPct + '%';
+  }, 300);
+
+  if (conf >= 95) {
+    document.getElementById('sig-label').textContent = '✓ Statistically significant';
+    document.getElementById('sig-label').style.color = 'var(--green)';
+    document.getElementById('sample-note').className = 'sample-note confident';
+    document.getElementById('sample-note').innerHTML = '<strong>95% confidence reached.</strong> Safe to declare a winner.';
+    document.getElementById('btn-declare').classList.add('ready');
+  } else {
+    document.getElementById('sig-label').textContent = 'Below significance threshold';
+    document.getElementById('sig-label').style.color = 'var(--muted)';
+    document.getElementById('sample-note').className = 'sample-note';
+    document.getElementById('sample-note').innerHTML = `Need <strong id="need-more">${minSample}</strong> more visitors for 95% confidence.`;
+    document.getElementById('btn-declare').classList.remove('ready');
+  }
+}
+
+function declareWinner() {
+  if (!document.getElementById('btn-declare').classList.contains('ready')) return;
+  // Highlight winner card
+  const winnerCard = document.querySelector('[data-variant="b"]');
+  winnerCard.style.borderColor = 'var(--green)';
+  winnerCard.style.boxShadow = '0 0 0 3px rgba(52,211,153,.2)';
+  winnerCard.insertAdjacentHTML('afterbegin',
+    `<div style="font-size:11px;color:var(--green);font-weight:700;margin-bottom:6px">🏆 WINNER</div>`
+  );
+  // Confetti
+  const colors = ['#7c3aed','#a78bfa','#34d399','#f59e0b','#f87171','#38bdf8'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `left:${20 + Math.random()*60}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*0.5}s;animation-duration:${0.8+Math.random()*0.8}s`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// Device picker
+const toolbar = document.getElementById('phone-toolbar');
+PhoneShell.attachDevicePicker(toolbar, document.getElementById('phone-env'));
+
+// Clock
+function updateClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+updateClock(); setInterval(updateClock, 30000);
+
+// Init
+selectVariant('a', null);
+
+// Simulate data arriving
+setTimeout(updateStats, 800);
+</script>
+</body>
+</html>

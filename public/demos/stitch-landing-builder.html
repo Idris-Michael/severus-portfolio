@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Google Stitch — Landing Page Builder A/B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_phone-shell.css" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f1f3f4;--surface:#fff;--border:#dadce0;--ink:#202124;--muted:#5f6368;
+  --blue:#1a73e8;--blue-bg:#e8f0fe;--green:#1e8e3e;--green-bg:#e6f4ea;
+  --red:#c5221f;--amber:#f9ab00;--purple:#7c3aed;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px}
+
+/* TOP BAR */
+.g-topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.g-logo{display:flex;align-items:center;gap:4px;font-size:18px;font-weight:800}
+.g-chip{font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:12px}
+.g-topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.g-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted)}
+.g-tab.active{background:var(--blue-bg);color:var(--blue)}
+
+/* BUILDER LAYOUT */
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(100vh - 56px);overflow:hidden}
+.phone-col{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
+.phone-col-hdr{padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.variant-badge{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
+.va-badge{background:var(--blue-bg);color:var(--blue)}
+.vb-badge{background:#ede7f6;color:var(--purple)}
+.phone-area{flex:1;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg)}
+.phone-env{--frame-w:220px;--frame-h:440px}
+.edit-btn{font-size:11px;padding:5px 12px;border-radius:16px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s}
+.edit-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* Landing page mock screens (inside phone) */
+.lp{width:100%;height:100%;overflow-y:auto;scrollbar-width:none}
+.lp::-webkit-scrollbar{display:none}
+.lp-hero{padding:16px;display:flex;flex-direction:column;gap:8px;min-height:55%}
+.lp-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.lp-logo{font-size:12px;font-weight:800}
+.lp-nav-cta{font-size:9px;font-weight:700;padding:4px 8px;border-radius:10px}
+.lp-headline{font-size:16px;font-weight:800;line-height:1.2}
+.lp-sub{font-size:10px;line-height:1.5}
+.lp-cta{height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:4px}
+.lp-trust{display:flex;align-items:center;gap:4px;margin-top:4px}
+.lp-trust-label{font-size:9px}
+.lp-stars{font-size:9px;color:var(--amber)}
+.lp-features{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.lp-feat{display:flex;gap:8px;align-items:flex-start}
+.lp-feat-ico{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.lp-feat-text{display:flex;flex-direction:column;gap:2px}
+.lp-feat-title{font-size:10px;font-weight:700}
+.lp-feat-desc{font-size:9px;opacity:.7}
+.lp-footer{padding:12px 16px;text-align:center;font-size:9px;opacity:.5}
+
+/* Shimmer */
+.shimmer{background:linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%);background-size:200%;animation:shim 1.2s infinite}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* RIGHT: Metrics panel */
+.metrics-col{display:flex;flex-direction:column;overflow-y:auto;background:var(--surface)}
+.metrics-hdr{padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.metrics-hdr-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.metrics-hdr-sub{font-size:11px;color:var(--muted)}
+.metrics-body{padding:20px;display:flex;flex-direction:column;gap:20px}
+.metrics-table-wrap{overflow:hidden;border-radius:10px;border:1px solid var(--border)}
+.m-table{width:100%;border-collapse:collapse}
+.m-table th{font-size:10px;color:var(--muted);font-weight:700;padding:10px 14px;text-align:left;background:#f8f9fa;letter-spacing:.03em}
+.m-table td{padding:11px 14px;font-size:13px;border-top:1px solid var(--border)}
+.m-table tr.winner td{background:var(--green-bg)}
+.m-table tr.winner td:first-child{font-weight:700;color:var(--green)}
+.winner-badge{display:inline-flex;align-items:center;gap:4px;background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap}
+.insight-card{background:var(--blue-bg);border-radius:10px;padding:14px;display:flex;gap:10px;align-items:flex-start}
+.insight-icon{font-size:18px;flex-shrink:0}
+.insight-text{font-size:12px;color:var(--ink);line-height:1.5;font-weight:500}
+.insight-text strong{color:var(--blue)}
+.summary-stat{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.summary-stat:last-child{border:none}
+.ss-label{font-size:12px;color:var(--muted)}
+.ss-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600}
+.ss-val.positive{color:var(--green)}
+.ss-val.negative{color:var(--red)}
+
+/* Popover */
+.edit-popover{position:fixed;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);width:260px;display:none}
+.edit-popover.show{display:block}
+.ep-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.ep-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-size:12px;outline:none;margin-bottom:8px}
+.ep-input:focus{border-color:var(--blue)}
+.ep-regen{width:100%;padding:8px;border-radius:8px;background:var(--blue);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;border:none;cursor:pointer}
+
+/* Confetti */
+.conf{position:fixed;pointer-events:none;animation:conf-fall 1.5s ease-in forwards}
+@keyframes conf-fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(600px) rotate(720deg)}}
+
+/* GSAP init — hidden */
+.phone-col,.metrics-col{opacity:0;transform:translateY(20px)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="g-topbar">
+  <div class="g-logo">
+    <span style="color:#ea4335">G</span><span style="color:#fbbc04">o</span><span style="color:#34a853">o</span><span style="color:#4285f4">g</span><span style="color:#ea4335">l</span><span style="color:#34a853">e</span>
+    <span class="g-chip">Stitch</span>
+  </div>
+  <div style="font-size:11px;color:var(--muted);font-weight:500">Fitness App Landing Page · A/B Test</div>
+  <div class="g-topbar-right">
+    <button class="g-tab active">Builder</button>
+    <button class="g-tab">Analytics</button>
+    <button class="g-tab">History</button>
+    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1a73e8,#673ab7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700">IB</div>
+  </div>
+</div>
+
+<div class="builder">
+
+  <!-- VARIANT A -->
+  <div class="phone-col" id="col-a">
+    <div class="phone-col-hdr">
+      <span class="variant-badge va-badge">Variant A — Control</span>
+      <button class="edit-btn" onclick="openEdit('a',event)" aria-label="Edit Variant A prompt">✏ Edit</button>
+    </div>
+    <div class="phone-area">
+      <div class="phone-env" id="env-a">
+        <div class="phone-chassis">
+          <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+          <div class="phone-statusbar">
+            <span id="clock-a">9:41</span>
+            <div class="phone-status-icons">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><rect x="0" y="5" width="2" height="5" rx="1"/><rect x="3" y="3" width="2" height="7" rx="1"/><rect x="6" y="1" width="2" height="9" rx="1"/><rect x="9" y="0" width="2" height="10" rx="1"/></svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/></svg>
+            </div>
+          </div>
+          <div class="phone-screen" id="screen-a">
+            <!-- Variant A: Orange CTA, emotional copy -->
+            <div class="lp" id="lp-a">
+              <div class="lp-hero" style="background:linear-gradient(160deg,#fff 0%,#fff8e1 100%)">
+                <div class="lp-nav">
+                  <div class="lp-logo" style="color:#f57c00">FitOS</div>
+                  <div class="lp-nav-cta" style="background:#f57c00;color:#fff">Sign In</div>
+                </div>
+                <div class="lp-headline" style="color:#212121">Train Smarter.<br>Live Better.</div>
+                <div class="lp-sub" style="color:#616161">AI-powered fitness plans built around your life. Start in 60 seconds.</div>
+                <div class="lp-cta" style="background:#f57c00;color:#fff">Start Free Trial →</div>
+                <div class="lp-trust">
+                  <span class="lp-stars">★★★★★</span>
+                  <span class="lp-trust-label" style="color:#616161">50k+ athletes trust FitOS</span>
+                </div>
+              </div>
+              <div class="lp-features">
+                <div class="lp-feat"><div class="lp-feat-ico" style="background:#fff3e0">🏋️</div><div class="lp-feat-text"><div class="lp-feat-title">AI Workouts</div><div class="lp-feat-desc">Adapts to your progress daily</div></div></div>
+                <div class="lp-feat"><div class="lp-feat-ico" style="background:#e8f5e9">📊</div><div class="lp-feat-text"><div class="lp-feat-title">Live Metrics</div><div class="lp-feat-desc">Heart rate, calories, form score</div></div></div>
+                <div class="lp-feat"><div class="lp-feat-ico" style="background:#e3f2fd">🎯</div><div class="lp-feat-text"><div class="lp-feat-title">Goal Setting</div><div class="lp-feat-desc">Weekly milestones, auto-adjusted</div></div></div>
+              </div>
+              <div class="lp-footer">FitOS · No credit card required</div>
+            </div>
+          </div>
+          <div class="phone-home"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VARIANT B / Metrics -->
+  <div class="phone-col metrics-col" id="col-b" style="display:grid;grid-template-rows:auto 1fr">
+    <div style="display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden">
+      <div class="phone-col-hdr">
+        <span class="variant-badge vb-badge">Variant B — Test</span>
+        <button class="edit-btn" onclick="openEdit('b',event)" aria-label="Edit Variant B prompt">✏ Edit</button>
+      </div>
+      <div class="phone-area">
+        <div class="phone-env" id="env-b">
+          <div class="phone-chassis">
+            <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+            <div class="phone-statusbar">
+              <span id="clock-b">9:41</span>
+              <div class="phone-status-icons">
+                <svg width="14" height="10" viewBox="0 0 14 10" fill="white"><rect x="0" y="5" width="2" height="5" rx="1"/><rect x="3" y="3" width="2" height="7" rx="1"/><rect x="6" y="1" width="2" height="9" rx="1"/><rect x="9" y="0" width="2" height="10" rx="1"/></svg>
+                <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/></svg>
+              </div>
+            </div>
+            <div class="phone-screen" id="screen-b">
+              <!-- Variant B: Purple CTA, rational copy -->
+              <div class="lp" id="lp-b">
+                <div class="lp-hero" style="background:linear-gradient(160deg,#fafafa 0%,#f3e5f5 100%)">
+                  <div class="lp-nav">
+                    <div class="lp-logo" style="color:#7c3aed">FitOS</div>
+                    <div class="lp-nav-cta" style="background:#7c3aed;color:#fff">Sign In</div>
+                  </div>
+                  <div class="lp-headline" style="color:#1a1a2e">Your Personal<br>Training OS</div>
+                  <div class="lp-sub" style="color:#4a4a6a">Science-backed plans. Real results. Proven by 50,000+ athletes worldwide.</div>
+                  <div class="lp-cta" style="background:#7c3aed;color:#fff">Get Started Free →</div>
+                  <div class="lp-trust">
+                    <span class="lp-stars">★★★★★</span>
+                    <span class="lp-trust-label" style="color:#666">4.9/5 · App Store</span>
+                  </div>
+                </div>
+                <div class="lp-features">
+                  <div class="lp-feat"><div class="lp-feat-ico" style="background:#ede7f6">🤖</div><div class="lp-feat-text"><div class="lp-feat-title">AI Personalisation</div><div class="lp-feat-desc">Learns and adapts every session</div></div></div>
+                  <div class="lp-feat"><div class="lp-feat-ico" style="background:#e8f5e9">📈</div><div class="lp-feat-text"><div class="lp-feat-title">Progress Analytics</div><div class="lp-feat-desc">Data-driven performance insights</div></div></div>
+                  <div class="lp-feat"><div class="lp-feat-ico" style="background:#e3f2fd">🏆</div><div class="lp-feat-text"><div class="lp-feat-title">Proven Results</div><div class="lp-feat-desc">Avg. 23% strength gain in 8 weeks</div></div></div>
+                </div>
+                <div class="lp-footer">FitOS · Cancel any time</div>
+              </div>
+            </div>
+            <div class="phone-home"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics panel -->
+    <div class="metrics-col" style="border:none;overflow-y:auto">
+      <div class="metrics-hdr">
+        <div class="metrics-hdr-title">A/B Test Results <span id="winner-chip" class="winner-badge" style="margin-left:8px;vertical-align:middle">🏆 B Wins</span></div>
+        <div class="metrics-hdr-sub">7-day test · 95% confidence · Wilson score</div>
+      </div>
+      <div class="metrics-body">
+        <div class="metrics-table-wrap">
+          <table class="m-table">
+            <tr><th>Variant</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Leads</th><th>CPL</th></tr>
+            <tr id="mrow-a"><td>A — Control</td><td class="count" data-target="8420">0</td><td class="count" data-target="254">0</td><td>3.0%</td><td class="count" data-target="39">0</td><td>£8.40</td></tr>
+            <tr id="mrow-b" class="winner"><td>B — Test</td><td class="count" data-target="8310">0</td><td class="count" data-target="373">0</td><td>4.5%</td><td class="count" data-target="89">0</td><td>£3.62</td></tr>
+          </table>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">💡</div>
+          <div class="insight-text">Variant B generates <strong>2.3× more leads</strong> at <strong>57% lower CPL</strong>. The rational headline and social proof ("50k athletes") resonates more strongly with intent-driven traffic.</div>
+        </div>
+        <div>
+          <div class="summary-stat"><span class="ss-label">Lift in CVR</span><span class="ss-val positive" id="lift-val">0%</span></div>
+          <div class="summary-stat"><span class="ss-label">Statistical confidence</span><span class="ss-val positive">97.3%</span></div>
+          <div class="summary-stat"><span class="ss-label">Cost saving (CPL)</span><span class="ss-val positive" id="cpl-val">£0</span></div>
+          <div class="summary-stat"><span class="ss-label">MDE achieved</span><span class="ss-val positive">Yes (5% threshold)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Edit Popover -->
+<div class="edit-popover" id="edit-popover" role="dialog" aria-label="Edit variant prompt">
+  <div class="ep-title">Regenerate variant</div>
+  <input class="ep-input" id="ep-input" placeholder="Describe your changes…" aria-label="Prompt for regeneration" />
+  <button class="ep-regen" onclick="regenerate()" aria-label="Apply prompt and regenerate">Regenerate →</button>
+</div>
+
+<script src="_phone-shell.js"></script>
+<script>
+// Clock
+function updateClocks() {
+  const t = new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2,'0');
+  document.getElementById('clock-a').textContent = t;
+  document.getElementById('clock-b').textContent = t;
+}
+updateClocks(); setInterval(updateClocks, 30000);
+
+// Counter animation
+function animateCounters() {
+  document.querySelectorAll('.count').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = target / 40;
+    const interval = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.round(current).toLocaleString();
+      if (current >= target) clearInterval(interval);
+    }, 30);
+  });
+}
+
+function animateSummary() {
+  let lift = 0;
+  const liftTarget = 50;
+  const liftInterval = setInterval(() => {
+    lift = Math.min(lift + 1.5, liftTarget);
+    document.getElementById('lift-val').textContent = '+' + lift.toFixed(1) + '%';
+    if (lift >= liftTarget) clearInterval(liftInterval);
+  }, 30);
+
+  let cpl = 0;
+  const cplInterval = setInterval(() => {
+    cpl = Math.min(cpl + 0.12, 4.78);
+    document.getElementById('cpl-val').textContent = '£' + cpl.toFixed(2);
+    if (cpl >= 4.78) clearInterval(cplInterval);
+  }, 30);
+}
+
+// GSAP intro
+window.addEventListener('load', () => {
+  gsap.to(['.phone-col', '.metrics-col'], {
+    opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out',
+    onComplete: () => {
+      setTimeout(() => { animateCounters(); animateSummary(); confetti(); }, 400);
+    }
+  });
+});
+
+function confetti() {
+  const colors = ['#1a73e8','#1e8e3e','#673ab7','#f9ab00','#ea4335'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'conf';
+    el.style.cssText = `width:7px;height:7px;border-radius:2px;left:${40+Math.random()*20}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// Edit popover
+let editTarget = null;
+function openEdit(variant, e) {
+  editTarget = variant;
+  const pop = document.getElementById('edit-popover');
+  pop.style.left = (e.clientX - 130) + 'px';
+  pop.style.top  = (e.clientY + 20) + 'px';
+  pop.classList.add('show');
+  document.getElementById('ep-input').focus();
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.edit-popover') && !e.target.closest('.edit-btn')) {
+    document.getElementById('edit-popover').classList.remove('show');
+  }
+});
+
+function regenerate() {
+  document.getElementById('edit-popover').classList.remove('show');
+  const screen = document.getElementById('screen-' + editTarget);
+  const lp = document.getElementById('lp-' + editTarget);
+  lp.style.opacity = '0';
+  screen.style.background = '#e0e0e0';
+  // Shimmer effect
+  setTimeout(() => {
+    lp.style.opacity = '1';
+    screen.style.background = '';
+    gsap.from(lp, { opacity: 0, y: 8, duration: 0.4, ease: 'power2.out' });
+  }, 1200);
+}
+</script>
+</body>
+</html>

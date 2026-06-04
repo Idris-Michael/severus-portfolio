@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GA4 Companion — Mobile</title>
+  <meta name="description" content="The GA4 Audit Dashboard in your pocket. Health at a glance, findings on the move.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    :root{
+      --bg:#f3f5f8; --bg2:#e9ecf1; --card:#ffffff; --ink:#0e1726; --ink2:#475066; --soft:#6b7488; --faint:#9aa1b0;
+      --line:rgba(14,23,38,.1); --line2:rgba(14,23,38,.055);
+      --acc:#10b981; --acc-dim:rgba(16,185,129,.12); --acc-deep:#0c9b6e; --ind:#6366f1;
+      --crit:#e5484d; --high:#e8870f; --med:#caa011; --ok:#10b981;
+      --screen:#fbfcfd; --nav:#ffffff;
+      --disp:'Space Grotesk',system-ui,sans-serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+      --e:cubic-bezier(.22,1,.36,1);
+      --pw:392px; --ph:844px; --status:46px; --navh:62px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.55;overflow-x:hidden}
+    ::selection{background:var(--acc);color:#04150e}
+    :focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3{font-family:var(--disp);letter-spacing:-.025em;text-wrap:balance}
+
+    .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:rgba(243,245,248,.8);backdrop-filter:blur(10px)}
+    .nav-brand{font-family:var(--disp);font-weight:700;font-size:15px;display:flex;align-items:center;gap:9px}
+    .nav-brand .g{width:10px;height:10px;border-radius:3px;background:var(--acc)}
+    .nav-back{font-size:13px;font-weight:500;color:var(--ink2);transition:color .3s var(--e)}.nav-back:hover{color:var(--ink)}
+
+    .stage{max-width:1180px;margin:0 auto;min-height:100vh;display:grid;grid-template-columns:1fr auto;align-items:center;gap:56px;padding:110px 32px 60px}
+    @media(max-width:880px){.stage{grid-template-columns:1fr;justify-items:center;text-align:center;gap:40px}}
+    .pitch-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc-deep);margin-bottom:24px;display:inline-flex;align-items:center;gap:11px;opacity:0}
+    .pitch-eyebrow::before{content:"";width:26px;height:1px;background:var(--acc-deep)}
+    @media(max-width:880px){.pitch-eyebrow::before{display:none}}
+    .pitch h1{font-size:clamp(38px,5.5vw,72px);font-weight:700;line-height:1.02}
+    .pitch h1 em{font-style:normal;color:var(--acc)}
+    .pitch p{max-width:430px;margin:24px 0 0;font-size:clamp(16px,1.4vw,19px);color:var(--ink2);opacity:0}
+    @media(max-width:880px){.pitch p{margin-inline:auto}}
+    .pitch p b{color:var(--ink);font-weight:600}
+    .feat-list{margin-top:30px;display:flex;flex-direction:column;gap:13px;opacity:0}
+    @media(max-width:880px){.feat-list{align-items:center}}
+    .fli{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink2)}
+    .fli .ck{width:22px;height:22px;border-radius:7px;background:var(--acc-dim);color:var(--acc-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .pitch-meta{margin-top:30px;font-family:var(--mono);font-size:12px;color:var(--soft);opacity:0}
+    .pitch-meta b{color:var(--ink)}
+
+    /* phone */
+    .phone{position:relative;width:var(--pw);flex-shrink:0;background:#0e1726;border-radius:46px;padding:9px;box-shadow:0 50px 120px -40px rgba(14,23,38,.5);opacity:0;will-change:transform}
+    .screen{width:100%;height:var(--ph);border-radius:38px;overflow:hidden;position:relative;background:var(--screen)}
+    .sb{position:absolute;top:0;left:0;right:0;height:var(--status);display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 9px;z-index:20;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+    .sb .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:108px;height:26px;background:#0e1726;border-radius:0 0 16px 16px}
+    .sb-ic{display:flex;align-items:center;gap:6px}
+    .view{position:absolute;top:var(--status);bottom:var(--navh);left:0;right:0;overflow-y:auto;display:none;scrollbar-width:none}
+    .view::-webkit-scrollbar{display:none}
+    .view.on{display:block}
+    .navbar{position:absolute;bottom:0;left:0;right:0;height:var(--navh);background:var(--nav);border-top:1px solid var(--line2);display:flex;z-index:20}
+    .nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;cursor:pointer;color:var(--faint);font-family:var(--sans);font-size:10px;font-weight:600;min-height:44px}
+    .nb[aria-current="page"]{color:var(--acc-deep)}
+    .nb .ic{font-size:19px;line-height:1}
+
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px 10px}
+    .client-sel{display:flex;align-items:center;gap:7px;background:var(--bg2);border:none;border-radius:100px;padding:7px 13px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+    .client-sel .car{color:var(--soft);font-size:11px}
+    .bell{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:none;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;position:relative}
+    .bell .dt{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--crit);border:1.5px solid var(--card)}
+
+    .hero-score{padding:18px 22px 8px;text-align:center}
+    .ring{position:relative;width:188px;height:188px;margin:0 auto}
+    .ring svg{transform:rotate(-90deg)}
+    .ring-tr{fill:none;stroke:var(--bg2);stroke-width:13}
+    .ring-fl{fill:none;stroke-width:13;stroke-linecap:round;transition:stroke-dashoffset .9s var(--e),stroke .4s}
+    .ring-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .ring-n{font-family:var(--disp);font-weight:700;font-size:56px;line-height:1;font-variant-numeric:tabular-nums}
+    .ring-of{font-size:13px;color:var(--soft);margin-top:2px}
+    .hs-label{font-family:var(--disp);font-weight:600;font-size:16px;margin-top:14px}
+    .hs-sub{font-size:13px;color:var(--soft);margin-top:3px}
+
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:14px 18px}
+    .mc{background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:13px 11px}
+    .mc .l{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}
+    .mc .v{font-family:var(--disp);font-weight:700;font-size:18px;margin-top:5px;font-variant-numeric:tabular-nums}
+    .mc .d{font-size:11px;font-weight:600;margin-top:3px}.up{color:var(--ok)}.dn{color:var(--crit)}
+    .cta-btn{margin:6px 18px 22px;display:flex;align-items:center;justify-content:center;gap:8px;height:50px;background:var(--ink);color:#fff;border:none;border-radius:14px;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;width:calc(100% - 36px);transition:background .25s var(--e),transform .12s var(--e)}
+    .cta-btn:active{transform:scale(.98)}
+
+    .vh{padding:16px 22px 8px;display:flex;align-items:baseline;justify-content:space-between}
+    .vh h2{font-size:22px;font-weight:700}
+    .vh .ct{font-size:12px;color:var(--soft)}
+    .search{margin:0 18px 12px;display:flex;align-items:center;gap:9px;background:var(--bg2);border-radius:12px;padding:11px 14px}
+    .search input{flex:1;background:none;border:none;outline:none;font-family:var(--sans);font-size:14px;color:var(--ink)}
+    .flist{padding:0 18px 18px}
+    .frow{background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:14px;margin-bottom:9px;display:flex;align-items:flex-start;justify-content:space-between;gap:11px;cursor:pointer;transition:border-color .2s var(--e),transform .12s var(--e)}
+    .frow:active{transform:scale(.99)}
+    .ft{font-size:13.5px;line-height:1.4;flex:1}
+    .ft.fixed{color:var(--soft);text-decoration:line-through}
+    .sev{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+    .s-crit{background:rgba(229,72,77,.12);color:var(--crit)}.s-high{background:rgba(232,135,15,.14);color:var(--high)}.s-med{background:rgba(202,160,17,.16);color:#9a7a0a}.s-fixed{background:var(--acc-dim);color:var(--ok)}
+
+    /* settings */
+    .seclist{padding:8px 18px 18px}
+    .sgh{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--soft);margin:18px 4px 8px}
+    .scard{background:var(--card);border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+    .srow{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line2)}
+    .srow:last-child{border-bottom:none}
+    .srow .lbl{font-size:14px}
+    .tg{width:42px;height:24px;border-radius:100px;background:var(--bg2);border:none;position:relative;cursor:pointer;transition:background .25s var(--e);flex-shrink:0}
+    .tg.on{background:var(--acc)}
+    .tg::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .25s var(--e);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .tg.on::after{transform:translateX(18px)}
+    .chev{color:var(--faint);font-size:18px}
+
+    /* bottom sheet */
+    .sheet-bd{position:absolute;inset:0;background:rgba(14,23,38,.4);z-index:30;opacity:0;pointer-events:none;transition:opacity .3s var(--e)}
+    .sheet-bd.on{opacity:1;pointer-events:auto}
+    .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;z-index:31;transform:translateY(100%);transition:transform .35s var(--e);padding:0 22px 26px}
+    .sheet.on{transform:translateY(0)}
+    .sheet .grab{width:38px;height:4px;background:var(--bg2);border-radius:100px;margin:12px auto 18px}
+    .sheet h3{font-size:17px;font-weight:600;margin-bottom:9px}
+    .sheet .rec{font-size:14px;color:var(--ink2);line-height:1.6;margin-bottom:20px}
+    .sheet .fix{width:100%;height:48px;border-radius:13px;border:1px solid var(--acc);background:var(--acc-dim);color:var(--acc-deep);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
+
+    /* client modal */
+    .modal{position:absolute;inset:0;background:var(--screen);z-index:40;display:none;flex-direction:column}
+    .modal.on{display:flex}
+    .modal-h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line2);margin-top:var(--status)}
+    .modal-h h3{font-size:17px;font-weight:600}.modal-x{background:none;border:none;font-size:22px;color:var(--soft);cursor:pointer}
+    .cc{display:flex;align-items:center;gap:13px;padding:15px 20px;border-bottom:1px solid var(--line2);cursor:pointer}
+    .cc.on{background:var(--acc-dim)}
+    .cc .av{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:14px;flex-shrink:0}
+    .cc .nm{font-size:15px;font-weight:600;flex:1}
+    .cc .sc{font-family:var(--disp);font-weight:700;font-size:15px;padding:3px 10px;border-radius:9px;font-variant-numeric:tabular-nums}
+
+    /* proof */
+    .proof{border-top:1px solid var(--line);background:var(--card)}
+    .proof-in{max-width:1180px;margin:0 auto;padding:60px 32px;display:grid;grid-template-columns:.8fr 1.2fr;gap:38px}
+    @media(max-width:820px){.proof-in{grid-template-columns:1fr;gap:22px}}
+    .proof h3{font-size:clamp(23px,3vw,32px)}
+    .pp{display:flex;gap:13px;margin-bottom:17px}.pp .n{font-family:var(--mono);font-size:12px;color:var(--acc-deep);padding-top:3px}
+    .pp .t b{display:block;font-weight:600;margin-bottom:3px}.pp .t p{color:var(--ink2);font-size:14px}
+    .proof-for{margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--soft)}.proof-for b{color:var(--ink)}
+    .footer{border-top:1px solid var(--line);padding:26px 32px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--soft);flex-wrap:wrap;gap:12px}
+    .footer a:hover{color:var(--ink)}
+
+    .reveal-y{opacity:0;transform:translateY(28px);will-change:transform,opacity}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}
+      .reveal-y,.pitch-eyebrow,.pitch p,.feat-list,.pitch-meta,.phone{opacity:1!important;transform:none!important}}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="https://severus-six.vercel.app"><span class="g"></span>GA4 Companion</a>
+    <a class="nav-back" href="https://severus-six.vercel.app">← Portfolio</a>
+  </nav>
+
+  <main class="stage">
+    <div class="pitch">
+      <span class="pitch-eyebrow" id="eyebrow">Shipped SaaS · Mobile Companion</span>
+      <h1>Your GA4 health,<br><em>in your pocket.</em></h1>
+      <p id="pp">The audit portal, rebuilt for a two-minute check between meetings. <b>One score answers the only question a client asks</b>, with the detail one tap away.</p>
+      <div class="feat-list" id="feats">
+        <div class="fli"><span class="ck">✓</span>Health score at a glance, no analytics fluency required</div>
+        <div class="fli"><span class="ck">✓</span>Findings triaged by severity, fixed with one tap</div>
+        <div class="fli"><span class="ck">✓</span>Switch between every client account instantly</div>
+      </div>
+      <p class="pitch-meta" id="meta">Companion to the <b>GA4 Audit Dashboard</b>. One product, two surfaces.</p>
+    </div>
+
+    <div class="phone" id="phone">
+      <div class="screen">
+        <div class="sb"><div class="notch"></div><span id="clock">9:41</span><span class="sb-ic">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="4.5" width="3" height="6.5" rx="1"/><rect x="9" y="2" width="3" height="9" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1" opacity=".35"/></svg>
+          <svg width="24" height="11" viewBox="0 0 24 11" fill="currentColor"><rect x="0" y=".5" width="20" height="10" rx="2.5" stroke="currentColor" fill="none" opacity=".5"/><rect x="20.5" y="3.5" width="2" height="4" rx="1" opacity=".5"/><rect x="1.5" y="2" width="15.5" height="7" rx="1.5"/></svg>
+        </span></div>
+
+        <!-- DASHBOARD -->
+        <section class="view on" id="v-dash" aria-label="Dashboard">
+          <div class="topbar">
+            <button class="client-sel" onclick="openModal()" aria-label="Switch client"><span id="db-name">Artisan Roasters</span><span class="car">▾</span></button>
+            <button class="bell" aria-label="Alerts">🔔<span class="dt"></span></button>
+          </div>
+          <div class="hero-score">
+            <div class="ring"><svg width="188" height="188" viewBox="0 0 188 188"><circle class="ring-tr" cx="94" cy="94" r="80"/><circle class="ring-fl" id="ring" cx="94" cy="94" r="80"/></svg>
+              <div class="ring-c"><span class="ring-n" id="score">0</span><span class="ring-of">out of 100</span></div></div>
+            <div class="hs-label">Audit Health</div>
+            <div class="hs-sub" id="hs-sub"></div>
+          </div>
+          <div class="metrics" id="metrics"></div>
+          <button class="cta-btn" onclick="go('find')">View all findings →</button>
+        </section>
+
+        <!-- FINDINGS -->
+        <section class="view" id="v-find" aria-label="Findings">
+          <div class="vh"><h2>Findings</h2><span class="ct" id="f-count"></span></div>
+          <div class="search">🔎<input id="f-search" placeholder="Search findings" aria-label="Search findings" oninput="renderFindings()"></div>
+          <div class="flist" id="flist"></div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" id="v-set" aria-label="Settings">
+          <div class="vh"><h2>Settings</h2></div>
+          <div class="seclist">
+            <div class="sgh">Notifications</div>
+            <div class="scard">
+              <div class="srow"><span class="lbl">Weekly digest</span><button class="tg on" onclick="this.classList.toggle('on')" aria-label="Weekly digest"></button></div>
+              <div class="srow"><span class="lbl">Critical alerts</span><button class="tg on" onclick="this.classList.toggle('on')" aria-label="Critical alerts"></button></div>
+              <div class="srow"><span class="lbl">All findings</span><button class="tg" onclick="this.classList.toggle('on')" aria-label="All findings"></button></div>
+            </div>
+            <div class="sgh">Export</div>
+            <div class="scard">
+              <div class="srow"><span class="lbl">Download PDF report</span><span class="chev">›</span></div>
+              <div class="srow"><span class="lbl">Share read-only link</span><span class="chev">›</span></div>
+            </div>
+            <div class="sgh">Account</div>
+            <div class="scard">
+              <div class="srow"><span class="lbl" id="set-client" style="color:var(--soft);font-size:13px"></span></div>
+              <div class="srow"><span class="lbl" style="color:var(--crit)">Sign out</span><span class="chev" style="color:var(--crit)">›</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- bottom sheet -->
+        <div class="sheet-bd" id="sheet-bd" onclick="closeSheet()"></div>
+        <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Finding detail">
+          <div class="grab"></div>
+          <h3 id="sh-title"></h3>
+          <p class="rec" id="sh-rec"></p>
+          <button class="fix" id="sh-fix" onclick="markFixed()">Mark as fixed</button>
+        </div>
+
+        <!-- client modal -->
+        <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Select client">
+          <div class="modal-h"><h3>Select client</h3><button class="modal-x" onclick="closeModal()" aria-label="Close">×</button></div>
+          <div id="clist"></div>
+        </div>
+
+        <nav class="navbar" aria-label="App navigation">
+          <button class="nb" id="nb-dash" aria-current="page" onclick="go('dash')"><span class="ic">◉</span>Dashboard</button>
+          <button class="nb" id="nb-find" onclick="go('find')"><span class="ic">◈</span>Findings</button>
+          <button class="nb" id="nb-set" onclick="go('set')"><span class="ic">⚙</span>Settings</button>
+        </nav>
+      </div>
+    </div>
+  </main>
+
+  <section class="proof">
+    <div class="proof-in">
+      <div>
+        <div class="kicker reveal-y" style="font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc-deep);margin-bottom:16px">For recruiters &amp; hiring managers</div>
+        <h3 class="reveal-y">What this demonstrates</h3>
+        <p class="proof-for reveal-y">Best for: <b>Mobile Product Design</b>, <b>Multi-Platform Systems</b></p>
+      </div>
+      <div>
+        <div class="pp reveal-y"><span class="n">01</span><div class="t"><b>One design system, two surfaces</b><p>The same product language as the web dashboard, re-thought for a phone. Consistency without copy-pasting the desktop layout.</p></div></div>
+        <div class="pp reveal-y"><span class="n">02</span><div class="t"><b>Designing for the job, not the screen</b><p>A two-minute check needs a score and a next action, not a miniaturised analyst tool. The mobile job is its own product.</p></div></div>
+        <div class="pp reveal-y"><span class="n">03</span><div class="t"><b>Native interaction patterns</b><p>Bottom sheets, tab navigation, and a client switcher that feel like a shipped iOS app, not a responsive website.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><span>SEVERUS CONNECTS &middot; GA4 COMPANION</span><a href="https://severus-six.vercel.app">severus-six.vercel.app</a></footer>
+
+  <script>
+    var clients=[
+      {name:'Artisan Roasters',score:67,init:'AR',metrics:[{l:'Sessions',v:'12,840',d:'+8.3%',dir:'up'},{l:'Conv.',v:'2.1%',d:'-0.4%',dir:'dn'},{l:'Goals',v:'270',d:'-5.1%',dir:'dn'}],findings:[
+        {t:'Cross-domain tracking not configured',s:'crit',r:'Configure cross-domain measurement in GA4 Admin, Data Streams. Add the checkout subdomain and validate via Real-Time reports.'},
+        {t:'Goal conversions firing duplicate events, inflating count by roughly 30%',s:'high',r:'Audit the GTM container for duplicate conversion triggers. Remove redundant tags and cross-reference against CRM data.'},
+        {t:'UTM parameters stripped on redirect',s:'med',r:'Update redirect rules to preserve query strings. Test with tagged URLs and confirm source attribution appears in GA4.'},
+        {t:'Session timeout set below the 30-minute default',s:'med',r:'Raise the session timeout to 30 minutes in GA4 Admin, Data Streams, tag settings.'}
+      ]},
+      {name:'Nordic Wellness',score:84,init:'NW',metrics:[{l:'Sessions',v:'8,350',d:'+12.1%',dir:'up'},{l:'Conv.',v:'3.7%',d:'+0.8%',dir:'up'},{l:'Goals',v:'309',d:'+9.4%',dir:'up'}],findings:[
+        {t:'Checkout funnel missing the step-2 event',s:'high',r:'Add a GTM trigger on the payment page firing checkout_step with step_number 2, so funnel analysis stops showing a false drop-off.'},
+        {t:'Google Ads conversion import delay over 3 hours',s:'med',r:'Enable enhanced conversions and server-side tracking so bidding optimises on complete same-day data.'},
+        {t:'Referral exclusion list missing own domain',s:'med',r:'Add the primary domain and subdomains to the referral exclusion list to stop sessions re-initiating from payment gateways.'}
+      ]},
+      {name:'Axiom Legal',score:42,init:'AL',metrics:[{l:'Sessions',v:'3,210',d:'-14.7%',dir:'dn'},{l:'Conv.',v:'0.8%',d:'-1.2%',dir:'dn'},{l:'Goals',v:'26',d:'-31.4%',dir:'dn'}],findings:[
+        {t:'GA4 tag firing on the thank-you page only',s:'crit',r:'The snippet is missing from the site-wide template. Implement via GTM across all pages immediately, as current data is unreliable.'},
+        {t:'No consent mode configured, EU traffic excluded',s:'crit',r:'Implement Google Consent Mode v2 so GA4 can model conversions for EU visitors who decline cookies, roughly 38% of traffic.'},
+        {t:'Brand search terms contaminating non-brand campaigns',s:'high',r:'Add brand keyword exclusions to non-brand campaigns, since current ROAS is overstated.'},
+        {t:'Site search tracking not configured',s:'high',r:'Enable site search tracking in GA4 Admin, Enhanced measurement, and set the query parameter to match the search URL.'},
+        {t:'Event parameters missing on lead form submissions',s:'med',r:'Add form_type and service_category parameters to GTM form triggers for lead-quality segmentation.'}
+      ]}
+    ];
+    var cur=0, curFinding=-1, fixed=[[],[],[]];
+    function col(s){return s>=80?'#10b981':s>=60?'#caa011':'#e5484d';}
+    function lbl(s){return s==='crit'?'CRITICAL':s==='high'?'HIGH':'MEDIUM';}
+    function countTo(el,to){var t0=null;function st(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/800,1);el.textContent=Math.round(to*p);if(p<1)requestAnimationFrame(st);else el.textContent=to;}requestAnimationFrame(st);}
+
+    function renderDash(){var c=clients[cur];document.getElementById('db-name').textContent=c.name;document.getElementById('set-client').textContent='Client: '+c.name;
+      var ring=document.getElementById('ring'),cc=2*Math.PI*80;ring.style.strokeDasharray=cc;ring.style.strokeDashoffset=cc;ring.style.stroke=col(c.score);
+      var num=document.getElementById('score');num.style.color=col(c.score);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){ring.style.strokeDashoffset=cc-(c.score/100)*cc;});});countTo(num,c.score);
+      var cr=c.findings.filter(function(f){return f.s==='crit';}).length,hi=c.findings.filter(function(f){return f.s==='high';}).length;
+      document.getElementById('hs-sub').textContent=cr+' critical · '+hi+' high priority';
+      var m=document.getElementById('metrics');m.innerHTML='';c.metrics.forEach(function(x){var d=document.createElement('div');d.className='mc';d.innerHTML='<div class="l">'+x.l+'</div><div class="v">'+x.v+'</div><div class="d '+x.dir+'">'+(x.dir==='up'?'↑':'↓')+' '+x.d+'</div>';m.appendChild(d);});
+      renderFindings();}
+    function renderFindings(){var c=clients[cur],q=(document.getElementById('f-search').value||'').toLowerCase();var l=document.getElementById('flist');l.innerHTML='';var ord={crit:0,high:1,med:2};var arr=c.findings.map(function(f,i){return{f:f,i:i};}).filter(function(o){return o.f.t.toLowerCase().includes(q);}).sort(function(a,b){return ord[a.f.s]-ord[b.f.s];});document.getElementById('f-count').textContent=c.findings.length+' total';arr.forEach(function(o){var fx=fixed[cur][o.i];var r=document.createElement('div');r.className='frow';r.setAttribute('role','button');r.setAttribute('tabindex','0');r.onclick=function(){openSheet(o.i);};r.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openSheet(o.i);}};r.innerHTML='<div class="ft'+(fx?' fixed':'')+'">'+o.f.t+'</div><span class="sev '+(fx?'s-fixed':'s-'+o.f.s)+'">'+(fx?'Fixed':lbl(o.f.s))+'</span>';l.appendChild(r);});}
+    function openSheet(i){curFinding=i;var f=clients[cur].findings[i];document.getElementById('sh-title').textContent=f.t;document.getElementById('sh-rec').textContent=f.r;var b=document.getElementById('sh-fix');var fx=fixed[cur][i];b.textContent=fx?'Already fixed':'Mark as fixed';b.style.opacity=fx?'.6':'1';document.getElementById('sheet').classList.add('on');document.getElementById('sheet-bd').classList.add('on');}
+    function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('sheet-bd').classList.remove('on');}
+    function markFixed(){fixed[cur][curFinding]=true;renderFindings();closeSheet();}
+    function openModal(){var l=document.getElementById('clist');l.innerHTML='';clients.forEach(function(c,i){var cc=document.createElement('div');cc.className='cc'+(i===cur?' on':'');cc.setAttribute('role','button');cc.setAttribute('tabindex','0');var cl=col(c.score);cc.innerHTML='<div class="av" style="background:'+cl+'22;color:'+cl+'">'+c.init+'</div><div class="nm">'+c.name+'</div><div class="sc" style="background:'+cl+'1a;color:'+cl+'">'+c.score+'</div>';cc.onclick=function(){selClient(i);};cc.onkeydown=function(e){if(e.key==='Enter'){selClient(i);}};l.appendChild(cc);});document.getElementById('modal').classList.add('on');}
+    function closeModal(){document.getElementById('modal').classList.remove('on');}
+    function selClient(i){cur=i;fixed=[[],[],[]];closeModal();renderDash();}
+    function go(v){['dash','find','set'].forEach(function(n){document.getElementById('v-'+n).classList.toggle('on',n===v);var b=document.getElementById('nb-'+n);if(b)b.setAttribute('aria-current',n===v?'page':'false');});}
+    (function(){var c=document.getElementById('clock');var d=new Date();c.textContent=(d.getHours()%12||12)+':'+String(d.getMinutes()).padStart(2,'0');})();
+    renderDash();
+
+    (function(){
+      var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce||typeof gsap==='undefined'){document.querySelectorAll('.reveal-y,.pitch-eyebrow,.pitch p,.feat-list,.pitch-meta,.phone').forEach(function(e){e.style.opacity=1;e.style.transform='none';});return;}
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.set(['#pp','#feats','#meta'],{y:18});
+      var tl=gsap.timeline({defaults:{ease:'power3.out'}});
+      tl.from('.pitch h1 .ln',{yPercent:0}).to('#eyebrow',{opacity:1,duration:.7},.1).to('#pp',{opacity:1,y:0,duration:.8},.5).to('#feats',{opacity:1,y:0,duration:.8},.65).to('#meta',{opacity:1,y:0,duration:.8},.8).to('#phone',{opacity:1,duration:1,ease:'power2.out'},.3);
+      gsap.from('#phone',{y:50,duration:1.1,ease:'power3.out'});
+      var px=gsap.quickTo('#phone','rotationY',{duration:1,ease:'power3'}),py=gsap.quickTo('#phone','rotationX',{duration:1,ease:'power3'});
+      var ph=document.getElementById('phone');ph.style.transformPerspective='1200px';
+      ph.addEventListener('mousemove',function(e){var r=ph.getBoundingClientRect();px((e.clientX-r.left-r.width/2)/r.width*10);py(-(e.clientY-r.top-r.height/2)/r.height*10);});
+      ph.addEventListener('mouseleave',function(){px(0);py(0);});
+      gsap.utils.toArray('.reveal-y').forEach(function(el){gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%'}});});
+    })();
+  </script>
+</body>
+</html>

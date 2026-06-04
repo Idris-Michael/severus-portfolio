@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Flow Builder — Severus Connects</title>
+  <meta name="description" content="Drag-and-drop agent node canvas. Connect AI agents, trigger flows, and watch the token budget enforcer flag guardrail violations in real-time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <style>
+    :root {
+      --bg: #06060e;
+      --surface: #0d0d1a;
+      --surface2: #12121f;
+      --teal: #2dd4bf;
+      --violet: #818cf8;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --green: #22c55e;
+      --muted: rgba(255,255,255,.4);
+      --line: rgba(255,255,255,.07);
+      --line2: rgba(255,255,255,.04);
+      --font-ui: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --ease: cubic-bezier(.16,1,.3,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-ui);
+      background: var(--bg);
+      color: #f4f4f8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grid background */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(45,212,191,.06) 0%, transparent 50%),
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 100% 100%, 60px 60px, 60px 60px;
+      background-position: center top, 0 0, 0 0;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 48px; background: rgba(6,6,14,.85);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+    }
+    .tb-left { display: flex; align-items: center; gap: 12px; }
+    .tb-back {
+      font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+      text-decoration: none; transition: color .2s;
+    }
+    .tb-back:hover { color: #fff; }
+    .tb-title { font-size: 13px; font-weight: 600; }
+    .tb-badge {
+      font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 5px;
+      background: rgba(129,140,248,.15); color: var(--violet);
+      border: 1px solid rgba(129,140,248,.3);
+    }
+    .tb-hint {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+    .run-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 16px; border-radius: 8px;
+      border: 1px solid rgba(45,212,191,.4);
+      background: rgba(45,212,191,.1); color: var(--teal);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
+      transition: all .2s var(--ease);
+    }
+    .run-btn:hover { background: rgba(45,212,191,.18); border-color: var(--teal); }
+    .run-btn .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+
+    /* ── Canvas ── */
+    .canvas-wrap {
+      position: fixed; inset: 0; padding-top: 48px; z-index: 1;
+      overflow: hidden;
+    }
+
+    /* SVG for connections */
+    svg#conn-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 2;
+    }
+    .conn-path {
+      fill: none; stroke-width: 2; stroke-linecap: round;
+      stroke-dasharray: 8 6;
+      animation: dash-flow 1.4s linear infinite;
+    }
+    @keyframes dash-flow { to { stroke-dashoffset: -28; } }
+    .conn-path.teal  { stroke: var(--teal); }
+    .conn-path.violet{ stroke: var(--violet); }
+    .conn-path.amber { stroke: var(--amber); }
+    .conn-path.red   { stroke: var(--red);  opacity:.6; }
+
+    /* ── Nodes ── */
+    .node {
+      position: absolute;
+      width: 168px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+      transition: box-shadow .25s var(--ease), border-color .25s var(--ease), transform .12s;
+      will-change: transform;
+    }
+    .node:hover { border-color: rgba(255,255,255,.14); box-shadow: 0 20px 48px -20px rgba(0,0,0,.7); }
+    .node.selected { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(45,212,191,.25), 0 20px 48px -20px rgba(0,0,0,.7); }
+    .node.dragging { cursor: grabbing; transform: scale(1.03); box-shadow: 0 32px 64px -24px rgba(0,0,0,.9); }
+    .node.connecting-target { border-color: var(--violet); box-shadow: 0 0 0 2px rgba(129,140,248,.3); }
+    .node.shake { animation: node-shake .35s ease; }
+    @keyframes node-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+    .node-header {
+      padding: 12px 12px 8px;
+      border-bottom: 1px solid var(--line2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .node-glyph-id { display: flex; align-items: center; gap: 7px; }
+    .node-glyph { font-size: 16px; line-height: 1; }
+    .node-id { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .08em; }
+    .node-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-on   { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot-idle { background: var(--amber); }
+    .dot-off  { background: rgba(255,255,255,.2); }
+
+    .node-body { padding: 8px 12px 10px; }
+    .node-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .node-role { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .node-footer {
+      padding: 8px 12px;
+      border-top: 1px solid var(--line2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .port-btn {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid var(--line); background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; cursor: pointer; color: var(--muted);
+      transition: all .2s var(--ease); flex-shrink: 0;
+    }
+    .port-btn:hover { border-color: var(--teal); color: var(--teal); background: rgba(45,212,191,.1); }
+    .port-btn.connecting { border-color: var(--violet); color: var(--violet); background: rgba(129,140,248,.15); }
+    .inspect-btn {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); cursor: pointer;
+      padding: 3px 7px; border-radius: 5px; border: 1px solid var(--line2);
+      background: transparent; transition: all .2s;
+    }
+    .inspect-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* Intent / output node styles */
+    .node.node-intent { border-color: rgba(45,212,191,.3); }
+    .node.node-output { border-color: rgba(34,197,94,.3); }
+    .node-intent .node-header { background: rgba(45,212,191,.05); border-radius: 13px 13px 0 0; }
+    .node-output .node-header { background: rgba(34,197,94,.05); border-radius: 13px 13px 0 0; }
+
+    /* ── Token Budget HUD ── */
+    .budget-hud {
+      position: fixed; top: 64px; right: 16px; z-index: 50;
+      width: 240px;
+      background: rgba(6,6,14,.9);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+    }
+    .bh-title {
+      font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .bh-title::before { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .bh-row { margin-bottom: 10px; }
+    .bh-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; color: var(--muted); margin-bottom: 5px;
+    }
+    .bh-count { color: #fff; font-weight: 600; }
+    .bh-bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+    .bh-fill { height: 100%; border-radius: 2px; background: var(--teal); transition: width .4s var(--ease), background .3s; }
+    .bh-fill.warn { background: var(--amber); }
+    .bh-fill.crit { background: var(--red); }
+    .bh-warning {
+      margin-top: 10px; padding: 8px 10px; border-radius: 7px;
+      border: 1px solid rgba(239,68,68,.4); background: rgba(239,68,68,.1);
+      font-size: 10px; color: var(--red); letter-spacing: .04em;
+      display: none;
+    }
+    .bh-warning.show { display: block; }
+
+    /* ── Diagnostic overlays ── */
+    .diag {
+      position: fixed; z-index: 50;
+      background: rgba(6,6,14,.88); border: 1px solid var(--line);
+      border-radius: 10px; backdrop-filter: blur(8px);
+      padding: 12px 14px; font-family: var(--font-mono); font-size: 10px;
+    }
+    .diag-title {
+      font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--line2);
+    }
+    #diag-context { top: 64px; left: 16px; width: 196px; }
+    #diag-model   { top: 64px; left: 50%; transform: translateX(-50%); }
+    #diag-ledger  { bottom: 16px; left: 16px; width: 200px; }
+
+    .diag-log-line { color: var(--muted); padding: 2px 0; border-bottom: 1px solid var(--line2); }
+    .diag-log-line:last-child { border-bottom: none; }
+    .diag-log-line .ts { color: rgba(255,255,255,.2); margin-right: 6px; }
+    .diag-log-line .ev { color: var(--teal); }
+
+    .ledger-row { display: flex; justify-content: space-between; padding: 3px 0; color: var(--muted); }
+    .ledger-row .lk { color: rgba(255,255,255,.6); }
+    .ledger-row .lv { color: var(--amber); }
+
+    /* ── Inspector panel ── */
+    .inspector {
+      position: fixed; top: 0; right: -340px; bottom: 0; width: 320px;
+      background: rgba(6,6,14,.95);
+      border-left: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      z-index: 60;
+      padding: 64px 20px 20px;
+      overflow-y: auto;
+      transition: right .35s var(--ease);
+    }
+    .inspector.open { right: 0; }
+    .ins-close {
+      position: absolute; top: 58px; right: 16px;
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid var(--line); background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; color: var(--muted);
+      transition: all .2s;
+    }
+    .ins-close:hover { border-color: var(--red); color: var(--red); }
+    .ins-kicker {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .ins-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+    .ins-role { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+    .ins-section { margin-bottom: 18px; }
+    .ins-section-label {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+      padding-bottom: 5px; border-bottom: 1px solid var(--line2);
+    }
+    .ins-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--line2); }
+    .ins-row:last-child { border-bottom: none; }
+    .ins-key { color: var(--muted); flex-shrink: 0; }
+    .ins-val { color: #fff; font-family: var(--font-mono); font-size: 11px; text-align: right; }
+    .ins-skill { display: inline-flex; padding: 2px 8px; border-radius: 5px; font-family: var(--font-mono); font-size: 9.5px; background: rgba(45,212,191,.1); border: 1px solid rgba(45,212,191,.2); color: var(--teal); margin: 2px; }
+    .ins-forbidden { display: block; font-family: var(--font-mono); font-size: 10px; color: rgba(239,68,68,.8); padding: 3px 0; }
+
+    /* Grain */
+    body::after {
+      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Session ceiling overlay */
+    .session-ceiling {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(239,68,68,.12);
+      border: 2px solid rgba(239,68,68,.5);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .session-ceiling.show { opacity: 1; pointer-events: auto; }
+    .sc-box {
+      background: rgba(6,6,14,.97); border: 1px solid rgba(239,68,68,.5);
+      border-radius: 16px; padding: 28px 32px; text-align: center;
+      max-width: 380px;
+    }
+    .sc-icon { font-size: 36px; margin-bottom: 12px; }
+    .sc-title { font-size: 20px; font-weight: 700; color: var(--red); margin-bottom: 8px; }
+    .sc-body { font-family: var(--font-mono); font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .sc-dismiss {
+      margin-top: 16px; padding: 8px 20px; border-radius: 8px; cursor: pointer;
+      border: 1px solid rgba(239,68,68,.4); background: rgba(239,68,68,.1); color: var(--red);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .08em;
+    }
+
+    @media (max-width: 768px) {
+      .diag { display: none; }
+      .budget-hud { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <nav class="topbar">
+    <div class="tb-left">
+      <a class="tb-back" href="https://severus-six.vercel.app">← Portfolio</a>
+      <span style="color:var(--line)">|</span>
+      <span class="tb-title">AI Flow Builder</span>
+      <span class="tb-badge">AI Systems UX</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="tb-hint">Drag · Connect · Inspect</span>
+      <button class="run-btn" onclick="runFlow()"><span class="pulse"></span>Run Flow</button>
+    </div>
+  </nav>
+
+  <!-- Main canvas -->
+  <div class="canvas-wrap" id="canvas">
+    <!-- SVG connections -->
+    <svg id="conn-svg"></svg>
+    <!-- Nodes injected by JS -->
+  </div>
+
+  <!-- Token Budget HUD (top-right) -->
+  <div class="budget-hud">
+    <div class="bh-title">Token Budget</div>
+    <div class="bh-row">
+      <div class="bh-label"><span>Task</span><span class="bh-count"><span id="task-count">0</span> / 4,000</span></div>
+      <div class="bh-bar"><div class="bh-fill" id="task-bar" style="width:0%"></div></div>
+    </div>
+    <div class="bh-row">
+      <div class="bh-label"><span>Session</span><span class="bh-count"><span id="session-count">0</span> / 30,000</span></div>
+      <div class="bh-bar"><div class="bh-fill" id="session-bar" style="width:0%"></div></div>
+    </div>
+    <div class="bh-warning" id="bh-warn">⚠ TASK CEILING HIT — 4,000 token limit enforced</div>
+  </div>
+
+  <!-- Diagnostic: Context Queue (top-left) -->
+  <div class="diag" id="diag-context">
+    <div class="diag-title">Context Queue</div>
+    <div id="ctx-log"></div>
+  </div>
+
+  <!-- Diagnostic: Active Model (top-center) -->
+  <div class="diag" id="diag-model">
+    <div class="diag-title">Active Model</div>
+    <div style="font-size:11px;color:#fff;font-weight:600" id="active-model">Awaiting trigger...</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:3px" id="active-provider">—</div>
+  </div>
+
+  <!-- Diagnostic: Token Ledger (bottom-left) -->
+  <div class="diag" id="diag-ledger">
+    <div class="diag-title">Token Ledger</div>
+    <div id="ledger-rows"></div>
+  </div>
+
+  <!-- Inspector panel (right slide-in) -->
+  <div class="inspector" id="inspector">
+    <button class="ins-close" onclick="closeInspector()">✕</button>
+    <div id="inspector-content"></div>
+  </div>
+
+  <!-- Session ceiling overlay -->
+  <div class="session-ceiling" id="session-ceiling">
+    <div class="sc-box">
+      <div class="sc-icon">⚡</div>
+      <div class="sc-title">Session Ceiling Reached</div>
+      <div class="sc-body">This session has consumed 28,000+ tokens. Hermes OS enforces a hard 30,000 token session limit to prevent context overflow and protect output quality.</div>
+      <button class="sc-dismiss" onclick="document.getElementById('session-ceiling').classList.remove('show')">Acknowledge</button>
+    </div>
+  </div>
+
+  <script>
+    /* ── Node definitions ── */
+    var NODES_DEF = [
+      { id:'intent', type:'intent', glyph:'⌨', label:'C-U', name:'User Intent', role:'GA4 tracking audit', dot:'on', color:'#2dd4bf',
+        model:'—', provider:'Human Input', skills:['nlp','routing','classification'],
+        forbidden:['No direct execution','No external calls without approval'],
+        x:0.08, y:0.22 },
+      { id:'ck', type:'agent', glyph:'♣', label:'C-K', name:'King of Clubs', role:'GA4 & Analytics', dot:'on', color:'#7aa8ff',
+        model:'DeepSeek-V4-Flash', provider:'novita', skills:['ga4','attribution','reporting','consent mode'],
+        forbidden:['No PII storage','No raw pixel data'],
+        x:0.28, y:0.15 },
+      { id:'sj', type:'agent', glyph:'♠', label:'S-J', name:'Jack of Spades', role:'Bundle Orchestrator', dot:'on', color:'#b89bff',
+        model:'claude-opus-4-7', provider:'Anthropic', skills:['bundles','council','autonomous','fullstack'],
+        forbidden:['No force-push to main','No unreviewed deploys'],
+        x:0.48, y:0.28 },
+      { id:'hq', type:'agent', glyph:'♥', label:'H-Q', name:'Queen of Hearts', role:'UGC & Video', dot:'idle', color:'#f07d7d',
+        model:'Kimi-K2.6', provider:'novita', skills:['UGC','video','voicebox','publishing'],
+        forbidden:['No unlicensed media','No unreviewed content'],
+        x:0.30, y:0.52 },
+      { id:'hk', type:'agent', glyph:'♥', label:'H-K', name:'King of Hearts', role:'Ad Copywriter', dot:'on', color:'#fbbf24',
+        model:'Kimi-K2.6', provider:'novita', skills:['ad copy','TTS','hooks','UX advising'],
+        forbidden:['No prohibited claims','No competitor mentions'],
+        x:0.58, y:0.52 },
+      { id:'output', type:'output', glyph:'✓', label:'OUT', name:'Deliverables', role:'Packaged outputs ready', dot:'on', color:'#22c55e',
+        model:'—', provider:'Pipeline Exit', skills:['packaging','delivery'],
+        forbidden:[],
+        x:0.78, y:0.32 },
+    ];
+
+    /* Pre-drawn connections (source → target) */
+    var CONN_DEF = [
+      { s:'intent', t:'ck',     color:'teal'   },
+      { s:'intent', t:'sj',     color:'violet' },
+      { s:'ck',     t:'sj',     color:'teal'   },
+      { s:'sj',     t:'hq',     color:'violet' },
+      { s:'sj',     t:'hk',     color:'violet' },
+      { s:'sj',     t:'output', color:'violet' },
+      { s:'hk',     t:'output', color:'amber'  },
+    ];
+
+    var LEDGER_DATA = [
+      { step:'Intent parse',      tok:340  },
+      { step:'C-K audit plan',    tok:1240 },
+      { step:'S-J orchestrate',   tok:820  },
+      { step:'H-Q brief',         tok:680  },
+      { step:'H-K copy gen',      tok:920  },
+    ];
+
+    var CTX_LOG = [
+      'tool:kb_graph() → 12 nodes',
+      'tool:ga4_audit() → findings',
+      'tool:render_reel() → queued',
+      'tool:send_telegram() → sent',
+      'tool:package_output() → done',
+    ];
+
+    /* ── State ── */
+    var nodeEls = {}; // id → DOM element
+    var nodePositions = {}; // id → {x, y}  (pixel coords of centre)
+    var connections = [];
+    var connectMode = null; // null | {sourceId, portEl}
+    var taskTokens = 0;
+    var sessionTokens = 0;
+    var runStep = 0;
+
+    /* ── Layout helpers ── */
+    var canvas = document.getElementById('canvas');
+    function cW() { return canvas.offsetWidth; }
+    function cH() { return canvas.offsetHeight - 0; }
+
+    /* ── Build nodes ── */
+    function buildNodes() {
+      NODES_DEF.forEach(function(def) {
+        var el = document.createElement('div');
+        el.className = 'node' + (def.type === 'intent' ? ' node-intent' : def.type === 'output' ? ' node-output' : '');
+        el.id = 'node-' + def.id;
+        el.style.borderTopColor = def.color;
+
+        var dotCls = def.dot === 'on' ? 'dot-on' : def.dot === 'idle' ? 'dot-idle' : 'dot-off';
+        el.innerHTML =
+          '<div class="node-header">'+
+            '<div class="node-glyph-id">'+
+              '<span class="node-glyph" style="color:'+def.color+'">'+def.glyph+'</span>'+
+              '<span class="node-id" style="color:'+def.color+'">'+def.label+'</span>'+
+            '</div>'+
+            '<span class="node-dot '+dotCls+'"></span>'+
+          '</div>'+
+          '<div class="node-body">'+
+            '<div class="node-name">'+def.name+'</div>'+
+            '<div class="node-role">'+def.role+'</div>'+
+          '</div>'+
+          '<div class="node-footer">'+
+            '<button class="port-btn" title="Connect" onclick="startConnect(event,\''+def.id+'\',this)">+</button>'+
+            '<button class="inspect-btn" onclick="openInspector(\''+def.id+'\')">Inspect</button>'+
+          '</div>';
+
+        var px = def.x * cW();
+        var py = def.y * (cH() - 48) + 48;
+        el.style.left = px + 'px';
+        el.style.top  = py + 'px';
+        nodePositions[def.id] = { x: px + 84, y: py + 52 };
+
+        makeDraggable(el, def.id);
+        canvas.appendChild(el);
+        nodeEls[def.id] = el;
+      });
+    }
+
+    /* ── Drag ── */
+    function makeDraggable(el, id) {
+      var dragging = false, ox = 0, oy = 0;
+
+      function onDown(e) {
+        if (e.target.classList.contains('port-btn') || e.target.classList.contains('inspect-btn')) return;
+        dragging = true;
+        var rect = el.getBoundingClientRect();
+        ox = (e.clientX || e.touches[0].clientX) - rect.left;
+        oy = (e.clientY || e.touches[0].clientY) - rect.top;
+        el.classList.add('dragging');
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }
+
+      function onMove(e) {
+        if (!dragging) return;
+        var x = (e.clientX || 0) - ox;
+        var y = (e.clientY || 0) - oy;
+        x = Math.max(0, Math.min(cW() - 168, x));
+        y = Math.max(48, Math.min(cH() - 100, y));
+        el.style.left = x + 'px';
+        el.style.top  = y + 'px';
+        nodePositions[id] = { x: x + 84, y: y + 52 };
+        drawConnections();
+      }
+
+      function onUp() {
+        dragging = false;
+        el.classList.remove('dragging');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      el.addEventListener('mousedown', onDown);
+    }
+
+    /* ── Connections / SVG ── */
+    function startConnect(e, sourceId, portEl) {
+      e.stopPropagation();
+      if (connectMode) {
+        // Second click — attempt connection
+        var src = connectMode.sourceId;
+        var tgt = sourceId;
+        connectMode.portEl.classList.remove('connecting');
+        if (src === tgt) { connectMode = null; return; }
+        // Check for duplicate
+        var dup = connections.some(function(c){ return c.s===src&&c.t===tgt; });
+        if (dup) {
+          nodeEls[tgt].classList.add('shake');
+          setTimeout(function(){ nodeEls[tgt].classList.remove('shake'); }, 400);
+          connectMode = null;
+          return;
+        }
+        connections.push({ s:src, t:tgt, color:'teal' });
+        drawConnections();
+        addCtxLog('connect:'+src+' → '+tgt);
+        connectMode = null;
+        document.querySelectorAll('.node').forEach(function(n){ n.classList.remove('connecting-target'); });
+      } else {
+        // First click — enter connect mode
+        connectMode = { sourceId: sourceId, portEl: portEl };
+        portEl.classList.add('connecting');
+        document.querySelectorAll('.node').forEach(function(n){
+          if (n.id !== 'node-'+sourceId) n.classList.add('connecting-target');
+        });
+      }
+    }
+
+    // Cancel connect mode on canvas click
+    canvas.addEventListener('click', function(e) {
+      if (connectMode && e.target === canvas) {
+        connectMode.portEl.classList.remove('connecting');
+        connectMode = null;
+        document.querySelectorAll('.node').forEach(function(n){ n.classList.remove('connecting-target'); });
+      }
+    });
+
+    function drawConnections() {
+      var svg = document.getElementById('conn-svg');
+      svg.innerHTML = '';
+      // pre-drawn + user-created
+      var all = CONN_DEF.concat(connections);
+      all.forEach(function(c) {
+        var s = nodePositions[c.s];
+        var t = nodePositions[c.t];
+        if (!s || !t) return;
+        var dx = t.x - s.x, dy = t.y - s.y;
+        var cx1 = s.x + dx * 0.45, cy1 = s.y;
+        var cx2 = t.x - dx * 0.45, cy2 = t.y;
+        var d = 'M'+s.x+','+s.y+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+t.x+','+t.y;
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.classList.add('conn-path', c.color || 'teal');
+        svg.appendChild(path);
+      });
+    }
+
+    /* ── Run Flow ── */
+    var RUN_STEPS = [
+      { agent:'intent', tokens:340,  label:'Intent classified',   model:'Human Input',          provider:'—' },
+      { agent:'ck',     tokens:1240, label:'GA4 audit complete',  model:'DeepSeek-V4-Flash',    provider:'novita' },
+      { agent:'sj',     tokens:820,  label:'Orchestration plan',  model:'claude-opus-4-7',      provider:'Anthropic' },
+      { agent:'hq',     tokens:680,  label:'UGC brief generated', model:'Kimi-K2.6',            provider:'novita' },
+      { agent:'hk',     tokens:920,  label:'Ad copy x3 variants', model:'Kimi-K2.6',            provider:'novita' },
+      { agent:'output', tokens:200,  label:'Package delivered',   model:'—',                    provider:'Pipeline' },
+    ];
+
+    function runFlow() {
+      if (runStep >= RUN_STEPS.length) { runStep = 0; taskTokens = 0; }
+      var step = RUN_STEPS[runStep];
+      runStep++;
+
+      // Accumulate tokens
+      taskTokens += step.tokens;
+      sessionTokens += step.tokens;
+
+      // Update budget HUD
+      var taskPct = Math.min(100, (taskTokens / 4000) * 100);
+      var sessPct = Math.min(100, (sessionTokens / 30000) * 100);
+      document.getElementById('task-count').textContent = taskTokens.toLocaleString();
+      document.getElementById('session-count').textContent = sessionTokens.toLocaleString();
+      var tBar = document.getElementById('task-bar');
+      tBar.style.width = taskPct + '%';
+      tBar.className = 'bh-fill' + (taskPct > 90 ? ' crit' : taskPct > 70 ? ' warn' : '');
+      var sBar = document.getElementById('session-bar');
+      sBar.style.width = sessPct + '%';
+      sBar.className = 'bh-fill' + (sessPct > 90 ? ' crit' : sessPct > 70 ? ' warn' : '');
+
+      // Task ceiling warning
+      if (taskTokens >= 4000) {
+        document.getElementById('bh-warn').classList.add('show');
+        nodeEls[step.agent] && nodeEls[step.agent].classList.add('shake');
+        setTimeout(function(){ nodeEls[step.agent] && nodeEls[step.agent].classList.remove('shake'); taskTokens = 0; document.getElementById('task-count').textContent = '0'; document.getElementById('task-bar').style.width='0%'; document.getElementById('task-bar').className='bh-fill'; document.getElementById('bh-warn').classList.remove('show'); }, 2500);
+      }
+
+      // Session ceiling
+      if (sessionTokens >= 28000) {
+        document.getElementById('session-ceiling').classList.add('show');
+        sessionTokens = 0;
+      }
+
+      // Active model
+      document.getElementById('active-model').textContent = step.model;
+      document.getElementById('active-provider').textContent = step.provider;
+
+      // Highlight active node
+      Object.values(nodeEls).forEach(function(n){ n.classList.remove('selected'); });
+      if (nodeEls[step.agent]) nodeEls[step.agent].classList.add('selected');
+
+      // Context log
+      addCtxLog('step:'+step.label);
+
+      // Ledger
+      updateLedger();
+    }
+
+    /* ── Context log ── */
+    var ctxLines = CTX_LOG.slice();
+    function addCtxLog(msg) {
+      var t = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      ctxLines.unshift({ ts:t, ev:msg });
+      if (ctxLines.length > 5) ctxLines.pop();
+      var el = document.getElementById('ctx-log');
+      el.innerHTML = ctxLines.map(function(l) {
+        return '<div class="diag-log-line"><span class="ts">'+l.ts+'</span><span class="ev">'+l.ev+'</span></div>';
+      }).join('');
+    }
+
+    /* ── Ledger ── */
+    function updateLedger() {
+      var el = document.getElementById('ledger-rows');
+      var total = LEDGER_DATA.reduce(function(a,b){return a+b.tok;},0);
+      el.innerHTML = LEDGER_DATA.map(function(r) {
+        return '<div class="ledger-row"><span class="lk">'+r.step+'</span><span class="lv">'+r.tok.toLocaleString()+'</span></div>';
+      }).join('') +
+      '<div class="ledger-row" style="border-top:1px solid var(--line);margin-top:4px;padding-top:4px"><span style="color:#fff">Total</span><span class="lv">'+total.toLocaleString()+'</span></div>';
+    }
+
+    /* ── Inspector ── */
+    function openInspector(nodeId) {
+      var def = NODES_DEF.find(function(n){ return n.id === nodeId; });
+      if (!def) return;
+      var el = document.getElementById('inspector-content');
+      el.innerHTML =
+        '<div class="ins-kicker">'+def.label+' // '+def.type.toUpperCase()+'</div>'+
+        '<div class="ins-name">'+def.name+'</div>'+
+        '<div class="ins-role">'+def.role+'</div>'+
+        '<div class="ins-section">'+
+          '<div class="ins-section-label">Manifest</div>'+
+          '<div class="ins-row"><span class="ins-key">Model</span><span class="ins-val">'+def.model+'</span></div>'+
+          '<div class="ins-row"><span class="ins-key">Provider</span><span class="ins-val">'+def.provider+'</span></div>'+
+          '<div class="ins-row"><span class="ins-key">Status</span><span class="ins-val" style="color:'+(def.dot==='on'?'#22c55e':def.dot==='idle'?'#f59e0b':'#666')+'">'+def.dot.toUpperCase()+'</span></div>'+
+        '</div>'+
+        '<div class="ins-section">'+
+          '<div class="ins-section-label">Skills</div>'+
+          '<div>'+def.skills.map(function(s){ return '<span class="ins-skill">'+s+'</span>'; }).join('')+'</div>'+
+        '</div>'+
+        '<div class="ins-section">'+
+          '<div class="ins-section-label">Forbidden Behaviors</div>'+
+          def.forbidden.map(function(f){ return '<span class="ins-forbidden">✗ '+f+'</span>'; }).join('')+(def.forbidden.length===0?'<span style="font-family:var(--font-mono);font-size:10px;color:var(--muted)">None defined</span>':'')+
+        '</div>';
+      document.getElementById('inspector').classList.add('open');
+    }
+
+    function closeInspector() {
+      document.getElementById('inspector').classList.remove('open');
+    }
+    document.addEventListener('keydown', function(e){ if (e.key==='Escape') closeInspector(); });
+
+    /* ── GSAP intro ── */
+    function init() {
+      buildNodes();
+      drawConnections();
+      updateLedger();
+      addCtxLog('system:ready');
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+      if (!reduce && typeof gsap !== 'undefined') {
+        gsap.from('.node', { opacity:0, scale:.85, stagger:.07, duration:.5, ease:'power3.out', delay:.3 });
+        gsap.from('.budget-hud', { opacity:0, x:20, duration:.6, ease:'power3.out', delay:.5 });
+        gsap.from('.diag', { opacity:0, y:-12, stagger:.06, duration:.5, ease:'power3.out', delay:.4 });
+      }
+    }
+
+    // Wait for layout
+    setTimeout(init, 0);
+    window.addEventListener('resize', drawConnections);
+  </script>
+</body>
+</html>

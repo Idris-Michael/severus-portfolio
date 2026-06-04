@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes OS — Mission Control</title>
+  <meta name="description" content="The operating system for an AI-run agency. Tasks, agents, telemetry and clients on one surface.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <style>
+    :root{
+      --bg:#0a0a0c; --bg2:#0e0e12; --panel:#141419; --panel2:#17171d;
+      --line:rgba(245,243,238,.09); --line2:rgba(245,243,238,.05);
+      --text:#f5f3ee; --muted:#9a978f; --faint:#6a6760;
+      --gold:#e8b64a; --gold2:#f0c96b; --gold-dim:rgba(232,182,74,.12);
+      --green:#5fd08a; --amber:#e8b64a; --red:#f0726a; --blue:#7aa8ff; --violet:#b89bff;
+      --display:'Bricolage Grotesque',system-ui,sans-serif;
+      --sans:'Inter',system-ui,sans-serif;
+      --mono:'JetBrains Mono',ui-monospace,monospace;
+      --ease:cubic-bezier(.16,1,.3,1);
+      --r:14px; --r-sm:9px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    html.lenis,html.lenis body{height:auto}
+    .lenis.lenis-smooth{scroll-behavior:auto!important}
+    body{
+      font-family:var(--sans);background:var(--bg);color:var(--text);
+      line-height:1.55;overflow-x:hidden;
+    }
+    ::selection{background:var(--gold);color:#1a1505}
+    :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+    a{color:inherit;text-decoration:none}
+    h1,h2,h3{text-wrap:balance;letter-spacing:-.025em;line-height:1.02}
+    p{text-wrap:pretty}
+    .mono{font-family:var(--mono)}
+    .tnum{font-variant-numeric:tabular-nums}
+
+    /* ── Atmosphere ── */
+    .atmos{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .atmos-grid{position:absolute;inset:0;
+      background-image:linear-gradient(var(--line2) 1px,transparent 1px),linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+      background-size:64px 64px;mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 75%);opacity:.7}
+    .atmos-glow{position:absolute;width:900px;height:900px;left:50%;top:-340px;transform:translateX(-50%);
+      background:radial-gradient(circle,rgba(232,182,74,.10),transparent 62%);filter:blur(20px);will-change:transform}
+    .grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+    /* ── Nav ── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+      padding:20px 32px;mix-blend-mode:difference}
+    .nav-brand{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+    .nav-brand .glyph{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+    .nav-links{display:flex;gap:28px;font-size:13px;font-weight:500;color:#fff}
+    .nav-links a{opacity:.7;transition:opacity .3s var(--ease)}
+    .nav-links a:hover{opacity:1}
+    @media(max-width:720px){.nav-links{display:none}}
+
+    /* ── Hero ── */
+    .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+      padding:0 32px;max-width:1400px;margin:0 auto}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;
+      letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0}
+    .hero-eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+    .hero-wordmark{position:relative;font-family:var(--display);font-weight:800;
+      font-size:clamp(64px,17vw,260px);line-height:.86;letter-spacing:-.04em}
+    .hero-wordmark .l1{display:block;overflow:hidden}
+    .hero-wordmark .l2{display:block;overflow:hidden;color:transparent;-webkit-text-stroke:1.4px var(--muted)}
+    .hero-wordmark .reveal{display:block;transform:translateY(110%)}
+    .hero-wordmark .os{font-size:.34em;-webkit-text-stroke:0;color:var(--gold);vertical-align:super;margin-left:.1em;letter-spacing:-.02em}
+    .hero-sub{max-width:540px;margin-top:34px;font-size:clamp(16px,1.5vw,20px);color:var(--muted);font-weight:400;opacity:0}
+    .hero-sub strong{color:var(--text);font-weight:600}
+    .hero-cta-row{display:flex;align-items:center;gap:18px;margin-top:40px;flex-wrap:wrap;opacity:0}
+    .btn{position:relative;display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:100px;
+      font-size:14px;font-weight:600;cursor:pointer;border:1px solid transparent;will-change:transform;
+      transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease)}
+    .btn-primary{background:var(--gold);color:#16110a}
+    .btn-primary:hover{background:var(--gold2)}
+    .btn-ghost{border-color:var(--line);color:var(--text)}
+    .btn-ghost:hover{border-color:var(--muted);background:rgba(245,243,238,.03)}
+    .btn .arrow{transition:transform .3s var(--ease)}
+    .btn:hover .arrow{transform:translateX(3px)}
+
+    /* floating telemetry chips (parallax depth) */
+    .chips{position:absolute;inset:0;pointer-events:none;z-index:-1}
+    .chip{position:absolute;display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:12px;
+      background:rgba(20,20,25,.7);border:1px solid var(--line);backdrop-filter:blur(10px);
+      font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;opacity:0;will-change:transform;
+      box-shadow:0 18px 50px -20px rgba(0,0,0,.7)}
+    .chip b{color:var(--text);font-weight:600}
+    .chip .dot{width:7px;height:7px;border-radius:50%}
+    .chip-1{top:22%;right:6%}
+    .chip-2{top:60%;right:13%}
+    .chip-3{top:72%;left:4%}
+    @media(max-width:880px){.chips{display:none}}
+    .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:var(--mono);
+      font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0}
+    .scroll-cue .bar{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);overflow:hidden}
+
+    /* ── Section frame ── */
+    .section{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:120px 32px}
+    .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .kicker::before{content:"";width:22px;height:1px;background:var(--gold)}
+    .section-title{font-family:var(--display);font-weight:700;font-size:clamp(32px,5vw,64px)}
+    .section-lead{max-width:560px;margin-top:20px;color:var(--muted);font-size:clamp(16px,1.4vw,19px)}
+
+    /* ── Stat band ── */
+    .stat-band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;z-index:1}
+    .stat-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+    .stat{padding:48px 32px;border-right:1px solid var(--line)}
+    .stat:last-child{border-right:none}
+    .stat-num{font-family:var(--display);font-weight:700;font-size:clamp(40px,5vw,72px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+    .stat-num .u{color:var(--gold);font-size:.5em;margin-left:2px}
+    .stat-label{margin-top:12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    @media(max-width:860px){.stat-grid{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}}
+
+    /* ── Dashboard showcase ── */
+    .showcase{position:relative;z-index:1}
+    .device{position:relative;max-width:1300px;margin:0 auto;border-radius:20px;overflow:hidden;
+      border:1px solid var(--line);background:linear-gradient(180deg,var(--bg2),var(--bg));
+      box-shadow:0 60px 140px -50px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.02) inset;will-change:transform}
+    .device-bar{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);background:rgba(20,20,25,.6)}
+    .device-dots{display:flex;gap:7px}
+    .device-dots i{width:11px;height:11px;border-radius:50%;display:block}
+    .device-title{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
+    .device-live{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.1em}
+    .device-live .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+
+    .grid4{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:340px 340px;gap:1px;background:var(--line)}
+    @media(max-width:820px){.grid4{grid-template-columns:1fr;grid-template-rows:none}.panel-cell{min-height:320px}}
+    .panel-cell{background:var(--bg2);display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .pc-hdr{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .pc-idx{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--gold)}
+    .pc-sep{font-family:var(--mono);color:var(--faint)}
+    .pc-label{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em}
+    .pc-meta{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+    .pc-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .pc-body::-webkit-scrollbar{width:5px}.pc-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+
+    /* kanban */
+    .kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);height:100%}
+    .kb-col{background:var(--bg2);display:flex;flex-direction:column;overflow:hidden}
+    .kb-ch{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .kb-ct{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--gold);font-variant-numeric:tabular-nums}
+    .kb-cards{flex:1;overflow-y:auto;padding:7px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .kb-cards::-webkit-scrollbar{width:4px}.kb-cards::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+    .kb-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 11px;margin-bottom:7px;cursor:pointer;user-select:none;min-height:44px;
+      transition:border-color .2s var(--ease),transform .15s var(--ease),box-shadow .25s var(--ease)}
+    .kb-card:hover{border-color:rgba(232,182,74,.5);transform:translateY(-2px);box-shadow:0 12px 24px -12px rgba(232,182,74,.4)}
+    .kb-card:active{transform:scale(.97)}
+    .kb-tt{font-size:12.5px;font-weight:500;margin-bottom:8px;line-height:1.35;text-wrap:pretty}
+    .tag{display:inline-flex;padding:2px 8px;border-radius:6px;font-family:var(--mono);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;border:1px solid transparent}
+    .t-ga4{background:rgba(122,168,255,.12);color:var(--blue);border-color:rgba(122,168,255,.22)}
+    .t-ads{background:var(--gold-dim);color:var(--gold);border-color:rgba(232,182,74,.22)}
+    .t-social{background:rgba(184,155,255,.12);color:var(--violet);border-color:rgba(184,155,255,.22)}
+    .t-design{background:rgba(95,208,138,.12);color:var(--green);border-color:rgba(95,208,138,.22)}
+    .t-ops{background:rgba(154,151,143,.12);color:var(--muted);border-color:rgba(154,151,143,.24)}
+
+    /* agents */
+    .agents{padding:7px}
+    .agent{display:flex;align-items:center;gap:11px;padding:9px;border-radius:8px;min-height:44px;transition:background .2s var(--ease)}
+    .agent:hover{background:rgba(245,243,238,.03)}
+    .adot{width:11px;height:11px;border-radius:50%;flex-shrink:0;cursor:pointer;border:none;padding:0;position:relative;transition:background .25s var(--ease),box-shadow .25s var(--ease),transform .12s var(--ease)}
+    .adot::after{content:"";position:absolute;inset:-15px}
+    .adot:active{transform:scale(.9)}
+    .d-on{background:var(--green);box-shadow:0 0 0 3px rgba(95,208,138,.15),0 0 10px rgba(95,208,138,.5)}
+    .d-idle{background:var(--amber);box-shadow:0 0 0 3px rgba(232,182,74,.15),0 0 10px rgba(232,182,74,.45)}
+    .d-off{background:#3a3a42;box-shadow:0 0 0 3px rgba(154,151,143,.1)}
+    .an{font-size:13px;font-weight:500}
+    .ar{font-size:11px;color:var(--muted);font-family:var(--mono)}
+    .at{font-size:11px;color:var(--muted);font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+    /* log */
+    .log{padding:7px;font-family:var(--mono)}
+    .le{display:flex;gap:10px;padding:7px 9px;border-radius:6px;margin-bottom:1px;transition:background .2s var(--ease)}
+    .le:hover{background:rgba(245,243,238,.03)}
+    .le.s-warning{background:rgba(232,182,74,.05)}
+    .le.s-error{background:rgba(240,114,106,.06)}
+    .lt{font-size:11px;color:var(--faint);white-space:nowrap;flex-shrink:0;padding-top:1px;font-variant-numeric:tabular-nums}
+    .la{font-size:11px;font-weight:600;color:var(--gold);margin-bottom:2px}
+    .lx{font-size:11.5px;color:var(--muted);font-family:var(--sans);text-wrap:pretty}
+    .lb{display:inline-block;padding:1px 7px;border-radius:5px;font-family:var(--mono);font-size:9.5px;font-weight:600;text-transform:uppercase;margin-left:6px;border:1px solid transparent}
+    .lb-s{background:rgba(95,208,138,.1);color:var(--green);border-color:rgba(95,208,138,.25)}
+    .lb-w{background:var(--gold-dim);color:var(--gold);border-color:rgba(232,182,74,.25)}
+    .lb-e{background:rgba(240,114,106,.1);color:var(--red);border-color:rgba(240,114,106,.28)}
+
+    /* crm */
+    .crm-s{padding:9px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .crm-i{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:var(--mono);font-size:12.5px;color:var(--text);outline:none;min-height:40px;transition:border-color .2s var(--ease)}
+    .crm-i::placeholder{color:var(--faint)}
+    .crm-i:focus{border-color:rgba(232,182,74,.5)}
+    .crm-l{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .crm-l::-webkit-scrollbar{width:5px}.crm-l::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+    .crm-r{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line2);min-height:44px;transition:background .2s var(--ease)}
+    .crm-r:hover{background:rgba(245,243,238,.03)}
+    .crm-n{font-size:13px;font-weight:600}
+    .crm-sv{font-size:11px;color:var(--muted);font-family:var(--mono)}
+    .crm-st{display:inline-flex;padding:2px 9px;border-radius:7px;font-family:var(--mono);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;border:1px solid transparent}
+    .st-a{background:rgba(95,208,138,.1);color:var(--green);border-color:rgba(95,208,138,.25)}
+    .st-o{background:rgba(122,168,255,.1);color:var(--blue);border-color:rgba(122,168,255,.25)}
+    .st-p{background:rgba(154,151,143,.1);color:var(--muted);border-color:rgba(154,151,143,.24)}
+    .crm-e{padding:24px 14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px}
+
+    /* ── Feature grid ── */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:64px}
+    @media(max-width:860px){.features{grid-template-columns:1fr}}
+    .feat{padding:30px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--panel),transparent);will-change:transform,opacity}
+    .feat-ic{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--gold-dim);border:1px solid rgba(232,182,74,.2);margin-bottom:18px}
+    .feat h3{font-family:var(--display);font-weight:600;font-size:21px;margin-bottom:9px}
+    .feat p{color:var(--muted);font-size:14.5px}
+
+    /* marquee */
+    .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:26px 0;position:relative;z-index:1}
+    .marquee-track{display:flex;gap:48px;white-space:nowrap;width:max-content;will-change:transform}
+    .marquee-item{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,52px);color:transparent;-webkit-text-stroke:1px var(--faint);letter-spacing:-.02em;display:flex;align-items:center;gap:48px}
+    .marquee-item::after{content:"✦";-webkit-text-stroke:0;color:var(--gold);font-size:.4em}
+
+    /* ── CTA / footer ── */
+    .cta{text-align:center;padding:140px 32px 80px;position:relative;z-index:1}
+    .cta h2{font-family:var(--display);font-weight:800;font-size:clamp(40px,8vw,110px);line-height:.95;letter-spacing:-.04em}
+    .cta h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1.4px var(--gold)}
+    .cta p{max-width:440px;margin:24px auto 0;color:var(--muted)}
+    .footer{border-top:1px solid var(--line);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);position:relative;z-index:1;flex-wrap:wrap;gap:12px}
+    .footer a:hover{color:var(--gold)}
+
+    .reveal-y{opacity:0;transform:translateY(34px);will-change:transform,opacity}
+
+    /* ── Suit colour extensions ── */
+    :root{--clubs:var(--blue);--hearts:#f07d7d;--diams:var(--gold);--spades:var(--violet)}
+
+    /* ── Suit filter tabs ── */
+    .suit-tabs{display:flex;gap:10px;margin-bottom:44px;flex-wrap:wrap;margin-top:40px}
+    .stab{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;border:1px solid var(--line);font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;background:transparent;color:var(--muted);transition:all .25s var(--ease);white-space:nowrap}
+    .stab:hover{border-color:var(--gold);color:var(--text)}
+    .stab.active{color:#16100a;background:var(--gold);border-color:var(--gold)}
+    .stab[data-s="clubs"].active{background:var(--clubs);border-color:var(--clubs);color:#071220}
+    .stab[data-s="hearts"].active{background:var(--hearts);border-color:var(--hearts);color:#1a0608}
+    .stab[data-s="spades"].active{background:var(--spades);border-color:var(--spades);color:#0f0820}
+
+    /* ── Pantheon grid ── */
+    .pantheon-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    @media(max-width:1100px){.pantheon-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.pantheon-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.pantheon-grid{grid-template-columns:1fr}}
+
+    .p-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;cursor:pointer;
+      transition:border-color .25s var(--ease),transform .2s var(--ease),box-shadow .3s var(--ease);
+      display:flex;flex-direction:column;opacity:0;transform:translateY(20px);will-change:transform,opacity}
+    .p-card[data-suit="clubs"]:hover{border-color:var(--clubs);transform:translateY(-3px);box-shadow:0 20px 48px -20px rgba(122,168,255,.32)}
+    .p-card[data-suit="diamonds"]:hover{border-color:var(--diams);transform:translateY(-3px);box-shadow:0 20px 48px -20px rgba(232,182,74,.32)}
+    .p-card[data-suit="hearts"]:hover{border-color:var(--hearts);transform:translateY(-3px);box-shadow:0 20px 48px -20px rgba(240,125,125,.32)}
+    .p-card[data-suit="spades"]:hover{border-color:var(--spades);transform:translateY(-3px);box-shadow:0 20px 48px -20px rgba(184,155,255,.32)}
+
+    .p-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .p-gi{display:flex;align-items:center;gap:8px}
+    .p-suit{font-size:18px;line-height:1}
+    .p-id-badge{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+    .p-card[data-suit="clubs"] .p-suit,.p-card[data-suit="clubs"] .p-id-badge{color:var(--clubs)}
+    .p-card[data-suit="diamonds"] .p-suit,.p-card[data-suit="diamonds"] .p-id-badge{color:var(--diams)}
+    .p-card[data-suit="hearts"] .p-suit,.p-card[data-suit="hearts"] .p-id-badge{color:var(--hearts)}
+    .p-card[data-suit="spades"] .p-suit,.p-card[data-suit="spades"] .p-id-badge{color:var(--spades)}
+
+    .p-name{font-family:var(--display);font-size:15px;font-weight:600;margin-bottom:3px}
+    .p-role{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;margin-bottom:14px}
+    .p-skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;flex:1}
+    .p-sk{display:inline-flex;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.04em;background:rgba(245,243,238,.05);border:1px solid var(--line2);color:var(--muted)}
+    .p-model{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.03em;margin-top:auto;padding-top:11px;border-top:1px solid var(--line2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .p-sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+    /* ── Full-width Kanban Board ── */
+    .kb-board-full{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+    @media(max-width:960px){.kb-board-full{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.kb-board-full{grid-template-columns:1fr}}
+
+    .kb-col-full{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;min-height:440px}
+    .kb-col-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.12em}
+    .kb-col-title{font-weight:600}
+    .kb-col-badge{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--panel2);border:1px solid var(--line);color:var(--gold)}
+    .kb-col-body-full{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .kb-col-body-full::-webkit-scrollbar{width:4px}.kb-col-body-full::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+
+    .kb-fc{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 13px;cursor:pointer;user-select:none;
+      transition:border-color .2s var(--ease),transform .15s var(--ease),box-shadow .25s var(--ease)}
+    .kb-fc:hover{border-color:rgba(232,182,74,.42);transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(232,182,74,.28)}
+    .kb-fc:active{transform:scale(.97)}
+    .kb-fc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .kb-fc-title{font-size:13px;font-weight:500;line-height:1.35;text-wrap:pretty;flex:1}
+    .kb-fc-pri{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+    .pri-high{background:var(--red);box-shadow:0 0 6px rgba(240,114,106,.7)}
+    .pri-med{background:var(--amber)}
+    .pri-low{background:var(--green)}
+    .kb-fc-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .kb-agent-chip{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:5px;background:rgba(245,243,238,.07);border:1px solid var(--line);color:var(--muted)}
+
+    /* ── Pantheon Illustration Strip ── */
+    .agent-strip{position:relative;z-index:1;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .agent-strip-track{display:flex;gap:0;width:max-content;will-change:transform;animation:strip-scroll 55s linear infinite}
+    .agent-strip:hover .agent-strip-track{animation-play-state:paused}
+    @keyframes strip-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .asc{flex-shrink:0;width:196px;border-right:1px solid var(--line);cursor:pointer;overflow:hidden;position:relative;
+      transition:transform .25s var(--ease),box-shadow .3s var(--ease)}
+    .asc:hover{transform:translateY(-3px);z-index:2;box-shadow:0 20px 48px -20px rgba(0,0,0,.8)}
+    .asc-img{width:196px;height:196px;overflow:hidden;position:relative}
+    .asc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
+    .asc:hover .asc-img img{transform:scale(1.07)}
+    .asc-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(10,10,12,.85) 100%)}
+    .asc-info{padding:10px 12px 13px;border-top:1px solid var(--line);background:var(--bg2)}
+    .asc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+    .asc-id{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em}
+    .asc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .asc-name{font-family:var(--display);font-size:14.5px;font-weight:600;display:block;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+    .asc-role{font-family:var(--mono);font-size:10px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.03em}
+    .asc-accent{position:absolute;top:0;left:0;right:0;height:2px}
+    @media(prefers-reduced-motion:reduce){.agent-strip-track{animation:none!important}}
+
+    /* ── KB 3D Constellation ── */
+    .kb-stage{position:relative;height:640px;background:#020503;overflow:hidden;border-radius:0 0 var(--r) var(--r)}
+    #kb-canvas{display:block;position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+    .kb-ovl{position:absolute;background:rgba(0,0,0,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 14px;font-family:var(--mono);z-index:10}
+    .kb-form-btn{display:flex;align-items:center;padding:6px 12px;border-radius:7px;border:1px solid var(--line);font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;background:transparent;color:var(--muted);width:100%;transition:all .2s var(--ease)}
+    .kb-form-btn:hover{border-color:var(--gold);color:var(--text)}
+    .kb-form-btn.active{background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.4);color:#2dd4bf}
+    .kb-node-info{transition:opacity .3s var(--ease)}
+    .kb-sig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+    .kb-sig{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+    .kb-sig-val{font-family:var(--display);font-weight:700;font-size:clamp(28px,3vw,44px);letter-spacing:-.02em;line-height:1}
+    .kb-sig-lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:8px}
+    @media(max-width:720px){.kb-sig-grid{grid-template-columns:1fr 1fr}}
+
+    @media(prefers-reduced-motion:reduce){
+      *{animation:none!important;transition-duration:.01ms!important}
+      .reveal-y,.hero-eyebrow,.hero-sub,.hero-cta-row,.scroll-cue,.chip{opacity:1!important;transform:none!important}
+      .hero-wordmark .reveal{transform:none!important}
+      .p-card{opacity:1!important;transform:none!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="atmos"><div class="atmos-grid"></div><div class="atmos-glow" id="glow"></div></div>
+  <div class="grain"></div>
+
+  <nav class="nav">
+    <a class="nav-brand" href="https://severus-six.vercel.app"><span class="glyph"></span>HERMES OS</a>
+    <div class="nav-links">
+      <a href="#system">System</a>
+      <a href="#console">Console</a>
+      <a href="#pantheon">Pantheon</a>
+      <a href="#kb-graph">Graph</a>
+      <a href="#kanban-full">Kanban</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="https://severus-six.vercel.app">← Portfolio</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="chips" id="chips">
+      <div class="chip chip-1"><span class="dot" style="background:var(--green)"></span><span>uptime <b>99.98%</b></span></div>
+      <div class="chip chip-2"><span class="dot" style="background:var(--gold)"></span><span>active runs <b>3</b></span></div>
+      <div class="chip chip-3"><span class="dot" style="background:var(--blue)"></span><span>agents online <b>5/8</b></span></div>
+    </div>
+    <span class="hero-eyebrow" id="eyebrow">Internal Operating System</span>
+    <h1 class="hero-wordmark" id="wordmark">
+      <span class="l1"><span class="reveal">HERMES<span class="os">OS</span></span></span>
+      <span class="l2"><span class="reveal">MISSION CONTROL</span></span>
+    </h1>
+    <p class="hero-sub" id="herosub">One surface for an agency run by agents. <strong>Tasks, live agent telemetry, run logs and clients</strong> — consolidated into a single operational console you can read at a glance.</p>
+    <div class="hero-cta-row" id="herocta">
+      <a class="btn btn-primary mag" href="#console">Open the console <span class="arrow">→</span></a>
+      <a class="btn btn-ghost mag" href="#system">How it works</a>
+    </div>
+    <div class="scroll-cue" id="cue"><span>Scroll</span><span class="bar"></span></div>
+  </header>
+
+  <!-- PANTHEON ILLUSTRATION STRIP -->
+  <div class="agent-strip" role="region" aria-label="Pantheon agent illustrations">
+    <div class="agent-strip-track" id="agent-strip-track"></div>
+  </div>
+
+  <!-- STAT BAND -->
+  <div class="stat-band" id="statband">
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num"><span class="count" data-to="8">0</span></div><div class="stat-label">AI Agents Orchestrated</div></div>
+      <div class="stat"><div class="stat-num"><span class="count" data-to="4">0</span></div><div class="stat-label">Data Streams · One View</div></div>
+      <div class="stat"><div class="stat-num"><span class="count" data-to="99" data-suffix=".98">0</span><span class="u">%</span></div><div class="stat-label">Pipeline Uptime</div></div>
+      <div class="stat"><div class="stat-num"><span class="count" data-to="0">0</span><span class="u">ms</span></div><div class="stat-label">Idle CPU · Tab Hidden</div></div>
+    </div>
+  </div>
+
+  <!-- SYSTEM NARRATIVE -->
+  <section class="section" id="system">
+    <div class="kicker reveal-y">The problem</div>
+    <h2 class="section-title reveal-y">An agency that runs itself<br>still needs somewhere to look.</h2>
+    <p class="section-lead reveal-y">Tasks live in one tool, agent health in another, logs in a terminal, clients in a spreadsheet. Hermes OS collapses all four into a single mission-control surface — built so an operator can monitor every domain without switching context.</p>
+  </section>
+
+  <!-- LIVE CONSOLE -->
+  <section class="section showcase" id="console" style="padding-top:40px">
+    <div class="kicker reveal-y">Live console &middot; fully interactive</div>
+    <h2 class="section-title reveal-y" style="margin-bottom:48px">Mission Control.</h2>
+    <div class="device" id="device">
+      <div class="device-bar">
+        <div class="device-dots"><i style="background:#f0726a"></i><i style="background:#e8b64a"></i><i style="background:#5fd08a"></i></div>
+        <span class="device-title">mission-control · operations</span>
+        <span class="device-live"><span class="pulse"></span>Live</span>
+      </div>
+      <div class="grid4">
+        <div class="panel-cell">
+          <div class="pc-hdr"><span class="pc-idx">01</span><span class="pc-sep">//</span><span class="pc-label">Task Board</span><span class="pc-meta" id="kb-total">9 CARDS</span></div>
+          <div class="kanban">
+            <div class="kb-col"><div class="kb-ch">Backlog <span class="kb-ct" id="cnt-0">3</span></div><div class="kb-cards" id="col-0"></div></div>
+            <div class="kb-col"><div class="kb-ch">Active <span class="kb-ct" id="cnt-1">3</span></div><div class="kb-cards" id="col-1"></div></div>
+            <div class="kb-col"><div class="kb-ch">Done <span class="kb-ct" id="cnt-2">3</span></div><div class="kb-cards" id="col-2"></div></div>
+          </div>
+        </div>
+        <div class="panel-cell">
+          <div class="pc-hdr"><span class="pc-idx">02</span><span class="pc-sep">//</span><span class="pc-label">Agent Status</span><span class="pc-meta" id="ag-online">5 ONLINE</span></div>
+          <div class="pc-body"><div class="agents" id="agent-list"></div></div>
+        </div>
+        <div class="panel-cell">
+          <div class="pc-hdr"><span class="pc-idx">03</span><span class="pc-sep">//</span><span class="pc-label">Run Log</span><span class="pc-meta">TELEMETRY</span></div>
+          <div class="pc-body"><div class="log" id="log-list"></div></div>
+        </div>
+        <div class="panel-cell">
+          <div class="pc-hdr"><span class="pc-idx">04</span><span class="pc-sep">//</span><span class="pc-label">Client CRM</span><span class="pc-meta" id="crm-count">5 CLIENTS</span></div>
+          <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+            <div class="crm-s"><input class="crm-i" id="crm-search" type="search" placeholder="search clients…" aria-label="Search clients" oninput="filterCRM()"></div>
+            <div class="crm-l" id="crm-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="reveal-y" style="text-align:center;margin-top:22px;color:var(--faint);font-family:var(--mono);font-size:12px">Click cards to advance · toggle agent status · search the CRM</p>
+  </section>
+
+  <!-- PANTHEON -->
+  <section class="section" id="pantheon" style="padding-top:60px">
+    <div class="kicker reveal-y">Pantheon</div>
+    <h2 class="section-title reveal-y">16 agents. Four suits.</h2>
+    <p class="section-lead reveal-y">Each agent holds a specific role, model, and skillset. Permission-gated — no agent acts outside its defined scope. Click a suit to filter.</p>
+    <div class="suit-tabs" role="group" aria-label="Filter agents by suit">
+      <button class="stab active" data-s="all" onclick="setSuitFilter('all')">All &nbsp;16</button>
+      <button class="stab" data-s="clubs" onclick="setSuitFilter('clubs')">♣ Clubs — Technical</button>
+      <button class="stab" data-s="diamonds" onclick="setSuitFilter('diamonds')">♦ Diamonds — Revenue</button>
+      <button class="stab" data-s="hearts" onclick="setSuitFilter('hearts')">♥ Hearts — Creative</button>
+      <button class="stab" data-s="spades" onclick="setSuitFilter('spades')">♠ Spades — Strategy</button>
+    </div>
+    <div class="pantheon-grid" id="pantheon-grid" role="list" aria-label="Agent roster"></div>
+  </section>
+
+  <!-- KNOWLEDGE CONSTELLATION 3D -->
+  <section class="section" id="kb-graph" style="padding-top:60px">
+    <div class="kicker reveal-y">Knowledge constellation</div>
+    <h2 class="section-title reveal-y">The operating brain.</h2>
+    <p class="section-lead reveal-y">Every project, skill, system, and domain inside Hermes OS — force-settled in 3D space. Drag to orbit &middot; scroll to zoom &middot; click a node to inspect it.</p>
+    <div class="device reveal-y" style="margin-top:48px">
+      <div class="device-bar">
+        <div class="device-dots"><i style="background:#f0726a"></i><i style="background:#e8b64a"></i><i style="background:#5fd08a"></i></div>
+        <span class="device-title">knowledge-constellation · 3D · 17 nodes · WebGL</span>
+        <span class="device-live"><span class="pulse"></span>Live</span>
+      </div>
+      <div class="kb-stage" id="kb-stage">
+        <canvas id="kb-canvas"></canvas>
+
+        <!-- Legend overlay top-left -->
+        <div class="kb-ovl" style="top:14px;left:14px;min-width:130px">
+          <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px"><span style="color:var(--gold)">▦</span> Node Legend</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:9.5px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#a855f7;box-shadow:0 0 8px #a855f7;display:inline-block;flex-shrink:0"></span>Core OS</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px #3b82f6;display:inline-block;flex-shrink:0"></span>Projects</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;display:inline-block;flex-shrink:0"></span>Skills</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#b89bff;box-shadow:0 0 8px #b89bff;display:inline-block;flex-shrink:0"></span>Systems</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#9ca3af;display:inline-block;flex-shrink:0"></span>Areas</span>
+          </div>
+        </div>
+
+        <!-- Formation controls top-right -->
+        <div class="kb-ovl" style="top:14px;right:14px;width:130px">
+          <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#2dd4bf;margin-bottom:10px">◈ Formation</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <button class="kb-form-btn active" data-f="constellation" onclick="kb3dSetFormation('constellation')">Constellation</button>
+            <button class="kb-form-btn" data-f="sphere" onclick="kb3dSetFormation('sphere')">Sphere</button>
+            <button class="kb-form-btn" data-f="helix" onclick="kb3dSetFormation('helix')">Helix</button>
+          </div>
+        </div>
+
+        <!-- Node info panel bottom-left -->
+        <div class="kb-ovl kb-node-info" id="kb-info" style="bottom:14px;left:14px;opacity:0;pointer-events:none;max-width:240px;transition:opacity .25s">
+          <div id="kb-info-type" style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px"></div>
+          <div id="kb-info-name" style="font-family:var(--display);font-size:16px;font-weight:600;margin-bottom:5px"></div>
+          <div id="kb-info-desc" style="font-size:11.5px;color:var(--muted);line-height:1.5"></div>
+        </div>
+
+        <div style="position:absolute;bottom:14px;right:14px;font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.12em;text-transform:uppercase;z-index:10">Drag · Zoom · Click</div>
+      </div>
+    </div>
+
+    <!-- Signal stats -->
+    <div class="kb-sig-grid">
+      <div class="kb-sig reveal-y"><div class="kb-sig-val" style="color:var(--gold)">17</div><div class="kb-sig-lbl">Knowledge Nodes</div></div>
+      <div class="kb-sig reveal-y"><div class="kb-sig-val" style="color:var(--green)">614</div><div class="kb-sig-lbl">Vault Files</div></div>
+      <div class="kb-sig reveal-y"><div class="kb-sig-val" style="color:var(--blue)">20</div><div class="kb-sig-lbl">Semantic Links</div></div>
+    </div>
+  </section>
+
+  <!-- FULL KANBAN -->
+  <section class="section" id="kanban-full" style="padding-top:60px">
+    <div class="kicker reveal-y">Agency work board</div>
+    <h2 class="section-title reveal-y">The pipeline, live.</h2>
+    <p class="section-lead reveal-y">Every active client task, assigned to a Pantheon agent, from intake to shipped. Click any card to advance it through the pipeline.</p>
+    <div class="kb-board-full" id="kb-full-board" aria-label="Agency kanban board"></div>
+    <p class="reveal-y" style="text-align:center;margin-top:18px;color:var(--faint);font-family:var(--mono);font-size:12px">
+      Click to advance &nbsp;·&nbsp; priority: <span style="color:var(--red)">●</span> high &nbsp;<span style="color:var(--amber)">●</span> medium &nbsp;<span style="color:var(--green)">●</span> low
+    </p>
+  </section>
+
+  <!-- CAPABILITIES -->
+  <section class="section" id="capabilities">
+    <div class="kicker reveal-y">Capabilities</div>
+    <h2 class="section-title reveal-y">Designed for repeated daily use.</h2>
+    <div class="features">
+      <div class="feat reveal-y"><div class="feat-ic">▦</div><h3>Glanceable hierarchy</h3><p>Four streams visible at once. Status reads at peripheral vision through colour and motion, not labels you have to stop and parse.</p></div>
+      <div class="feat reveal-y"><div class="feat-ic">⟳</div><h3>Single-action flow</h3><p>Click a card to advance it. Toggle an agent in one tap. Optimised for the speed of a quick status update, not form-filling.</p></div>
+      <div class="feat reveal-y"><div class="feat-ic">◈</div><h3>One source of truth</h3><p>Tasks, agents, logs and clients share one surface, one visual language, and one model of state — no reconciliation between tools.</p></div>
+    </div>
+  </section>
+
+  <!-- WHAT THIS DEMONSTRATES -->
+  <section class="section" id="proof" style="padding-top:40px">
+    <div style="display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start" class="proof-grid">
+      <div>
+        <div class="kicker reveal-y">For recruiters &amp; hiring managers</div>
+        <h2 class="section-title reveal-y" style="font-size:clamp(28px,4vw,46px)">What this demonstrates</h2>
+        <p class="reveal-y" style="margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--muted)">Best for: <strong style="color:var(--text)">PM / UI</strong>, <strong style="color:var(--text)">Internal Tooling &amp; Dashboards</strong></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="reveal-y" style="display:flex;gap:16px"><span style="font-family:var(--mono);font-size:12px;color:var(--gold);padding-top:3px">01</span><div><strong style="display:block;margin-bottom:4px">Macro-level dashboard design</strong><p style="color:var(--muted);font-size:14.5px">Consolidates four complex data streams — Kanban, agent telemetry, run logs and CRM — into one usable mission-control surface.</p></div></div>
+        <div class="reveal-y" style="display:flex;gap:16px"><span style="font-family:var(--mono);font-size:12px;color:var(--gold);padding-top:3px">02</span><div><strong style="display:block;margin-bottom:4px">Information hierarchy at scale</strong><p style="color:var(--muted);font-size:14.5px">Decides what an operator needs at a glance versus on demand — status by colour and motion, detail on interaction.</p></div></div>
+        <div class="reveal-y" style="display:flex;gap:16px"><span style="font-family:var(--mono);font-size:12px;color:var(--gold);padding-top:3px">03</span><div><strong style="display:block;margin-bottom:4px">Concept to shipped code</strong><p style="color:var(--muted);font-size:14.5px">A deployed, fully interactive console — proof of owning the product lifecycle, not a static wireframe.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee"><div class="marquee-track" id="marquee">
+    <span class="marquee-item">KANBAN</span><span class="marquee-item">AGENT TELEMETRY</span><span class="marquee-item">RUN LOGS</span><span class="marquee-item">CLIENT CRM</span><span class="marquee-item">PANTHEON</span><span class="marquee-item">16 AGENTS</span><span class="marquee-item">KNOWLEDGE GRAPH</span><span class="marquee-item">3D</span>
+    <span class="marquee-item">KANBAN</span><span class="marquee-item">AGENT TELEMETRY</span><span class="marquee-item">RUN LOGS</span><span class="marquee-item">CLIENT CRM</span><span class="marquee-item">PANTHEON</span><span class="marquee-item">16 AGENTS</span><span class="marquee-item">KNOWLEDGE GRAPH</span><span class="marquee-item">3D</span>
+  </div></div>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2 class="reveal-y">Built to be<br><em>watched.</em></h2>
+    <p class="reveal-y">One of nine shipped product demos in the Severus Connects portfolio — concept to deployed code.</p>
+    <div class="reveal-y" style="margin-top:36px"><a class="btn btn-primary mag" href="https://severus-six.vercel.app">View the full portfolio <span class="arrow">→</span></a></div>
+  </section>
+
+  <footer class="footer">
+    <span>SEVERUS CONNECTS &middot; HERMES OS</span>
+    <a href="https://severus-six.vercel.app">severus-six.vercel.app</a>
+  </footer>
+
+  <script>
+    /* ───────── Live dashboard logic ───────── */
+    var columns=[
+      [{title:'GA4 audit — Greenfield Homes',tag:'ga4',c:'t-ga4'},{title:'Google Ads copy refresh — Vantage',tag:'ads',c:'t-ads'},{title:'Brand kit review — Nordic Wellness',tag:'design',c:'t-design'}],
+      [{title:'Consent Mode setup — Axiom Legal',tag:'ga4',c:'t-ga4'},{title:'Instagram reels batch — Q1',tag:'social',c:'t-social'},{title:'Pipeline monitoring dashboard',tag:'ops',c:'t-ops'}],
+      [{title:'GA4 onboarding — Artisan Roasters',tag:'ga4',c:'t-ga4'},{title:'Performance Max audit — Nordic',tag:'ads',c:'t-ads'},{title:'Agent permission framework v1',tag:'ops',c:'t-ops'}]
+    ];
+    function renderKanban(){var t=0;for(var k=0;k<3;k++){var col=document.getElementById('col-'+k);col.innerHTML='';document.getElementById('cnt-'+k).textContent=columns[k].length;t+=columns[k].length;columns[k].forEach(function(card,i){var ci=k;var d=document.createElement('div');d.className='kb-card';d.setAttribute('role','button');d.setAttribute('tabindex','0');d.innerHTML='<div class="kb-tt">'+card.title+'</div><span class="tag '+card.c+'">'+card.tag+'</span>';d.onclick=(function(a,b){return function(){moveCard(a,b);};})(ci,i);d.onkeydown=(function(a,b){return function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();moveCard(a,b);}};})(ci,i);col.appendChild(d);});}var el=document.getElementById('kb-total');if(el)el.textContent=t+' CARDS';}
+    function moveCard(k,i){var card=columns[k].splice(i,1)[0];if(k<2)columns[k+1].push(card);renderKanban();}
+    var agents=[{n:'Jack of Clubs',r:'Web Architect',s:'on',t:'just now'},{n:'Queen of Clubs',r:'A11y & Design',s:'on',t:'2 min ago'},{n:'King of Hearts',r:'Ad Copywriter',s:'idle',t:'8 min ago'},{n:'Queen of Hearts',r:'UGC & Video',s:'on',t:'1 min ago'},{n:'Jack of Diamonds',r:'Agency Social',s:'idle',t:'15 min ago'},{n:'Jack of Spades',r:'Orchestrator',s:'on',t:'just now'},{n:'King of Clubs',r:'GA4 Analytics',s:'off',t:'2 hr ago'},{n:'Ace of Hearts',r:'Creative Dir.',s:'idle',t:'22 min ago'}];
+    function agMeta(){var n=agents.filter(function(a){return a.s==='on';}).length;var el=document.getElementById('ag-online');if(el)el.textContent=n+' ONLINE';}
+    function renderAgents(){var l=document.getElementById('agent-list');l.innerHTML='';agents.forEach(function(a,i){var row=document.createElement('div');row.className='agent';var dc=a.s==='on'?'d-on':a.s==='idle'?'d-idle':'d-off';row.innerHTML='<button class="adot '+dc+'" id="dot-'+i+'" onclick="toggleAgent('+i+')" aria-label="Toggle '+a.n+'"></button><div style="flex:1;min-width:0"><div class="an">'+a.n+'</div><div class="ar">'+a.r+'</div></div><span class="at">'+a.t+'</span>';l.appendChild(row);});agMeta();}
+    function toggleAgent(i){var o=['on','idle','off'];agents[i].s=o[(o.indexOf(agents[i].s)+1)%3];var d=document.getElementById('dot-'+i);d.className='adot '+(agents[i].s==='on'?'d-on':agents[i].s==='idle'?'d-idle':'d-off');agMeta();}
+    var logs=[{ts:'14:23:12',a:'Jack of Spades',x:'Pipeline complete — reel_20250602_001',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'14:23:01',a:'Queen of Hearts',x:'Voiceover rendered — 47.3s audio',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'14:22:48',a:'Jack of Clubs',x:'Deployment to Vercel — 200 OK',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'14:19:32',a:'King of Hearts',x:'Ad copy generated — 3 variants',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'14:18:05',a:'Jack of Diamonds',x:'Script approved — hook variant 2',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'14:15:21',a:'King of Clubs',x:'GA4 report — Axiom Legal',b:'WARNING',bc:'lb-w',s:'warning'},{ts:'14:12:44',a:'Queen of Clubs',x:'A11y audit — 2 issues flagged',b:'WARNING',bc:'lb-w',s:'warning'},{ts:'14:10:18',a:'Ace of Hearts',x:'Design system tokens updated',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'13:58:03',a:'Jack of Spades',x:'Telegram approval sent',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'13:45:17',a:'King of Hearts',x:'TTS synthesis timeout — retry',b:'ERROR',bc:'lb-e',s:'error'},{ts:'13:44:59',a:'King of Hearts',x:'TTS retry successful',b:'SUCCESS',bc:'lb-s',s:'success'},{ts:'13:30:00',a:'Jack of Clubs',x:'Environment variables validated',b:'SUCCESS',bc:'lb-s',s:'success'}];
+    function renderLog(){var l=document.getElementById('log-list');l.innerHTML='';logs.forEach(function(g){var d=document.createElement('div');d.className='le s-'+g.s;d.innerHTML='<span class="lt">'+g.ts+'</span><div style="flex:1;min-width:0"><div class="la">'+g.a+'</div><div class="lx">'+g.x+' <span class="lb '+g.bc+'">'+g.b+'</span></div></div>';l.appendChild(d);});}
+    var clients=[{n:'Artisan Roasters',s:'GA4 + Ads',st:'active',c:'st-a'},{n:'Nordic Wellness',s:'GA4',st:'active',c:'st-a'},{n:'Axiom Legal',s:'GA4',st:'onboarding',c:'st-o'},{n:'Greenfield Homes',s:'Google Ads',st:'active',c:'st-a'},{n:'Vantage Sports',s:'Social + Ads',st:'paused',c:'st-p'}];
+    function renderCRM(f){var l=document.getElementById('crm-list');l.innerHTML='';var fd=f?clients.filter(function(c){return c.n.toLowerCase().includes(f.toLowerCase());}):clients;var el=document.getElementById('crm-count');if(el)el.textContent=fd.length+(fd.length===1?' CLIENT':' CLIENTS');if(!fd.length){l.innerHTML='<div class="crm-e">// NO MATCHING CLIENTS</div>';return;}fd.forEach(function(c){var r=document.createElement('div');r.className='crm-r';r.innerHTML='<div style="flex:1;min-width:0"><div class="crm-n">'+c.n+'</div><div class="crm-sv">'+c.s+'</div></div><span class="crm-st '+c.c+'">'+c.st+'</span>';l.appendChild(r);});}
+    function filterCRM(){renderCRM(document.getElementById('crm-search').value);}
+    /* ───────── Pantheon ───────── */
+    var pantheonData = [
+      {id:'C-J',name:'Jack of Clubs',role:'Web Architect',suit:'clubs',glyph:'♣',model:'Qwen3-Coder-Next',skills:['build','devops','ecomm','CMS','launch'],status:'on'},
+      {id:'C-Q',name:'Queen of Clubs',role:'A11y & Design Sys',suit:'clubs',glyph:'♣',model:'claude-opus-4-7',skills:['a11y','design-sys','frontend'],status:'on'},
+      {id:'C-K',name:'King of Clubs',role:'GA4 & Analytics',suit:'clubs',glyph:'♣',model:'DeepSeek-V4-Flash',skills:['ga4','attribution','reporting'],status:'idle'},
+      {id:'C-A',name:'Ace of Clubs',role:'Automation',suit:'clubs',glyph:'♣',model:'DeepSeek-V4-Flash',skills:['n8n','mcp','pipelines'],status:'on'},
+      {id:'D-J',name:'Jack of Diamonds',role:'Agency Social',suit:'diamonds',glyph:'♦',model:'claude-sonnet-4-6',skills:['ig growth','copywriting','hooks'],status:'on'},
+      {id:'D-Q',name:'Queen of Diamonds',role:'Personal Brand',suit:'diamonds',glyph:'♦',model:'claude-sonnet-4-6',skills:['content','persona'],status:'idle'},
+      {id:'D-K',name:'King of Diamonds',role:'Shopping Ads',suit:'diamonds',glyph:'♦',model:'DeepSeek-V4-Flash',skills:['shopping ads','ecomm','perf'],status:'off'},
+      {id:'D-A',name:'Ace of Diamonds',role:'Biz Dev',suit:'diamonds',glyph:'♦',model:'Qwen3.6-35B',skills:['outreach','proposals','intake'],status:'idle'},
+      {id:'H-J',name:'Jack of Hearts',role:'Engagement',suit:'hearts',glyph:'♥',model:'claude-sonnet-4-6',skills:['replies','community'],status:'on'},
+      {id:'H-Q',name:'Queen of Hearts',role:'UGC & Video',suit:'hearts',glyph:'♥',model:'Kimi-K2.6',skills:['UGC','video','voicebox'],status:'on'},
+      {id:'H-K',name:'King of Hearts',role:'Ad Copywriter',suit:'hearts',glyph:'♥',model:'Kimi-K2.6',skills:['ad copy','TTS','hooks'],status:'on'},
+      {id:'H-A',name:'Ace of Hearts',role:'Creative Director',suit:'hearts',glyph:'♥',model:'claude-opus-4-7',skills:['motion','slides','direction'],status:'idle'},
+      {id:'S-J',name:'Jack of Spades',role:'Bundle Orchestrator',suit:'spades',glyph:'♠',model:'claude-opus-4-7',skills:['bundles','council','fullstack'],status:'on'},
+      {id:'S-Q',name:'Queen of Spades',role:'Meta Ads Auditor',suit:'spades',glyph:'♠',model:'Qwen3.6-35B',skills:['meta ads','pixel','eval'],status:'idle'},
+      {id:'S-K',name:'King of Spades',role:'Google Ads Auditor',suit:'spades',glyph:'♠',model:'Qwen3.6-35B',skills:['google ads','pmax','wasted spend'],status:'off'},
+      {id:'S-A',name:'Ace of Spades',role:'Campaign Strategist',suit:'spades',glyph:'♠',model:'Qwen3.6-35B',skills:['analytics','council','perf'],status:'idle'},
+    ];
+    var activeSuit = 'all';
+    function renderPantheon(suit) {
+      var grid = document.getElementById('pantheon-grid');
+      if (!grid) return;
+      var data = (suit && suit !== 'all') ? pantheonData.filter(function(a){return a.suit===suit;}) : pantheonData;
+      grid.innerHTML = '';
+      data.forEach(function(a) {
+        var dotCls = a.status==='on'?'d-on':a.status==='idle'?'d-idle':'d-off';
+        var skHtml = a.skills.map(function(s){return '<span class="p-sk">'+s+'</span>';}).join('');
+        var card = document.createElement('div');
+        card.className = 'p-card';
+        card.setAttribute('data-suit', a.suit);
+        card.setAttribute('role', 'listitem');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', a.name+', '+a.role+', '+a.status);
+        card.innerHTML =
+          '<div class="p-top">'+
+            '<div class="p-gi"><span class="p-suit">'+a.glyph+'</span><span class="p-id-badge">'+a.id+'</span></div>'+
+            '<span class="adot '+dotCls+'" style="pointer-events:none"></span>'+
+          '</div>'+
+          '<div class="p-name">'+a.name+'</div>'+
+          '<div class="p-role">'+a.role+'</div>'+
+          '<div class="p-skills">'+skHtml+'</div>'+
+          '<div class="p-model">'+a.model+'</div>';
+        grid.appendChild(card);
+      });
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && typeof gsap !== 'undefined') {
+        gsap.fromTo('.p-card',{opacity:0,y:18},{opacity:1,y:0,duration:.55,stagger:.04,ease:'power3.out'});
+      } else {
+        document.querySelectorAll('.p-card').forEach(function(el){el.style.opacity=1;el.style.transform='none';});
+      }
+    }
+    function setSuitFilter(suit) {
+      activeSuit = suit;
+      document.querySelectorAll('.stab').forEach(function(t){
+        t.classList.toggle('active', t.getAttribute('data-s')===suit);
+      });
+      renderPantheon(suit);
+    }
+
+    /* ───────── Full Kanban ───────── */
+    var kbFullCards = [
+      {s:0,t:'GA4 consent mode — Meridian Capital',tag:'ga4',tc:'t-ga4',agent:'C-K',pri:'high'},
+      {s:0,t:'Google Ads audit — TechVault',tag:'ads',tc:'t-ads',agent:'S-K',pri:'high'},
+      {s:0,t:'Instagram Q2 batch — Artisan Roasters',tag:'social',tc:'t-social',agent:'D-J',pri:'med'},
+      {s:0,t:'New client onboarding — FitFlow',tag:'ops',tc:'t-ops',agent:'D-A',pri:'med'},
+      {s:0,t:'UGC video brief — Nordic Wellness',tag:'social',tc:'t-social',agent:'H-Q',pri:'low'},
+      {s:0,t:'Brand audit — Verdant Agency',tag:'design',tc:'t-design',agent:'C-Q',pri:'low'},
+      {s:1,t:'Meta Ads creative refresh — Axiom',tag:'social',tc:'t-social',agent:'S-Q',pri:'high'},
+      {s:1,t:'Consent Mode setup — Axiom Legal',tag:'ga4',tc:'t-ga4',agent:'C-K',pri:'high'},
+      {s:1,t:'Reel batch voiceover — Q2 series',tag:'social',tc:'t-social',agent:'H-K',pri:'med'},
+      {s:1,t:'Agent permission framework v2',tag:'ops',tc:'t-ops',agent:'S-J',pri:'med'},
+      {s:1,t:'Nordic Wellness monthly report',tag:'ads',tc:'t-ads',agent:'S-K',pri:'low'},
+      {s:2,t:'GA4 onboarding — Artisan Roasters',tag:'ga4',tc:'t-ga4',agent:'C-K',pri:'high'},
+      {s:2,t:'Reel hook variants — Q1 series',tag:'social',tc:'t-social',agent:'D-J',pri:'med'},
+      {s:2,t:'Pipeline dashboard v2',tag:'ops',tc:'t-ops',agent:'S-J',pri:'med'},
+      {s:3,t:'Google Ads copy — Vantage Sports',tag:'ads',tc:'t-ads',agent:'H-K',pri:'high'},
+      {s:3,t:'Agent framework v1',tag:'ops',tc:'t-ops',agent:'S-J',pri:'med'},
+      {s:3,t:'GA4 setup — Nordic Wellness',tag:'ga4',tc:'t-ga4',agent:'C-K',pri:'low'},
+    ];
+    var kbColNames = ['Intake','Active','Review','Shipped'];
+    var kbColColors = ['var(--muted)','var(--blue)','var(--amber)','var(--green)'];
+    function renderFullKanban() {
+      var board = document.getElementById('kb-full-board');
+      if (!board) return;
+      board.innerHTML = '';
+      kbColNames.forEach(function(name, ci) {
+        var col = document.createElement('div');
+        col.className = 'kb-col-full';
+        col.innerHTML =
+          '<div class="kb-col-hdr">'+
+            '<span class="kb-col-title" style="color:'+kbColColors[ci]+'">'+name+'</span>'+
+            '<span class="kb-col-badge" id="kbf-cnt-'+ci+'">0</span>'+
+          '</div>'+
+          '<div class="kb-col-body-full" id="kbf-col-'+ci+'"></div>';
+        board.appendChild(col);
+      });
+      fillFullKanban();
+    }
+    function fillFullKanban() {
+      for (var ci=0; ci<4; ci++) {
+        var bodyEl = document.getElementById('kbf-col-'+ci);
+        var cntEl = document.getElementById('kbf-cnt-'+ci);
+        if (!bodyEl) continue;
+        bodyEl.innerHTML = '';
+        var colCards = kbFullCards.filter(function(c){return c.s===ci;});
+        if (cntEl) cntEl.textContent = colCards.length;
+        colCards.forEach(function(card) {
+          var idx = kbFullCards.indexOf(card);
+          var priCls = card.pri==='high'?'pri-high':card.pri==='med'?'pri-med':'pri-low';
+          var d = document.createElement('div');
+          d.className = 'kb-fc';
+          d.setAttribute('role','button');
+          d.setAttribute('tabindex','0');
+          d.setAttribute('title', card.s<3 ? 'Click to advance to '+kbColNames[card.s+1] : 'Shipped');
+          d.innerHTML =
+            '<div class="kb-fc-top">'+
+              '<div class="kb-fc-title">'+card.t+'</div>'+
+              '<span class="kb-fc-pri '+priCls+'"></span>'+
+            '</div>'+
+            '<div class="kb-fc-foot">'+
+              '<span class="tag '+card.tc+'">'+card.tag+'</span>'+
+              '<span class="kb-agent-chip">'+card.agent+'</span>'+
+            '</div>';
+          (function(i){
+            d.onclick = function(){ advanceFullCard(i); };
+            d.onkeydown = function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();advanceFullCard(i);} };
+          })(idx);
+          bodyEl.appendChild(d);
+        });
+      }
+    }
+    function advanceFullCard(idx) {
+      if (kbFullCards[idx].s < 3) {
+        kbFullCards[idx].s++;
+        fillFullKanban();
+      }
+    }
+
+    /* ───────── Pantheon Illustration Strip ───────── */
+    var STRIP_AGENTS = [
+      {file:'jack-of-clubs',    id:'C-J', name:'Jack of Clubs',    role:'Web Architect',       suit:'clubs',    glyph:'♣', status:'on'},
+      {file:'queen-of-clubs',   id:'C-Q', name:'Queen of Clubs',   role:'A11y & Design Sys',   suit:'clubs',    glyph:'♣', status:'on'},
+      {file:'king-of-clubs',    id:'C-K', name:'King of Clubs',    role:'GA4 & Analytics',     suit:'clubs',    glyph:'♣', status:'idle'},
+      {file:'ace-of-clubs',     id:'C-A', name:'Ace of Clubs',     role:'Automation',          suit:'clubs',    glyph:'♣', status:'on'},
+      {file:'jack-of-diamonds', id:'D-J', name:'Jack of Diamonds', role:'Agency Social',       suit:'diamonds', glyph:'♦', status:'on'},
+      {file:'queen-of-diamonds',id:'D-Q', name:'Queen of Diamonds',role:'Personal Brand',      suit:'diamonds', glyph:'♦', status:'idle'},
+      {file:'king-of-diamonds', id:'D-K', name:'King of Diamonds', role:'Shopping Ads',        suit:'diamonds', glyph:'♦', status:'off'},
+      {file:'ace-of-diamonds',  id:'D-A', name:'Ace of Diamonds',  role:'Biz Dev',             suit:'diamonds', glyph:'♦', status:'idle'},
+      {file:'queen-of-hearts',  id:'H-Q', name:'Queen of Hearts',  role:'UGC & Video',         suit:'hearts',   glyph:'♥', status:'on'},
+      {file:'king-of-hearts',   id:'H-K', name:'King of Hearts',   role:'Ad Copywriter',       suit:'hearts',   glyph:'♥', status:'on'},
+      {file:'ace-of-hearts',    id:'H-A', name:'Ace of Hearts',    role:'Creative Director',   suit:'hearts',   glyph:'♥', status:'idle'},
+      {file:'jack-of-spades',   id:'S-J', name:'Jack of Spades',   role:'Bundle Orchestrator', suit:'spades',   glyph:'♠', status:'on'},
+      {file:'queen-of-spades',  id:'S-Q', name:'Queen of Spades',  role:'Meta Ads Auditor',    suit:'spades',   glyph:'♠', status:'idle'},
+      {file:'king-of-spades',   id:'S-K', name:'King of Spades',   role:'Google Ads Auditor',  suit:'spades',   glyph:'♠', status:'off'},
+      {file:'ace-of-spades',    id:'S-A', name:'Ace of Spades',    role:'Campaign Strategist', suit:'spades',   glyph:'♠', status:'idle'},
+    ];
+    var SUIT_COLOR = {clubs:'#7aa8ff', diamonds:'#e8b64a', hearts:'#f07d7d', spades:'#b89bff'};
+    var STATUS_DOT = {on:'d-on', idle:'d-idle', off:'d-off'};
+
+    function renderAgentStrip() {
+      var track = document.getElementById('agent-strip-track');
+      if (!track) return;
+      // Double the array for seamless loop
+      var doubled = STRIP_AGENTS.concat(STRIP_AGENTS);
+      track.innerHTML = '';
+      doubled.forEach(function(a) {
+        var col = SUIT_COLOR[a.suit] || '#e8b64a';
+        var dc  = STATUS_DOT[a.status] || 'd-off';
+        var card = document.createElement('div');
+        card.className = 'asc';
+        card.setAttribute('role', 'img');
+        card.setAttribute('aria-label', a.name + ' — ' + a.role);
+        card.innerHTML =
+          '<div class="asc-accent" style="background:'+col+'"></div>'+
+          '<div class="asc-img">'+
+            '<img src="/assets/agents/'+a.file+'.png" alt="'+a.name+'" loading="lazy" decoding="async">'+
+          '</div>'+
+          '<div class="asc-info">'+
+            '<div class="asc-hdr">'+
+              '<span class="asc-id" style="color:'+col+'">'+a.glyph+' '+a.id+'</span>'+
+              '<span class="adot '+dc+'" style="pointer-events:none"></span>'+
+            '</div>'+
+            '<span class="asc-name">'+a.name+'</span>'+
+            '<span class="asc-role">'+a.role+'</span>'+
+          '</div>';
+        track.appendChild(card);
+      });
+    }
+
+    renderKanban();renderAgents();renderLog();renderCRM();
+    renderAgentStrip();
+    renderPantheon('all');
+    renderFullKanban();
+
+    /* ───────── Motion ───────── */
+    (function(){
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || typeof gsap === 'undefined') {
+        document.querySelectorAll('.reveal-y,.hero-eyebrow,.hero-sub,.hero-cta-row,.scroll-cue,.chip').forEach(function(el){el.style.opacity=1;el.style.transform='none';});
+        document.querySelectorAll('.hero-wordmark .reveal').forEach(function(el){el.style.transform='none';});
+        return;
+      }
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Lenis smooth scroll
+      var lenis;
+      if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({ duration:1.1, easing:function(t){return Math.min(1,1.001-Math.pow(2,-10*t));} });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function(time){ lenis.raf(time*1000); });
+        gsap.ticker.lagSmoothing(0);
+        document.documentElement.classList.add('lenis','lenis-smooth');
+      }
+
+      // Hero intro timeline
+      var tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+      tl.to('.hero-wordmark .reveal', { yPercent:0, duration:1, stagger:.12 }, .2)
+        .to('#eyebrow', { opacity:1, y:0, duration:.7 }, .1)
+        .to('#herosub', { opacity:1, y:0, duration:.8 }, .7)
+        .to('#herocta', { opacity:1, y:0, duration:.8 }, .85)
+        .to('#cue', { opacity:1, duration:.8 }, 1)
+        .to('.chip', { opacity:1, y:0, duration:.9, stagger:.12 }, .6);
+      gsap.set(['#eyebrow','#herosub','#herocta'], { y:20 });
+      gsap.set('.chip', { y:30 });
+
+      // Mouse parallax — hero chips + glow
+      var xTo=[], yTo=[];
+      document.querySelectorAll('.chip').forEach(function(c){
+        xTo.push(gsap.quickTo(c,'x',{duration:.8,ease:'power3'}));
+        yTo.push(gsap.quickTo(c,'y',{duration:.8,ease:'power3'}));
+      });
+      var glowX=gsap.quickTo('#glow','x',{duration:1.2,ease:'power3'});
+      window.addEventListener('mousemove', function(e){
+        var dx=(e.clientX/window.innerWidth-.5), dy=(e.clientY/window.innerHeight-.5);
+        document.querySelectorAll('.chip').forEach(function(c,i){
+          var depth=(i+1)*14; xTo[i](dx*depth); yTo[i](dy*depth);
+        });
+        glowX(dx*60);
+      });
+
+      // Scroll cue bar loop
+      gsap.fromTo('#cue .bar', {backgroundPosition:'0 -38px'}, {backgroundPosition:'0 38px',duration:1.4,repeat:-1,ease:'none'});
+
+      // Hero parallax out
+      gsap.to('#wordmark', { yPercent:-18, opacity:.5, ease:'none',
+        scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:.6 } });
+
+      // Generic reveals
+      gsap.utils.toArray('.reveal-y').forEach(function(el){
+        gsap.to(el, { opacity:1, y:0, duration:.9, ease:'power3.out',
+          scrollTrigger:{ trigger:el, start:'top 86%' } });
+      });
+
+      // Count-up stats
+      document.querySelectorAll('.count').forEach(function(el){
+        var to=parseFloat(el.getAttribute('data-to'))||0, suf=el.getAttribute('data-suffix')||'';
+        ScrollTrigger.create({ trigger:el, start:'top 90%', once:true, onEnter:function(){
+          var obj={v:0};
+          gsap.to(obj,{ v:to, duration:1.6, ease:'power2.out', onUpdate:function(){
+            el.textContent = (to>=10?Math.round(obj.v):obj.v.toFixed(0)) ;
+          }, onComplete:function(){ el.textContent = to + suf; }});
+        }});
+      });
+
+      // Device rise + subtle scroll parallax
+      gsap.from('#device', { y:80, opacity:0, duration:1.1, ease:'power3.out',
+        scrollTrigger:{ trigger:'#device', start:'top 82%' } });
+      gsap.to('#device', { yPercent:-6, ease:'none',
+        scrollTrigger:{ trigger:'#device', start:'top bottom', end:'bottom top', scrub:.8 } });
+
+      // Pantheon grid reveal on scroll
+      ScrollTrigger.create({ trigger:'#pantheon-grid', start:'top 85%', once:true, onEnter:function(){
+        gsap.fromTo('.p-card',{opacity:0,y:20},{opacity:1,y:0,duration:.55,stagger:.04,ease:'power3.out'});
+      }});
+
+      // Full kanban reveal
+      gsap.from('#kb-full-board .kb-col-full', { y:40, opacity:0, duration:.7, stagger:.1, ease:'power3.out',
+        scrollTrigger:{ trigger:'#kb-full-board', start:'top 84%' } });
+
+      // Feature stagger
+      gsap.from('.feat', { y:40, opacity:0, duration:.8, stagger:.12, ease:'power3.out',
+        scrollTrigger:{ trigger:'.features', start:'top 82%' } });
+
+      // Marquee drift
+      gsap.to('#marquee', { xPercent:-50, ease:'none', duration:18, repeat:-1 });
+      gsap.to('#marquee', { x:0, ease:'none',
+        scrollTrigger:{ trigger:'.marquee', start:'top bottom', end:'bottom top', scrub:1,
+          onUpdate:function(self){ gsap.set('#marquee',{xPercent:-self.progress*30}); } } });
+
+      // Magnetic buttons
+      document.querySelectorAll('.mag').forEach(function(btn){
+        var mx=gsap.quickTo(btn,'x',{duration:.4,ease:'power3'}), my=gsap.quickTo(btn,'y',{duration:.4,ease:'power3'});
+        btn.addEventListener('mousemove',function(e){var r=btn.getBoundingClientRect();mx((e.clientX-r.left-r.width/2)*.4);my((e.clientY-r.top-r.height/2)*.4);});
+        btn.addEventListener('mouseleave',function(){mx(0);my(0);});
+      });
+    })();
+  </script>
+  <!-- Three.js importmap -->
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}
+  </script>
+
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  /* ── Node / link data ────────────────────────────────────────── */
+  const NODES = [
+    {id:'core',  name:'Hermes OS',           type:'core',    color:'#a855f7', val:28},
+    {id:'p1',   name:'Instagram Pipeline',  type:'project', color:'#3b82f6', val:14},
+    {id:'p2',   name:'GA4 Audit',           type:'project', color:'#3b82f6', val:12},
+    {id:'p3',   name:'Agent Framework',     type:'project', color:'#3b82f6', val:11},
+    {id:'p4',   name:'Hermes Hub',          type:'project', color:'#3b82f6', val:10},
+    {id:'s1',   name:'GSAP + Motion',       type:'skill',   color:'#22c55e', val:10},
+    {id:'s2',   name:'React + TypeScript',  type:'skill',   color:'#22c55e', val: 9},
+    {id:'s3',   name:'n8n Workflows',       type:'skill',   color:'#22c55e', val: 9},
+    {id:'s4',   name:'Claude API',          type:'skill',   color:'#22c55e', val: 8},
+    {id:'sy1',  name:'Obsidian Vault',      type:'system',  color:'#b89bff', val:10},
+    {id:'sy2',  name:'Telegram Approval',   type:'system',  color:'#b89bff', val: 8},
+    {id:'sy3',  name:'HF Inference',        type:'system',  color:'#b89bff', val: 9},
+    {id:'sy4',  name:'Vercel Deploy',       type:'system',  color:'#b89bff', val: 7},
+    {id:'a1',   name:'Social Media',        type:'area',    color:'#9ca3af', val: 7},
+    {id:'a2',   name:'Analytics',           type:'area',    color:'#9ca3af', val: 7},
+    {id:'a3',   name:'Ad Performance',      type:'area',    color:'#9ca3af', val: 6},
+    {id:'a4',   name:'Automation',          type:'area',    color:'#9ca3af', val: 7},
+  ];
+  const LINKS = [
+    {s:'core',t:'p1'},{s:'core',t:'p2'},{s:'core',t:'p3'},{s:'core',t:'p4'},
+    {s:'core',t:'s1'},{s:'core',t:'s2'},{s:'core',t:'sy1'},{s:'core',t:'sy2'},
+    {s:'p1',t:'s3'}, {s:'p1',t:'sy2'},{s:'p1',t:'sy3'},{s:'p2',t:'s4'},
+    {s:'p3',t:'sy1'},{s:'p4',t:'s1'}, {s:'p4',t:'s2'}, {s:'sy3',t:'p1'},
+    {s:'a1',t:'p1'}, {s:'a2',t:'p2'}, {s:'a3',t:'p4'}, {s:'a4',t:'p3'},
+  ];
+  const NODE_DESC = {
+    core: 'Central OS powering Severus Connects — orchestrates 16 agents, memory, pipelines, and telemetry on one surface.',
+    p1:  '4-stage pipeline: HF script generation → Gemini TTS → Hyperframes render → Meta Graph API publish.',
+    p2:  'B2B analytics portal with health rings, severity-sorted findings, live Chart.js, and client switcher.',
+    p3:  'IAM matrix for 8 Pantheon agents — role toggles, conflict detection, real-time audit log.',
+    p4:  'Central dashboard: kanban, agent registry, CRM, run history, constellation graph on one surface.',
+    s1:  'GSAP 3.14 + ScrollTrigger: parallax, stagger reveals, custom cursor, magnetic interactions.',
+    s2:  'React 19 + TypeScript + Vite + TanStack Query: architecture, hooks, lazy routing.',
+    s3:  'n8n workflow automation: lead capture, Telegram approval, GA4 reporting pipelines.',
+    s4:  'Anthropic SDK: streaming, function calling, system prompts, Haiku/Sonnet/Opus routing.',
+    sy1: '725 vault files, 6 MOCs, 43 agent stubs — the agency memory and decision log.',
+    sy2: 'HMAC-signed approval links, Telegram bot notifications, review workflow.',
+    sy3: 'Hugging Face inference: Qwen3-32B scripts, DeepSeek analytics, GLM voiceover.',
+    sy4: 'Continuous deployment: Vite build → Vercel edge, auto-alias, environment management.',
+    a1:  'Instagram Severus Connects, @mikeb.io — content strategy, engagement, community.',
+    a2:  'GA4, consent mode, attribution modelling, GDPR, data layer.',
+    a3:  'Google Ads, Meta Ads, Shopping Ads — performance campaign management.',
+    a4:  'n8n pipelines, agent workflows, cron scheduling, webhook triggers.',
+  };
+
+  /* ── Fibonacci sphere ──────────────────────────────────────── */
+  function fibPt(i, N, r) {
+    const phi   = Math.acos(-1 + (2 * i) / N);
+    const theta = Math.sqrt(N * Math.PI) * phi;
+    return new THREE.Vector3(r * Math.cos(theta) * Math.sin(phi), r * Math.sin(theta) * Math.sin(phi), r * Math.cos(phi));
+  }
+
+  /* ── Compute target positions per formation ────────────────── */
+  function computeTargets(formation) {
+    const pos = {};
+    if (formation === 'constellation') {
+      pos['core'] = new THREE.Vector3(0, 0, 0);
+      const typeR  = { project: 15, skill: 26, system: 20, area: 34 };
+      const groups = { project: [], skill: [], system: [], area: [] };
+      NODES.forEach(n => { if (groups[n.type]) groups[n.type].push(n); });
+      for (const [type, grp] of Object.entries(groups)) {
+        const r = typeR[type] || 30;
+        grp.forEach((n, i) => { pos[n.id] = fibPt(i, grp.length, r); });
+      }
+      // Light force-repulsion to spread nodes
+      const keys = Object.keys(pos);
+      for (let step = 0; step < 60; step++) {
+        for (let i = 0; i < keys.length; i++) {
+          for (let j = i + 1; j < keys.length; j++) {
+            const a = pos[keys[i]], b = pos[keys[j]];
+            const d = a.distanceTo(b) || 1;
+            const min = 7;
+            if (d < min) {
+              const f = (min - d) * 0.1;
+              const dir = b.clone().sub(a).normalize().multiplyScalar(f);
+              if (keys[i] !== 'core') a.sub(dir);
+              if (keys[j] !== 'core') b.add(dir);
+            }
+          }
+        }
+      }
+    } else if (formation === 'sphere') {
+      NODES.forEach((n, i) => { pos[n.id] = fibPt(i, NODES.length, 22); });
+    } else if (formation === 'helix') {
+      const N = NODES.length;
+      NODES.forEach((n, i) => {
+        const r = 8, turns = 3;
+        const th = (i / N) * Math.PI * 2 * turns;
+        const y  = (i / N) * 28 - 14;
+        const off = i % 2 === 0 ? 0 : Math.PI;
+        pos[n.id] = new THREE.Vector3(r * Math.cos(th + off), y, r * Math.sin(th + off));
+      });
+    }
+    return pos;
+  }
+
+  /* ── Wait for DOM ─────────────────────────────────────────── */
+  function init3D() {
+    const canvas = document.getElementById('kb-canvas');
+    const stage  = document.getElementById('kb-stage');
+    if (!canvas || !stage) return;
+
+    const W = () => stage.clientWidth  || 900;
+    const H = () => stage.clientHeight || 640;
+
+    /* ── Renderer ────────────────────────────────────────────── */
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W(), H());
+    renderer.setClearColor(0x020503);
+
+    /* ── Camera + scene ──────────────────────────────────────── */
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, W() / H(), 0.1, 500);
+    camera.position.set(0, 0, 52);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping  = true;
+    controls.dampingFactor  = 0.05;
+    controls.minDistance    = 8;
+    controls.maxDistance    = 120;
+
+    /* ── Lights ──────────────────────────────────────────────── */
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const pl1 = new THREE.PointLight(0x2dd4bf, 1.8);
+    pl1.position.set(10, 10, 10);
+    scene.add(pl1);
+    const pl2 = new THREE.PointLight(0xf472b6, 1.0);
+    pl2.position.set(-10, -10, -10);
+    scene.add(pl2);
+
+    /* ── Stars ───────────────────────────────────────────────── */
+    const starPts = [];
+    for (let i = 0; i < 2000; i++) { const p = fibPt(i, 2000, 90); starPts.push(p.x, p.y, p.z); }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPts, 3));
+    scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14, transparent: true, opacity: 0.45 })));
+
+    /* ── Particle swarm ──────────────────────────────────────── */
+    const PC = 2500;
+    const particleMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uSize: { value: 2.2 },
+        uColor:   { value: new THREE.Color(0x2dd4bf) },
+        uOpacity: { value: 0.6 },
+        uBreath:  { value: 0.05 },
+      },
+      vertexShader: `
+        uniform float uTime; uniform float uSize; uniform float uBreath;
+        void main() {
+          float b = 1.0 + sin(uTime * 1.2 + (position.x + position.y) * 0.1) * uBreath;
+          float w = sin(uTime * 1.5 + position.x * 0.2) * 0.15;
+          vec3 p = position * b; p.y += w * b;
+          vec4 mv = modelViewMatrix * vec4(p, 1.0);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = uSize * (300.0 / -mv.z);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor; uniform float uOpacity;
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          if (d > 0.5) discard;
+          gl_FragColor = vec4(uColor, uOpacity * (1.0 - d * 2.0));
+        }
+      `,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    });
+    const pArr = new Float32Array(PC * 3);
+    for (let i = 0; i < PC; i++) { const p = fibPt(i, PC, 20); pArr[i*3]=p.x; pArr[i*3+1]=p.y; pArr[i*3+2]=p.z; }
+    const partGeo = new THREE.BufferGeometry();
+    partGeo.setAttribute('position', new THREE.BufferAttribute(pArr, 3));
+    const particles = new THREE.Points(partGeo, particleMat);
+
+    /* Formation particle targets */
+    const pSphere = new Float32Array(PC * 3);
+    const pHelix  = new Float32Array(PC * 3);
+    const pConst  = new Float32Array(PC * 3); // built after nodes settle
+    for (let i = 0; i < PC; i++) {
+      const sp = fibPt(i, PC, 20); pSphere[i*3]=sp.x; pSphere[i*3+1]=sp.y; pSphere[i*3+2]=sp.z;
+      const ht = (i/PC)*Math.PI*2*7; const hr = 7; const hy = (i/PC)*28-14;
+      pHelix[i*3]=hr*Math.cos(ht); pHelix[i*3+1]=hy; pHelix[i*3+2]=hr*Math.sin(ht);
+    }
+    function buildConstellationParticles(nodeMap) {
+      const nl = NODES.map(n => nodeMap[n.id] || new THREE.Vector3());
+      for (let i = 0; i < PC; i++) {
+        const node = nl[i % nl.length];
+        const r = Math.random() * 2.5 + 0.4;
+        const phi = Math.random() * Math.PI * 2; const t2 = Math.random() * Math.PI;
+        pConst[i*3]   = node.x + r*Math.cos(phi)*Math.sin(t2);
+        pConst[i*3+1] = node.y + r*Math.sin(phi)*Math.sin(t2);
+        pConst[i*3+2] = node.z + r*Math.cos(t2);
+      }
+    }
+
+    /* ── Node meshes ──────────────────────────────────────────── */
+    const nodeMap   = {};   // id → { group, targetPos }
+    const nodeGroup = new THREE.Group();
+    let   targets   = computeTargets('constellation');
+    buildConstellationParticles(targets);
+    Object.assign(pConst, pConst);
+
+    NODES.forEach(n => {
+      const color = new THREE.Color(n.color);
+      const s     = n.type==='core'?1.0 : n.type==='project'?0.78 : n.type==='system'?0.58 : 0.44;
+      const g     = new THREE.Group();
+
+      // Core sphere
+      const sm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.75 });
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.35*s, 14, 14), sm));
+
+      // Glow halo
+      const gm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending });
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(0.62*s, 14, 14), gm));
+
+      // Orbit ring
+      const rm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.22, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.5*s, 0.58*s, 32), rm);
+      ring.rotation.x = Math.PI / 2;
+      g.add(ring);
+
+      const tp = targets[n.id] || new THREE.Vector3();
+      g.position.copy(tp);
+      nodeMap[n.id] = { group: g, targetPos: tp.clone(), mat: sm, glowMat: gm, ringMat: rm };
+      nodeGroup.add(g);
+    });
+
+    /* ── Link segments ──────────────────────────────────────── */
+    const linkArr = new Float32Array(LINKS.length * 6);
+    const linkGeo = new THREE.BufferGeometry();
+    linkGeo.setAttribute('position', new THREE.BufferAttribute(linkArr, 3));
+    const linkLines = new THREE.LineSegments(linkGeo,
+      new THREE.LineBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending }));
+
+    /* ── Rotation group ─────────────────────────────────────── */
+    const rotGroup = new THREE.Group();
+    rotGroup.add(nodeGroup, linkLines, particles);
+    scene.add(rotGroup);
+
+    /* ── Raycaster for click ─────────────────────────────────── */
+    const raycaster = new THREE.Raycaster();
+    raycaster.params.Points = { threshold: 0.6 };
+    const mouse = new THREE.Vector2();
+
+    // Build raycaster targets (invisible larger spheres)
+    const hitMeshes = [];
+    NODES.forEach(n => {
+      const s = n.type==='core'?1.6:n.type==='project'?1.3:n.type==='system'?1.1:0.9;
+      const hm = new THREE.Mesh(new THREE.SphereGeometry(s, 8, 8), new THREE.MeshBasicMaterial({ visible: false }));
+      hm.userData.nodeId = n.id;
+      nodeMap[n.id].hitMesh = hm;
+      nodeMap[n.id].group.add(hm);
+      hitMeshes.push(hm);
+    });
+
+    let selectedId = null;
+    function updateNodeInfo(id) {
+      const panel = document.getElementById('kb-info');
+      const typeEl = document.getElementById('kb-info-type');
+      const nameEl = document.getElementById('kb-info-name');
+      const descEl = document.getElementById('kb-info-desc');
+      if (!panel) return;
+      if (!id) { panel.style.opacity = '0'; return; }
+      const node = NODES.find(n => n.id === id);
+      if (!node) return;
+      panel.style.opacity = '1';
+      if (typeEl) { typeEl.textContent = node.type.toUpperCase(); typeEl.style.color = node.color; }
+      if (nameEl) nameEl.textContent = node.name;
+      if (descEl) descEl.textContent = NODE_DESC[id] || '';
+    }
+
+    renderer.domElement.addEventListener('click', e => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x =  (e.clientX - rect.left) / rect.width  * 2 - 1;
+      mouse.y = -(e.clientY - rect.top)  / rect.height * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(hitMeshes);
+      if (hits.length > 0) {
+        const nid = hits[0].object.userData.nodeId;
+        selectedId = selectedId === nid ? null : nid;
+        updateNodeInfo(selectedId);
+        // Visual feedback: highlight selected
+        NODES.forEach(n => {
+          const nm = nodeMap[n.id];
+          const isSel = n.id === selectedId;
+          nm.mat.opacity      = isSel ? 1.0 : selectedId ? 0.25 : 0.75;
+          nm.glowMat.opacity  = isSel ? 0.3  : selectedId ? 0.04 : 0.12;
+          nm.ringMat.opacity  = isSel ? 0.65 : selectedId ? 0.06 : 0.22;
+        });
+      } else {
+        selectedId = null;
+        updateNodeInfo(null);
+        NODES.forEach(n => { nodeMap[n.id].mat.opacity=0.75; nodeMap[n.id].glowMat.opacity=0.12; nodeMap[n.id].ringMat.opacity=0.22; });
+      }
+    });
+
+    /* ── Formation switch (exposed to window for HTML onclick) ── */
+    window.kb3dSetFormation = (f) => {
+      document.querySelectorAll('.kb-form-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-f')===f));
+      targets = computeTargets(f);
+      NODES.forEach(n => { if (targets[n.id]) nodeMap[n.id].targetPos.copy(targets[n.id]); });
+      if (f === 'constellation') buildConstellationParticles(targets);
+      curFormation = f;
+    };
+    let curFormation = 'constellation';
+
+    /* ── Resize ─────────────────────────────────────────────── */
+    new ResizeObserver(() => {
+      const w = W(), h = H();
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }).observe(stage);
+
+    /* ── Animation loop ─────────────────────────────────────── */
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      // Particle shader time
+      particleMat.uniforms.uTime.value = t;
+
+      // Auto-rotate (pauses while user drags)
+      rotGroup.rotation.y = t * 0.055;
+
+      // Lerp node positions
+      NODES.forEach(n => {
+        const nm = nodeMap[n.id];
+        nm.group.position.lerp(nm.targetPos, 0.06);
+      });
+
+      // Update link geometry from live node positions
+      LINKS.forEach((link, i) => {
+        const s = nodeMap[link.s]?.group.position;
+        const e = nodeMap[link.t]?.group.position;
+        if (s && e) {
+          linkArr[i*6]=s.x; linkArr[i*6+1]=s.y; linkArr[i*6+2]=s.z;
+          linkArr[i*6+3]=e.x; linkArr[i*6+4]=e.y; linkArr[i*6+5]=e.z;
+        }
+      });
+      linkGeo.getAttribute('position').needsUpdate = true;
+
+      // Lerp particles toward formation target
+      const tgt = curFormation==='sphere' ? pSphere : curFormation==='helix' ? pHelix : pConst;
+      const pa  = partGeo.getAttribute('position').array;
+      let dirty = false;
+      for (let i = 0; i < PC*3; i++) {
+        const diff = tgt[i] - pa[i];
+        if (Math.abs(diff) > 0.005) { pa[i] += diff * 0.04; dirty = true; }
+      }
+      if (dirty) partGeo.getAttribute('position').needsUpdate = true;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+
+  // Delay init until the section is in/near the viewport (IntersectionObserver)
+  const observer = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { observer.disconnect(); init3D(); }
+  }, { rootMargin: '200px' });
+  const stage = document.getElementById('kb-stage');
+  if (stage) observer.observe(stage); else init3D();
+  </script>
+</body>
+</html>
