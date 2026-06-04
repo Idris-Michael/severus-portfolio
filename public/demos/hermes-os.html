@@ -2,207 +2,404 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Hermes OS — Mission Control | Idris Bakare</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0D0D12;color:#F5F5F7;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
-.mono{font-family:'Courier New',monospace}
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:#0D0D12/90;backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 32px;display:flex;justify-content:space-between;align-items:center}
-.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.15em;transition:color .2s}
-.back:hover{color:#F97316}
-.badge-stack{display:flex;gap:8px;flex-wrap:wrap}
-.badge{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:3px 10px;border-radius:4px}
-/* HERO */
-.hero{padding:60px 32px 40px;border-bottom:1px solid rgba(255,255,255,.06)}
-.eyebrow{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.3em;color:#38bdf8;margin-bottom:16px}
-h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;margin-bottom:16px}
-h1 em{font-style:italic;color:#F97316;font-family:Georgia,serif;font-weight:400}
-.desc{color:rgba(255,255,255,.6);max-width:600px;line-height:1.7;font-size:15px}
-/* LAYOUT */
-.shell{display:grid;grid-template-columns:200px 1fr;height:calc(100vh - 200px);min-height:500px;border-top:1px solid rgba(255,255,255,.06)}
+:root{
+  --bg:#07080d;--panel:#0c0d14;--surface:#12131c;--surface2:#181920;--line:rgba(255,255,255,.07);
+  --fg:#f0f0f8;--muted:#6b6d88;--gold:#f59e0b;--gold2:#fbbf24;--gold-dim:rgba(245,158,11,.1);
+  --blue:#60a5fa;--green:#34d399;--red:#f87171;--violet:#a78bfa;--mono:'Courier New',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-rows:48px 1fr 32px;height:100vh}
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 0 0 0;background:var(--panel);border-bottom:1px solid var(--line);overflow:hidden}
+.topbar-left{display:flex;align-items:center;gap:0;height:100%}
+.back{color:var(--muted);text-decoration:none;font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.15em;padding:0 16px;height:100%;display:flex;align-items:center;border-right:1px solid var(--line);transition:color .15s}.back:hover{color:var(--gold)}
+.brand{display:flex;align-items:center;gap:10px;padding:0 18px;height:100%;border-right:1px solid var(--line)}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px rgba(245,158,11,.5);animation:pulse-g 2s ease-in-out infinite}
+@keyframes pulse-g{0%,100%{opacity:1}50%{opacity:.5}}
+.brand-name{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--fg)}
+.brand-ver{font-size:9px;font-family:var(--mono);color:var(--muted);margin-left:2px}
+.agent-chips{display:flex;align-items:center;gap:6px;padding:0 16px;height:100%}
+.chip{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:10px;display:flex;align-items:center;gap:4px}
+.chip-active{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--green)}
+.chip-standby{background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.chip-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.topbar-right{display:flex;gap:6px;align-items:center;padding:0 16px}
+.badge{font-size:9px;font-family:var(--mono);text-transform:uppercase;border:1px solid var(--line);color:var(--muted);padding:2px 8px;border-radius:3px}
+.badge.gold{border-color:rgba(245,158,11,.35);color:var(--gold);background:rgba(245,158,11,.06)}
+/* BODY */
+.body{display:grid;grid-template-columns:180px 1fr;overflow:hidden}
 /* SIDEBAR */
-aside{border-right:1px solid rgba(255,255,255,.06);padding:20px 0;background:#0a0a0f}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:12px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
-.nav-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.03)}
-.nav-item.active{color:#F97316;border-left-color:#F97316;background:rgba(249,115,22,.05)}
+aside{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+.sb-group-label{padding:14px 16px 6px;font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.18)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.nav-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.025)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim)}
 .nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-/* MAIN PANEL */
-main{overflow-y:auto;padding:24px}
-.panel{display:none}
+.nav-item.active .nav-dot{animation:pulse-g 2s ease-in-out infinite}
+.sb-spacer{flex:1}
+.sb-footer{padding:12px 16px;border-top:1px solid var(--line);font-size:9px;font-family:var(--mono);color:var(--muted);line-height:1.6}
+/* MAIN */
+main{overflow-y:auto;background:var(--bg)}
+main::-webkit-scrollbar{width:4px}
+main::-webkit-scrollbar-thumb{background:var(--surface2)}
+.panel{display:none;padding:24px}
 .panel.active{display:block}
-/* OVERVIEW STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
-.stat{background:#15151A;border:1px solid rgba(255,255,255,.08);padding:16px;border-radius:6px}
-.stat-val{font-size:2rem;font-weight:900;color:#fff;line-height:1}
-.stat-label{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-top:6px}
-.stat-delta{font-size:11px;color:#22c55e;margin-top:4px}
+.section-title{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.25em;color:rgba(255,255,255,.25);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--surface);border:1px solid var(--line);padding:16px;border-radius:8px;transition:border-color .15s}
+.stat:hover{border-color:rgba(245,158,11,.25)}
+.stat-val{font-size:1.8rem;font-weight:900;color:var(--fg);line-height:1;margin-bottom:4px}
+.stat-label{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.stat-delta{font-size:10px;color:var(--green);margin-top:4px;font-family:var(--mono)}
+/* RUN LOG */
+.run-list{display:flex;flex-direction:column;gap:10px}
+.run{background:var(--surface);border:1px solid var(--line);padding:14px 16px;border-radius:8px;transition:border-color .15s}
+.run:hover{border-color:rgba(245,158,11,.2)}
+.run-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.run-skill{font-size:11px;font-family:var(--mono);color:var(--gold);letter-spacing:.05em}
+.run-meta{display:flex;gap:8px;align-items:center}
+.run-time{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.run-badge{font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:2px 8px;border-radius:10px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--green)}
+.run-prompt{font-size:12px;color:rgba(240,240,248,.75);margin-bottom:8px;line-height:1.5}
+.run-output{font-size:11px;color:var(--muted);font-family:var(--mono);border-left:2px solid rgba(245,158,11,.3);padding-left:10px;line-height:1.65}
 /* KANBAN */
 .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.col-header{font-size:10px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.15em;padding:8px 12px;border-top:2px solid;margin-bottom:10px}
-.col-todo .col-header{border-color:#555;color:#888}
-.col-progress .col-header{border-color:#F97316;color:#F97316}
-.col-review .col-header{border-color:#3b82f6;color:#3b82f6}
-.col-done .col-header{border-color:#22c55e;color:#22c55e}
-.card{background:#15151A;border:1px solid rgba(255,255,255,.07);padding:10px 12px;border-radius:4px;margin-bottom:8px;font-size:12px;cursor:pointer;transition:border-color .15s}
-.card:hover{border-color:rgba(255,255,255,.2)}
-.card-title{color:#fff;margin-bottom:6px;font-weight:600}
-.card-tag{display:inline-block;font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:2px 6px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);color:#F97316;border-radius:3px}
+.col-header{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.18em;padding:8px 12px;border-top:2px solid;margin-bottom:10px;border-radius:2px}
+.col-todo .col-header{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.35);background:rgba(255,255,255,.03)}
+.col-progress .col-header{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.col-review .col-header{border-color:var(--blue);color:var(--blue);background:rgba(96,165,250,.06)}
+.col-done .col-header{border-color:var(--green);color:var(--green);background:rgba(52,211,153,.05)}
+.card{background:var(--surface);border:1px solid var(--line);padding:10px 12px;border-radius:6px;margin-bottom:8px;font-size:12px;cursor:pointer;transition:all .12s}
+.card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-2px)}
+.card-title{color:var(--fg);margin-bottom:7px;font-weight:600;line-height:1.3}
+.card-tag{display:inline-block;font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:2px 7px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);color:var(--gold);border-radius:3px}
 /* AGENTS */
-.agent-list{display:grid;gap:10px}
-.agent-row{display:grid;grid-template-columns:140px 1fr auto;align-items:center;gap:16px;background:#15151A;border:1px solid rgba(255,255,255,.07);padding:14px 16px;border-radius:6px;transition:border-color .15s}
-.agent-row:hover{border-color:rgba(249,115,22,.3)}
-.agent-name{font-size:12px;font-family:'Courier New',monospace;color:#F97316}
-.agent-role{font-size:12px;color:rgba(255,255,255,.6)}
-.status-pill{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:3px 8px;border-radius:12px;white-space:nowrap}
-.status-active{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#22c55e}
-.status-standby{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4)}
-/* RUN LOG */
-.run-list{display:grid;gap:10px}
-.run{background:#15151A;border:1px solid rgba(255,255,255,.07);padding:14px 16px;border-radius:6px}
-.run-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.run-skill{font-size:11px;font-family:'Courier New',monospace;color:#38bdf8}
-.run-time{font-size:10px;color:rgba(255,255,255,.3);font-family:'Courier New',monospace}
-.run-prompt{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:8px}
-.run-output{font-size:11px;color:rgba(255,255,255,.45);font-family:'Courier New',monospace;border-left:2px solid rgba(249,115,22,.3);padding-left:10px;line-height:1.6}
-.run-done{display:inline-block;font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#22c55e}
+.agent-list{display:flex;flex-direction:column;gap:10px}
+.agent-row{display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);padding:14px 16px;border-radius:8px;transition:border-color .15s}
+.agent-row:hover{border-color:rgba(245,158,11,.25)}
+.agent-name{font-size:12px;font-family:var(--mono);color:var(--gold);letter-spacing:.05em}
+.agent-role{font-size:12px;color:var(--muted);line-height:1.45}
+.status-pill{font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:3px 9px;border-radius:10px;white-space:nowrap}
+.status-active{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:var(--green)}
+.status-standby{background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
 /* CRM */
-.crm-grid{display:grid;gap:10px}
-.client{background:#15151A;border:1px solid rgba(255,255,255,.07);padding:14px 16px;border-radius:6px;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:16px}
-.client-name{font-size:13px;font-weight:700;color:#fff}
-.client-service{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
-.client-value{font-size:13px;font-weight:700;color:#22c55e;font-family:'Courier New',monospace}
-.status-active-c{font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:3px 8px;border-radius:12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#22c55e}
-.status-proposal{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);color:#F97316;font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:3px 8px;border-radius:12px}
-.status-prospect{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#3b82f6;font-size:9px;font-family:'Courier New',monospace;text-transform:uppercase;padding:3px 8px;border-radius:12px}
-/* SYSTEM STATUS BAR */
-.statusbar{background:#0a0a0f;border-top:1px solid rgba(255,255,255,.06);padding:8px 32px;display:flex;justify-content:space-between;align-items:center;font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.3)}
-.pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;margin-right:6px}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.section-title{font-size:11px;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.crm-grid{display:flex;flex-direction:column;gap:10px}
+.client-row{background:var(--surface);border:1px solid var(--line);padding:14px 16px;border-radius:8px;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:16px;transition:border-color .15s}
+.client-row:hover{border-color:rgba(245,158,11,.25)}
+.client-name{font-size:13px;font-weight:700;color:var(--fg)}
+.client-service{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+.client-value{font-size:14px;font-weight:900;color:var(--green);font-family:var(--mono)}
+.st-active{font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:3px 9px;border-radius:10px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:var(--green)}
+.st-proposal{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:var(--gold);font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:3px 9px;border-radius:10px}
+.st-prospect{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:var(--blue);font-size:9px;font-family:var(--mono);text-transform:uppercase;padding:3px 9px;border-radius:10px}
+/* BOTTOM BAR */
+.bottombar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--panel);border-top:1px solid var(--line);font-size:10px;font-family:var(--mono);color:var(--muted)}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;animation:pulse-g 2s ease-in-out infinite}
+@media(max-width:680px){
+  .body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line)}
+  .sb-group-label,.sb-spacer,.sb-footer{display:none}
+  .nav-item{padding:10px 14px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap}
+  .nav-item.active{border-bottom-color:var(--gold);border-left:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .kanban{grid-template-columns:1fr 1fr}
+  .agent-row{grid-template-columns:1fr auto}
+  .agent-role{display:none}
+  .client-row{grid-template-columns:1fr auto}
+  .client-service{display:none}
+  .agent-chips{display:none}
+}
 </style>
 </head>
 <body>
-
-<nav>
-  <a class="back" href="/">← Back to Portfolio</a>
-  <div class="badge-stack">
-    <span class="badge">React</span>
-    <span class="badge">TypeScript</span>
-    <span class="badge">SQLite</span>
-    <span class="badge">Claude API</span>
-    <span class="badge">Express</span>
-  </div>
-</nav>
-
-<div class="hero">
-  <div class="eyebrow">Demo 01 // Hermes OS</div>
-  <h1>Agency Mission <em>Control.</em></h1>
-  <p class="desc">8-agent permission-gated operating system for Severus Connects. Kanban, CRM, live agent registry, run history — everything the agency runs on, in one dashboard.</p>
-</div>
-
 <div class="shell">
-  <aside>
-    <div class="nav-item active" onclick="show('overview')"><span class="nav-dot"></span>Overview</div>
-    <div class="nav-item" onclick="show('kanban')"><span class="nav-dot"></span>Kanban</div>
-    <div class="nav-item" onclick="show('agents')"><span class="nav-dot"></span>Agents</div>
-    <div class="nav-item" onclick="show('runs')"><span class="nav-dot"></span>Run Log</div>
-    <div class="nav-item" onclick="show('crm')"><span class="nav-dot"></span>CRM</div>
-  </aside>
 
-  <main>
-    <!-- OVERVIEW -->
-    <div class="panel active" id="overview">
-      <div class="section-title">System Overview</div>
-      <div class="stats-grid">
-        <div class="stat"><div class="stat-val">47</div><div class="stat-label">Total Runs</div><div class="stat-delta">↑ 12 this week</div></div>
-        <div class="stat"><div class="stat-val">44</div><div class="stat-label">Successful</div><div class="stat-delta">93.6% success rate</div></div>
-        <div class="stat"><div class="stat-val">6</div><div class="stat-label">Clients</div><div class="stat-delta">3 active</div></div>
-        <div class="stat"><div class="stat-val">£14.8k</div><div class="stat-label">Pipeline</div><div class="stat-delta">↑ £2.3k this month</div></div>
-        <div class="stat"><div class="stat-val">8</div><div class="stat-label">Agents</div><div class="stat-delta">All nominal</div></div>
-        <div class="stat"><div class="stat-val">312</div><div class="stat-label">Vault Notes</div><div class="stat-delta">↑ 18 today</div></div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="back" href="/">← Portfolio</a>
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Hermes OS</span>
+        <span class="brand-ver">v1.0</span>
       </div>
-      <div class="section-title">Recent Activity</div>
-      <div class="run-list">
-        <div class="run"><div class="run-header"><span class="run-skill">GA4 Audit</span><span class="run-done">done</span></div><div class="run-prompt">Run a full GA4 audit for OzBarbers ecommerce site</div><div class="run-output">Found 3 missing conversion events. GTM container verified. DebugView active.</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">Morning Brief</span><span class="run-done">done</span></div><div class="run-prompt">Compile morning brief for today</div><div class="run-output">Top priorities: 1) Send OzBarbers proposal 2) Follow up Upwork lead 3) Review n8n workflow</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">Proposal Draft</span><span class="run-done">done</span></div><div class="run-prompt">Draft proposal for ecommerce GA4 setup client</div><div class="run-output">Proposal drafted. Scope: GA4 setup, GTM, 8 conversion events. Investment: £1,200.</div></div>
+      <div class="agent-chips">
+        <span class="chip chip-active"><span class="chip-dot"></span>Gateway</span>
+        <span class="chip chip-active"><span class="chip-dot"></span>Analytics</span>
+        <span class="chip chip-active"><span class="chip-dot"></span>Intake</span>
+        <span class="chip chip-active"><span class="chip-dot"></span>Reporting</span>
+        <span class="chip chip-standby"><span class="chip-dot"></span>ShoppingAds</span>
       </div>
     </div>
+    <div class="topbar-right">
+      <span class="badge">React</span>
+      <span class="badge">TypeScript</span>
+      <span class="badge">SQLite</span>
+      <span class="badge gold">8 Agents</span>
+    </div>
+  </div>
 
-    <!-- KANBAN -->
-    <div class="panel" id="kanban">
-      <div class="section-title">Project Board</div>
-      <div class="kanban">
-        <div class="col-todo"><div class="col-header">To Do</div>
-          <div class="card"><div class="card-title">LinkedIn 60s Reel</div><span class="card-tag">Marketing</span></div>
-          <div class="card"><div class="card-title">Import n8n workflows</div><span class="card-tag">Automation</span></div>
+  <!-- BODY -->
+  <div class="body">
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="sb-group-label">Workspace</div>
+      <div class="nav-item active" onclick="show('overview',this)"><span class="nav-dot"></span>Overview</div>
+      <div class="nav-item" onclick="show('kanban',this)"><span class="nav-dot"></span>Kanban</div>
+      <div class="nav-item" onclick="show('agents',this)"><span class="nav-dot"></span>Agents</div>
+      <div class="nav-item" onclick="show('runs',this)"><span class="nav-dot"></span>Run Log</div>
+      <div class="nav-item" onclick="show('crm',this)"><span class="nav-dot"></span>CRM</div>
+      <div class="sb-spacer"></div>
+      <div class="sb-footer">
+        47 runs · 6 clients<br>
+        £14.8k pipeline<br>
+        System nominal
+      </div>
+    </aside>
+
+    <!-- MAIN PANELS -->
+    <main>
+
+      <!-- OVERVIEW -->
+      <div class="panel active" id="overview">
+        <div class="section-title">System Overview</div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-val">47</div>
+            <div class="stat-label">Total Runs</div>
+            <div class="stat-delta">↑ 12 this week</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">44</div>
+            <div class="stat-label">Successful</div>
+            <div class="stat-delta">93.6% success rate</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">6</div>
+            <div class="stat-label">Clients</div>
+            <div class="stat-delta">3 active · 3 pipeline</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" style="color:var(--green)">£14.8k</div>
+            <div class="stat-label">Pipeline Value</div>
+            <div class="stat-delta">↑ £2.3k this month</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">8</div>
+            <div class="stat-label">Agents</div>
+            <div class="stat-delta">5 active · 3 standby</div>
+          </div>
+          <div class="stat">
+            <div class="stat-val" style="color:var(--violet)">312</div>
+            <div class="stat-label">Vault Notes</div>
+            <div class="stat-delta">↑ 18 today</div>
+          </div>
         </div>
-        <div class="col-progress"><div class="col-header">In Progress</div>
-          <div class="card"><div class="card-title">Deploy OS to Vercel</div><span class="card-tag">Infrastructure</span></div>
-          <div class="card"><div class="card-title">OzBarbers GA4 — Conversion Events</div><span class="card-tag">Client</span></div>
+
+        <div class="section-title">Recent Activity</div>
+        <div class="run-list">
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">GA4 Audit · Analytics Agent</span>
+              <div class="run-meta"><span class="run-time">1h ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Run a full GA4 audit for OzBarbers ecommerce site</div>
+            <div class="run-output">Found 3 missing conversion events. GTM container verified. DebugView active. purchase event not configured — flagged as HIGH priority. Report saved to vault.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">Morning Brief · Gateway</span>
+              <div class="run-meta"><span class="run-time">1d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Compile morning brief for today</div>
+            <div class="run-output">Top priorities: 1) Send OzBarbers proposal 2) Follow up Upwork lead (replied 6h ago) 3) Review n8n workflow 08 before deploy. 2 calendar blocks today.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">Proposal Draft · Proposer Agent</span>
+              <div class="run-meta"><span class="run-time">2d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Draft proposal for ecommerce GA4 setup client</div>
+            <div class="run-output">Proposal drafted. Scope: GA4 setup, GTM container, 8 conversion events, DebugView verification. Investment: £1,200. PDF generated and ready to send.</div>
+          </div>
         </div>
-        <div class="col-review"><div class="col-header">Review</div>
-          <div class="card"><div class="card-title">Bloom & Wild Proposal</div><span class="card-tag">Sales</span></div>
+      </div>
+
+      <!-- KANBAN -->
+      <div class="panel" id="kanban">
+        <div class="section-title">Project Board</div>
+        <div class="kanban">
+          <div class="col-todo">
+            <div class="col-header">To Do</div>
+            <div class="card"><div class="card-title">LinkedIn 60s Reel</div><span class="card-tag">Marketing</span></div>
+            <div class="card"><div class="card-title">Import n8n workflows</div><span class="card-tag">Automation</span></div>
+            <div class="card"><div class="card-title">TechStack onboarding call</div><span class="card-tag">Sales</span></div>
+          </div>
+          <div class="col-progress">
+            <div class="col-header">In Progress</div>
+            <div class="card"><div class="card-title">Deploy OS to Vercel</div><span class="card-tag">Infrastructure</span></div>
+            <div class="card"><div class="card-title">OzBarbers GA4 — Conversion Events</div><span class="card-tag">Client</span></div>
+          </div>
+          <div class="col-review">
+            <div class="col-header">Review</div>
+            <div class="card"><div class="card-title">Bloom & Wild Proposal</div><span class="card-tag">Sales</span></div>
+            <div class="card"><div class="card-title">Agent permission audit</div><span class="card-tag">Infra</span></div>
+          </div>
+          <div class="col-done">
+            <div class="col-header">Done</div>
+            <div class="card"><div class="card-title">CV Web Version</div><span class="card-tag">Personal</span></div>
+            <div class="card"><div class="card-title">Agent Stack Docs</div><span class="card-tag">Infra</span></div>
+            <div class="card"><div class="card-title">n8n lead capture WF</div><span class="card-tag">Automation</span></div>
+          </div>
         </div>
-        <div class="col-done"><div class="col-header">Done</div>
-          <div class="card"><div class="card-title">CV Web Version</div><span class="card-tag">Personal</span></div>
-          <div class="card"><div class="card-title">Agent Stack Docs</div><span class="card-tag">Infra</span></div>
+      </div>
+
+      <!-- AGENTS -->
+      <div class="panel" id="agents">
+        <div class="section-title">Agent Registry — 8 agents connected</div>
+        <div class="agent-list">
+          <div class="agent-row">
+            <span class="agent-name">Severus-Gateway</span>
+            <span class="agent-role">Routes clients, enforces quality gates and permission checks across all service agents</span>
+            <span class="status-pill status-active">Active</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">Analytics</span>
+            <span class="agent-role">GA4 setup, conversion tracking, GTM, DebugView verification and audit reports</span>
+            <span class="status-pill status-active">Active</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">Intake</span>
+            <span class="agent-role">Client onboarding, brief building, NotebookLM KB creation and cross-referencing</span>
+            <span class="status-pill status-active">Active</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">ShoppingAds</span>
+            <span class="agent-role">Shopping campaign setup, product feed QA, merchant centre diagnostics</span>
+            <span class="status-pill status-standby">Standby</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">PerformanceAds</span>
+            <span class="agent-role">PMax campaigns, smart bidding strategy and performance monitoring</span>
+            <span class="status-pill status-standby">Standby</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">Reporting</span>
+            <span class="agent-role">Weekly performance reports, GA4 + Ads data pull, Claude-summarised client emails</span>
+            <span class="status-pill status-active">Active</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">Proposer</span>
+            <span class="agent-role">Proposal generation, pricing strategy, PDF rendering and Gmail delivery</span>
+            <span class="status-pill status-active">Active</span>
+          </div>
+          <div class="agent-row">
+            <span class="agent-name">Outreach</span>
+            <span class="agent-role">Lead generation sequences, Upwork outreach and 30-day nurture automation</span>
+            <span class="status-pill status-standby">Standby</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- AGENTS -->
-    <div class="panel" id="agents">
-      <div class="section-title">Agent Registry — 8 agents connected</div>
-      <div class="agent-list">
-        <div class="agent-row"><span class="agent-name">Severus-Gateway</span><span class="agent-role">Routes clients, enforces quality gates across all service agents</span><span class="status-pill status-active">Active</span></div>
-        <div class="agent-row"><span class="agent-name">Analytics</span><span class="agent-role">GA4 setup, conversion tracking, GTM, DebugView verification</span><span class="status-pill status-active">Active</span></div>
-        <div class="agent-row"><span class="agent-name">Intake</span><span class="agent-role">Client onboarding, brief building, NotebookLM KB creation</span><span class="status-pill status-active">Active</span></div>
-        <div class="agent-row"><span class="agent-name">ShoppingAds</span><span class="agent-role">Shopping campaign setup and product feed QA</span><span class="status-pill status-standby">Standby</span></div>
-        <div class="agent-row"><span class="agent-name">PerformanceAds</span><span class="agent-role">PMax campaigns and smart bidding strategy</span><span class="status-pill status-standby">Standby</span></div>
-        <div class="agent-row"><span class="agent-name">Reporting</span><span class="agent-role">Weekly performance reports and client summaries</span><span class="status-pill status-active">Active</span></div>
-        <div class="agent-row"><span class="agent-name">Proposer</span><span class="agent-role">Proposal generation and pricing strategy</span><span class="status-pill status-active">Active</span></div>
-        <div class="agent-row"><span class="agent-name">Outreach</span><span class="agent-role">Lead generation and Upwork outreach sequences</span><span class="status-pill status-active">Active</span></div>
+      <!-- RUNS -->
+      <div class="panel" id="runs">
+        <div class="section-title">Run History — last 5 sessions</div>
+        <div class="run-list">
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">GA4 Audit · Analytics Agent</span>
+              <div class="run-meta"><span class="run-time">1h ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Run a full GA4 audit for OzBarbers ecommerce site</div>
+            <div class="run-output">Audit complete. Found 3 missing conversion events. GTM container verified. DebugView active — recommend disabling. purchase event missing from GTM. Report saved to vault.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">Morning Brief · Gateway</span>
+              <div class="run-meta"><span class="run-time">1d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Compile morning brief for today</div>
+            <div class="run-output">Brief compiled. Top priorities: 1) Send OzBarbers proposal 2) Follow up Upwork lead 3) Review n8n workflow 08. Calendar: 2 calls booked. Saved to vault.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">Proposal Draft · Proposer Agent</span>
+              <div class="run-meta"><span class="run-time">2d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Draft proposal for ecommerce GA4 setup client</div>
+            <div class="run-output">Proposal drafted. Scope: GA4 setup, GTM container, 8 conversion events, DebugView verification. Investment: £1,200. PDF generated. Awaiting approval to send.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">Research · GitHub Trending</span>
+              <div class="run-meta"><span class="run-time">3d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Research top trending AI agent repos this week</div>
+            <div class="run-output">Found 10 trending repos. Top picks: browser-use (42k stars), agentql, magentic-one. Full summaries and integration notes saved to vault.</div>
+          </div>
+          <div class="run">
+            <div class="run-header">
+              <span class="run-skill">KB Audit · Analytics Agent</span>
+              <div class="run-meta"><span class="run-time">4d ago</span><span class="run-badge">done</span></div>
+            </div>
+            <div class="run-prompt">Audit Obsidian vault status and flag stale notes</div>
+            <div class="run-output">Vault audit complete. 312 notes, 4 empty, 18 folders. Recommended archiving 12 stale notes from March. 3 broken links fixed. Vault health: good.</div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- RUNS -->
-    <div class="panel" id="runs">
-      <div class="section-title">Run History</div>
-      <div class="run-list">
-        <div class="run"><div class="run-header"><span class="run-skill">GA4 Audit</span><div style="display:flex;gap:8px;align-items:center"><span class="run-time">1h ago</span><span class="run-done">done</span></div></div><div class="run-prompt">Run a full GA4 audit for OzBarbers ecommerce site</div><div class="run-output">Audit complete. Found 3 missing conversion events. GTM container verified. DebugView active. Report saved to vault.</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">Morning Brief</span><div style="display:flex;gap:8px;align-items:center"><span class="run-time">1d ago</span><span class="run-done">done</span></div></div><div class="run-prompt">Compile morning brief for today</div><div class="run-output">Brief compiled. Top priorities: 1) Send OzBarbers proposal 2) Follow up Upwork lead 3) Review n8n workflow 08. Saved to vault.</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">Proposal Draft</span><div style="display:flex;gap:8px;align-items:center"><span class="run-time">2d ago</span><span class="run-done">done</span></div></div><div class="run-prompt">Draft proposal for ecommerce GA4 setup client</div><div class="run-output">Proposal drafted. Scope: GA4 setup, GTM container, 8 conversion events, DebugView verification. Investment: £1,200.</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">GitHub Trending</span><div style="display:flex;gap:8px;align-items:center"><span class="run-time">3d ago</span><span class="run-done">done</span></div></div><div class="run-prompt">Research top trending AI agent repos this week</div><div class="run-output">Found 10 trending repos. Top picks: browser-use, agentql, magentic-one. Full summaries saved to vault.</div></div>
-        <div class="run"><div class="run-header"><span class="run-skill">KB Status</span><div style="display:flex;gap:8px;align-items:center"><span class="run-time">4d ago</span><span class="run-done">done</span></div></div><div class="run-prompt">Audit Obsidian vault status</div><div class="run-output">Vault audit complete. 312 notes, 4 empty, 18 folders. Recommended: archive 12 stale notes from March.</div></div>
+      <!-- CRM -->
+      <div class="panel" id="crm">
+        <div class="section-title">Client Relationship Manager</div>
+        <div class="crm-grid">
+          <div class="client-row">
+            <div>
+              <div class="client-name">OzBarbers London</div>
+              <div class="client-service">GA4 Setup + GTM · GTM container installed · 3 conversion events pending</div>
+            </div>
+            <div class="client-value">£1,200</div>
+            <span class="st-active">Active</span>
+          </div>
+          <div class="client-row">
+            <div>
+              <div class="client-name">Bloom & Wild</div>
+              <div class="client-service">GA4 Audit + Shopping Ads · Proposal sent, awaiting sign-off from marketing lead</div>
+            </div>
+            <div class="client-value">£2,800</div>
+            <span class="st-proposal">Proposal</span>
+          </div>
+          <div class="client-row">
+            <div>
+              <div class="client-name">TechStack SaaS</div>
+              <div class="client-service">Performance Max · Intro call booked · £4k/month ad spend · High-value prospect</div>
+            </div>
+            <div class="client-value">£3,500</div>
+            <span class="st-prospect">Prospect</span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- CRM -->
-    <div class="panel" id="crm">
-      <div class="section-title">Client Relationship Manager</div>
-      <div class="crm-grid">
-        <div class="client"><div><div class="client-name">OzBarbers London</div><div class="client-service">GA4 Setup + GTM · GTM container installed</div></div><div class="client-value">£1,200</div><span class="status-active-c">Active</span></div>
-        <div class="client"><div><div class="client-name">Bloom & Wild (Upwork)</div><div class="client-service">GA4 Audit + Shopping Ads · Proposal sent, awaiting sign-off</div></div><div class="client-value">£2,800</div><span class="status-proposal">Proposal</span></div>
-        <div class="client"><div><div class="client-name">TechStack SaaS</div><div class="client-service">Performance Max · Intro call booked, spending £4k/month</div></div><div class="client-value">£3,500</div><span class="status-prospect">Prospect</span></div>
-      </div>
-    </div>
-  </main>
-</div>
+    </main>
+  </div>
 
-<div class="statusbar">
-  <div><span class="pulse"></span>System Nominal · Hermes OS v1.0</div>
-  <div>8 agents · 47 runs · £14,800 pipeline</div>
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <span><span class="pulse-dot"></span>System Nominal · Hermes OS v1.0 · 8 agents registered</span>
+    <span>47 runs · 93.6% success · £14,800 pipeline · SQLite backend</span>
+  </div>
 </div>
 
 <script>
-function show(id) {
+function show(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
+  el.classList.add('active');
 }
 </script>
 </body>
