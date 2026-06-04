@@ -1,7 +1,7 @@
 import { WorldNav, WorldFooter, SectionHead } from './chrome';
 import { Reveal } from './Reveal';
 
-const ACCENT = '#F97316';
+const ACCENT = 'var(--accent)';
 
 const STACK = [
   { title: 'Hermes OS', tag: 'Multi-agent OS', desc: 'A custom operating system for an AI-run agency: agents, memory, permissions, telemetry on one surface.', href: '/demos/mission-control.html', cta: 'Open Mission Control' },
@@ -139,7 +139,9 @@ export function BackendWorld({ onSwitch }: { onSwitch?: () => void }) {
             <Reveal key={v.num} delay={i * 70}>
               <div className="rounded-2xl overflow-hidden h-full" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
                 <div className="relative aspect-video" style={{ background: '#000' }}>
-                  <video src={v.src} controls preload="metadata" playsInline className="w-full h-full object-cover" />
+                  <video src={v.src} controls preload="metadata" playsInline className="w-full h-full object-cover">
+                    <track kind="captions" src="" srcLang="en" label="English captions" default />
+                  </video>
                   <span className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded pointer-events-none" style={{ color: ACCENT, background: 'rgba(0,0,0,0.6)' }}>Demo {v.num}</span>
                 </div>
                 <div className="p-6">
