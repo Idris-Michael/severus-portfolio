@@ -125,7 +125,7 @@ export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
 
       {/* RECENT WORK — spotlight carousel */}
       <section id="work" className="px-6 md:px-12 py-24 max-w-7xl mx-auto w-full">
-        <SectionHead kicker="Recent work" title="What I've shipped lately." lead="Product dashboards, creative tools and marketing sites, designed and built end to end. Use ← → or swipe." />
+        <SectionHead kicker="Recent work" title="What I've shipped lately." lead="Product dashboards, creative tools, concepts and live demos, designed and built end to end. Use ← → or swipe." />
         <Reveal>
           <SpotlightCarousel items={RECENT_PROJECTS} />
         </Reveal>

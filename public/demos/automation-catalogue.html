@@ -1,0 +1,160 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Severus Automation Catalogue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Literata:opsz,wght@7..72,400;7..72,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a service menu read like workflow diagrams. Each system is a row: name + price on the left, its trigger → steps → result chain on the right. */
+:root {
+  --bg: #f3f5f2;
+  --surface: #ffffff;
+  --ink: #15212a;
+  --muted: #55626b;
+  --rule: #d5dbd6;
+  --accent: #2343c8;
+  --trigger: #0d7a5f;
+  --chip: #e8ece8;
+  --display: "Familjen Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Literata", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0f1519; --surface: #172028; --ink: #e7ece9; --muted: #9aa7ad; --rule: #2a3640; --accent: #8ea2ff; --trigger: #5fd0ad; --chip: #1f2a33; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0f1519; --surface: #172028; --ink: #e7ece9; --muted: #9aa7ad; --rule: #2a3640; --accent: #8ea2ff; --trigger: #5fd0ad; --chip: #1f2a33; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font: 17px/1.6 var(--body); }
+.wrap { max-width: 68rem; margin: 0 auto; padding-inline: 16px; padding-block: 3.5rem 5rem; display: grid; gap: 3.5rem; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.mast { display: grid; gap: 1.1rem; max-width: 46rem; }
+.eyebrow { font: 600 0.75rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--trigger); }
+h1 { font-size: clamp(2.3rem, 1.4rem + 3.6vw, 4.1rem); line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; }
+.lede { font-size: 1.15rem; color: var(--muted); margin: 0; max-width: 40rem; }
+.terms { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; font: 0.85rem/1.4 var(--mono); color: var(--muted); padding: 0; margin: 0; list-style: none; }
+.terms li::before { content: "✓ "; color: var(--trigger); }
+
+.menu { display: grid; gap: 3rem; }
+.group { display: grid; gap: 1.2rem; }
+.group > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.6rem; }
+.group h2 { font-size: 1.55rem; }
+.group > header p { margin: 0; color: var(--muted); font-size: 0.95rem; max-width: 34rem; }
+
+.svc { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 1rem 2.2rem; padding-block: 1.3rem; border-bottom: 1px solid var(--rule); }
+.svc:last-child { border-bottom: 0; }
+.svc-head { display: grid; gap: 0.45rem; align-content: start; min-width: 0; }
+.svc h3 { font-size: 1.2rem; line-height: 1.2; font-weight: 700; }
+.price { font: 600 1.05rem/1.2 var(--mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.meta { font: 0.8rem/1.4 var(--mono); color: var(--muted); }
+.svc-body { display: grid; gap: 0.75rem; min-width: 0; }
+.svc-body p { margin: 0; max-width: 40rem; }
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding: 0; margin: 0; list-style: none; }
+.chain li { font: 0.78rem/1.3 var(--mono); background: var(--chip); color: var(--ink); padding: 0.32rem 0.55rem; border-radius: 4px; }
+.chain li:first-child { background: transparent; color: var(--trigger); outline: 1px solid var(--trigger); }
+.chain li:last-child { background: var(--ink); color: var(--bg); }
+.chain li + li::before { content: "→"; margin-right: 0.45rem; color: var(--muted); }
+.chain li:last-child::before { color: var(--bg); opacity: 0.6; }
+.removes { font-size: 0.92rem; color: var(--muted); }
+.removes strong { color: var(--ink); font-weight: 600; }
+
+.how { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1.6rem; display: grid; gap: 1.2rem; }
+.how ol { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1.2rem; counter-reset: s; }
+.how li { counter-increment: s; display: grid; gap: 0.3rem; min-width: 0; }
+.how li::before { content: "Step " counter(s); font: 600 0.72rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--trigger); }
+.how li strong { font-family: var(--display); font-size: 1.05rem; }
+.how li span { color: var(--muted); font-size: 0.95rem; }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.4rem; }
+.handle { font: 600 1.05rem/1 var(--mono); background: var(--chip); padding: 0.6rem 0.8rem; border-radius: 4px; user-select: all; }
+button { font: 600 0.9rem/1 var(--display); background: var(--accent); color: var(--surface); border: 0; border-radius: 4px; padding: 0.7rem 1rem; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--trigger); outline-offset: 2px; }
+footer { font: 0.78rem/1.5 var(--mono); color: var(--muted); }
+
+@media (max-width: 720px) { .svc { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <span class="eyebrow">Severus Connects · AI automation</span>
+    <h1>Systems that take the busywork off your desk</h1>
+    <p class="lede">Idris-Michael Bakare builds AI automations for small businesses and agencies. Each system runs on tools you own, comes with written documentation, and starts with a free 15-minute intake call.</p>
+    <ul class="terms">
+      <li>Fixed price agreed before work starts</li>
+      <li>Built on n8n, Google Workspace and NotebookLM</li>
+      <li>Written handover, you own everything</li>
+    </ul>
+  </header>
+
+  <main id="menu" class="menu"></main>
+
+  <section class="how" aria-labelledby="how-h">
+    <h2 id="how-h">How an engagement works</h2>
+    <ol>
+      <li><strong>Intake call</strong><span>15 minutes, free. We pick the one task that costs you the most time.</span></li>
+      <li><strong>Fixed quote</strong><span>A written scope and fixed price from this catalogue.</span></li>
+      <li><strong>Build</strong><span>Delivered in the time shown for each system.</span></li>
+      <li><strong>Handover</strong><span>You own the workflows, with written documentation.</span></li>
+    </ol>
+    <div class="cta">
+      <span>Book an intake call: message</span>
+      <span class="handle" id="handle">@severus_connects</span>
+      <button type="button" id="copy">Copy handle</button>
+      <span id="copied" class="meta" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <footer>Prices in GBP, updated <span id="updated"></span>. Generated from the Severus Connects service catalogue.</footer>
+</div>
+
+<script>
+const DATA = /*__CATALOGUE__*/{"updated":"2026-10-15","services":[{"id":"ai-automation","name":"AI automation / n8n workflow build","price":"£400–£1,500","unit":"per project","delivery":"3–7 days","tier":"P1"},{"id":"ai-agent-build","name":"AI agent or MCP server build","price":"£800–£2,500","unit":"per project","delivery":"5–10 days","tier":"P1"},{"id":"mvp-build","name":"MVP build (Next.js, Tailwind, Supabase)","price":"£1,200–£4,000","unit":"per project","delivery":"1–3 weeks","tier":"P1"},{"id":"design-system","name":"Design system setup","price":"£1,500–£3,000","unit":"per project","delivery":"1–2 weeks","tier":"P1"},{"id":"automation-audit","name":"AI automation audit (manual work mapped to an automation plan)","price":"£250–£450","unit":"per audit","delivery":"48 hours","tier":"P1"},{"id":"onboarding-autopilot","name":"Client onboarding autopilot (intake form to research pack and portal)","price":"£600–£1,200","unit":"per system","delivery":"5–7 days","tier":"P1"},{"id":"competitor-intel","name":"Weekly competitor intelligence system","price":"£600–£1,200","unit":"set-up (+£150–£300/month to run)","delivery":"5–7 days","tier":"P1"},{"id":"sales-call-prep","name":"Sales call prep system (prospect URL to briefing, audio and cheat sheet)","price":"£400–£800","unit":"per system","delivery":"3–5 days","tier":"P1"},{"id":"proposal-generator","name":"Research-backed proposal generator","price":"£500–£1,000","unit":"per system","delivery":"3–5 days","tier":"P1"},{"id":"meeting-intelligence","name":"Meeting intelligence system (recording to summary, tasks and follow-ups)","price":"£500–£1,000","unit":"per system","delivery":"3–5 days","tier":"P1"},{"id":"newsletter-curator","name":"Automated newsletter curator","price":"£400–£900","unit":"per system","delivery":"3–5 days","tier":"P1"},{"id":"knowledge-base-rag","name":"AI knowledge base / RAG assistant","price":"£800–£2,000","unit":"per project","delivery":"5–10 days","tier":"P1"},{"id":"ai-chatbot","name":"AI chatbot / customer support agent","price":"£500–£1,500","unit":"per project","delivery":"5–7 days","tier":"P1"}]}/*__END__*/;
+
+// Client-facing copy per catalogue id. Prices, units and delivery always come from DATA.
+const COPY = {
+  "automation-audit": { group: "start", pitch: "We map where your week goes and hand you a ranked plan of what to automate first, with the hours each one saves.", chain: ["Your tools + a screen-share", "Process map", "Time-cost ranking", "Automation plan"], removes: "guessing where to start" },
+  "onboarding-autopilot": { group: "systems", pitch: "New clients fill in one form. They receive a researched welcome pack: their market, competitors and your plan.", chain: ["Intake form submitted", "Industry research", "Briefing + infographic + deck", "Welcome pack emailed"], removes: "hours of onboarding research per client" },
+  "competitor-intel": { group: "systems", pitch: "Every Monday you get a short report on what your competitors published and where the openings are.", chain: ["Monday 6am", "Pull competitor sites, videos, posts", "Trend report + opportunity map", "Email or Slack"], removes: "manual competitor checks" },
+  "sales-call-prep": { group: "systems", pitch: "Paste a prospect's website. Before the call you have a two-minute brief, an audio summary and the questions to ask.", chain: ["Prospect URL", "Company + industry research", "Brief, audio, tech stack", "Call cheat sheet"], removes: "pre-call research" },
+  "proposal-generator": { group: "systems", pitch: "Proposals drafted from your template with real research on the client's industry, ready to edit and send.", chain: ["Brief captured", "Industry research", "Solution visual + deck", "Branded PDF"], removes: "writing proposals from scratch" },
+  "meeting-intelligence": { group: "systems", pitch: "Drop in a recording. Decisions, actions and follow-ups land in your project tool and attendees' inboxes.", chain: ["Recording uploaded", "Decisions + actions extracted", "Summary + task table", "Tasks created, recap sent"], removes: "lost action items" },
+  "newsletter-curator": { group: "systems", pitch: "Your industry newsletter, curated from the sources you trust and drafted in your voice every week.", chain: ["Weekly schedule", "Scan your sources", "Curated briefing + visuals", "Draft ready to send"], removes: "the weekly newsletter scramble" },
+  "ai-automation": { group: "custom", pitch: "Any repetitive process across your apps, built as a documented n8n workflow (or Make/Zapier if you already use them).", chain: ["Your trigger", "Apps connected", "AI where it helps", "Done, logged"], removes: "copy-paste between tools" },
+  "ai-chatbot": { group: "custom", pitch: "A support or sales assistant that answers from your own content and hands over to a person when it should.", chain: ["Customer question", "Your knowledge base", "Answer or hand-off", "Conversation logged"], removes: "repeat questions" },
+  "knowledge-base-rag": { group: "custom", pitch: "Search and ask questions across your documents, notes and SOPs, with answers that cite the source.", chain: ["Your documents", "Indexed + embedded", "Ask in plain English", "Cited answer"], removes: "hunting through folders" },
+  "ai-agent-build": { group: "custom", pitch: "A custom AI agent or MCP server that works inside the tools your team already uses.", chain: ["Your goal", "Agent + tools designed", "Guardrails + tests", "Deployed agent"], removes: "work that needs judgement but follows rules" },
+  "mvp-build": { group: "product", pitch: "A working first version of your product on Next.js, Tailwind and Supabase, ready for real users.", chain: ["Scope", "Design system", "Build + auth + data", "Live MVP"], removes: "months of agency back-and-forth" },
+  "design-system": { group: "product", pitch: "Tokens, components and guidelines so every page you ship looks consistent and accessible.", chain: ["Brand + audit", "Tokens", "Components", "Documented system"], removes: "inconsistent UI" },
+};
+const GROUPS = [
+  ["start", "Start here", "Not sure what to automate? Begin with the audit."],
+  ["systems", "Ready-made business systems", "Proven workflows set up for your business and data."],
+  ["custom", "Custom automation and AI", "Built to your process when nothing off the shelf fits."],
+  ["product", "Product engineering", "When the automation needs its own app."],
+];
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const menu = document.getElementById("menu");
+for (const [key, title, intro] of GROUPS) {
+  const items = DATA.services.filter((s) => (COPY[s.id]?.group ?? "custom") === key);
+  if (!items.length) continue;
+  const sec = document.createElement("section");
+  sec.className = "group";
+  sec.setAttribute("aria-labelledby", "g-" + key);
+  sec.innerHTML = `<header><h2 id="g-${key}">${esc(title)}</h2><p>${esc(intro)}</p></header>` + items.map((s) => {
+    const c = COPY[s.id] ?? { pitch: "", chain: [], removes: "" };
+    return `<article class="svc" id="${esc(s.id)}">
+      <div class="svc-head"><h3>${esc(s.name)}</h3><span class="price">${esc(s.price)}</span><span class="meta">${esc(s.unit)} · ${esc(s.delivery)}</span></div>
+      <div class="svc-body">${c.pitch ? `<p>${esc(c.pitch)}</p>` : ""}
+        ${c.chain.length ? `<ol class="chain" aria-label="How it runs">${c.chain.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
+        ${c.removes ? `<span class="removes">Removes: <strong>${esc(c.removes)}</strong></span>` : ""}</div>
+    </article>`;
+  }).join("");
+  menu.appendChild(sec);
+}
+document.getElementById("updated").textContent = DATA.updated || "recently";
+document.getElementById("copy").addEventListener("click", async () => {
+  const out = document.getElementById("copied");
+  try { await navigator.clipboard.writeText("@severus_connects"); out.textContent = "Copied"; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("handle")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); out.textContent = "Selected — press Ctrl+C"; }
+});
+</script>
+
+</body></html>

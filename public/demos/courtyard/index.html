@@ -1,0 +1,299 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Severus Courtyard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: the demo film opens the page, the annotated world map follows; kingdoms as a hand of playing cards; then mechanics, then the build sequence. Single committed dark look (obsidian + antique gold), matching the hub courtyard. */
+:root {
+  --obsidian: #050608;
+  --panel: #0f1118;
+  --edge: #262a36;
+  --gold: #d4a017;
+  --teal: #2bb5a8;
+  --ink: #f2ede4;
+  --muted: #a9a49a;
+  --display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  /* 8px x 1.618^n */
+  --s-3xs: 5px; --s-2xs: 8px; --s-xs: 13px; --s-s: 21px; --s-m: 34px; --s-l: 55px; --s-xl: 89px;
+  color-scheme: dark;
+}
+body { background: var(--obsidian); color: var(--ink); font: 400 16px/1.618 var(--body); }
+.wrap { max-width: 1120px; margin-inline: auto; padding-inline: max(16px, var(--s-s)); padding-block: var(--s-l) var(--s-xl); display: grid; gap: var(--s-xl); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.12; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(42px, 6vw, 68px); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(26px, 3.4vw, 42px); font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-size: 21px; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font: 600 13px/1 var(--display); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.lede { color: var(--muted); font-size: 18px; }
+a { color: var(--gold); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, video:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+/* Hero */
+.hero { display: grid; gap: var(--s-m); }
+.hero-head { display: grid; gap: var(--s-s); }
+
+/* Demo film */
+.demo { margin: 0; display: grid; gap: var(--s-xs); }
+.demo-frame { border: 1px solid var(--gold); border-radius: 8px; overflow: hidden; background: var(--panel); box-shadow: 0 0 0 1px var(--obsidian), 0 21px 55px rgba(0, 0, 0, 0.55); }
+.demo video { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--obsidian); }
+.demo figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2xs) var(--s-s); color: var(--muted); font-size: 14px; }
+.demo figcaption strong { font: 600 13px/1.3 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.demo figcaption span { min-width: 0; max-width: 72ch; }
+.timecode { font: 400 13px/1.3 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+.map { position: relative; margin: 0; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; background: var(--panel); }
+.map img { display: block; width: 100%; height: auto; aspect-ratio: 1376 / 768; }
+.pin { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: var(--s-2xs); padding: var(--s-3xs) var(--s-xs); background: rgba(5, 6, 8, 0.82); border: 1px solid var(--gold); border-radius: 999px; font: 600 13px/1.3 var(--display); color: var(--ink); white-space: nowrap; }
+.pin b { color: var(--gold); font-size: 16px; line-height: 1; }
+.pin--court { border-color: var(--teal); }
+.pin--court b { color: var(--teal); }
+.legend { display: none; }
+.decisions { display: flex; flex-wrap: wrap; gap: var(--s-2xs); }
+.chip { font: 600 13px/1 var(--display); padding: var(--s-2xs) var(--s-xs); border-radius: 999px; border: 1px solid var(--edge); color: var(--ink); }
+.chip--done { border-color: var(--teal); color: var(--teal); }
+.chip--open { border-style: dashed; color: var(--muted); }
+
+/* Kingdom cards */
+.section { display: grid; gap: var(--s-m); }
+.section-head { display: grid; gap: var(--s-xs); }
+.hand { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s-s); }
+.card { position: relative; display: grid; gap: var(--s-xs); align-content: start; padding: var(--s-m) var(--s-s) var(--s-s); background: var(--panel); border: 1px solid var(--edge); border-radius: 13px; min-width: 0; }
+.card .corner { position: absolute; top: var(--s-xs); left: var(--s-xs); font: 700 13px/1 var(--display); color: var(--gold); display: grid; justify-items: center; gap: 2px; }
+.card .corner span:last-child { font-size: 16px; }
+.card .place { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-left: var(--s-m); }
+.card h3 { padding-left: var(--s-m); }
+.card dl { margin: 0; display: grid; gap: var(--s-2xs); }
+.card dt { font: 600 13px/1.3 var(--display); color: var(--gold); letter-spacing: 0.04em; }
+.card dd { margin: 0; color: var(--ink); font-size: 15px; line-height: 1.5; }
+.card--joker .corner, .card--joker dt { color: var(--teal); }
+.card--court { border-color: var(--gold); }
+
+/* Mechanics */
+.table-wrap { overflow-x: auto; border: 1px solid var(--edge); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; }
+th, td { text-align: left; padding: var(--s-xs) var(--s-s); border-bottom: 1px solid var(--edge); vertical-align: top; }
+th { font: 600 13px/1.3 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+td code { font: 400 14px/1.4 ui-monospace, "Cascadia Code", Consolas, monospace; color: var(--teal); white-space: nowrap; }
+td:first-child { font-weight: 600; }
+.rule { border-left: 3px solid var(--gold); padding: var(--s-xs) var(--s-s); background: var(--panel); border-radius: 0 8px 8px 0; }
+
+/* Status preview */
+.status { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-s); }
+.meter { display: grid; gap: var(--s-2xs); padding: var(--s-s); border: 1px solid var(--edge); border-radius: 8px; background: var(--panel); min-width: 0; }
+.meter-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2xs); }
+.meter-top strong { font: 600 16px/1.2 var(--display); }
+.meter-top span { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
+.bar { height: 8px; background: var(--edge); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--gold); border-radius: inherit; transform-origin: left; }
+.meter small { color: var(--muted); font-size: 13px; }
+.example-note { color: var(--muted); font-size: 14px; }
+
+/* Build sequence */
+.steps { display: grid; gap: var(--s-s); margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: auto 1fr; gap: var(--s-s); align-items: start; }
+.steps li::before { content: counter(step); font: 700 26px/1 var(--display); color: var(--gold); width: 34px; }
+.steps h3 { margin-bottom: var(--s-3xs); }
+.steps p { color: var(--muted); }
+
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--edge); padding-top: var(--s-s); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar i { animation: fill 1.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes fill { from { transform: scaleX(0.02); } to { transform: scaleX(1); } }
+}
+@media (max-width: 720px) {
+  .pin { display: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s-2xs); margin: 0; padding: 0; list-style: none; }
+  .legend li { font: 600 13px/1.3 var(--display); padding: var(--s-3xs) var(--s-xs); border: 1px solid var(--edge); border-radius: 999px; }
+  .legend b { color: var(--gold); }
+  .wrap { gap: var(--s-l); padding-block: var(--s-m) var(--s-l); }
+}
+</style>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="hero-head">
+      <span class="eyebrow">Severus Hub · concept</span>
+      <h1>Severus Courtyard</h1>
+      <p class="lede">The hub becomes a world you fly through. Hermes holds court at the centre; every agent lives in the kingdom of its suit; real agency work moves the scores.</p>
+    </div>
+
+    <figure class="demo">
+      <div class="demo-frame">
+        <video id="demo-film" src="severus-realm-demo-web.mp4" poster="demo-poster.webp" width="1920" height="1080"
+               controls muted loop playsinline autoplay preload="metadata"
+               aria-label="Demo film, 1 minute 17 seconds: a holographic joker, a flight over the kingdoms, the working hub in 3D, a card for what each kingdom does for clients, Severus in the Jokers' Gallery, the Court, the Spatial VT stage, the Cloister Map and this concept page."></video>
+      </div>
+      <figcaption>
+        <strong>Demo</strong>
+        <span class="timecode">1:17</span>
+        <span>The joker, the kingdom tour and the map glide are generated clips, and the kingdom cards are motion graphics. Everything else is recorded from the working dashboard. Sound is off until you unmute.</span>
+      </figcaption>
+    </figure>
+
+    <figure class="map">
+      <img src="severus-world-map.webp" width="1376" height="768" alt="Isometric map of four floating island kingdoms around a central obsidian courtyard with a gold fountain: a Club island of forges and server towers, a Heart island of broadcast studios and screens, a Spade island with a war-room citadel and map tables, and a Diamond island of crystal vaults and gold archives.">
+      <span class="pin" style="left:27%;top:30%"><b>♣</b>Club Kingdom</span>
+      <span class="pin" style="left:73%;top:26%"><b>♥</b>Heart Kingdom</span>
+      <span class="pin pin--court" style="left:50%;top:60%"><b>✦</b>The Court</span>
+      <span class="pin" style="left:28%;top:78%"><b>♠</b>Spade Kingdom</span>
+      <span class="pin" style="left:72%;top:84%"><b>♦</b>Diamond Kingdom</span>
+    </figure>
+    <ul class="legend" aria-label="Map key">
+      <li><b>♣</b> Club Kingdom, top left</li>
+      <li><b>♥</b> Heart Kingdom, top right</li>
+      <li><b>✦</b> The Court, centre</li>
+      <li><b>♠</b> Spade Kingdom, bottom left</li>
+      <li><b>♦</b> Diamond Kingdom, bottom right</li>
+    </ul>
+    <div class="decisions" aria-label="Decisions so far">
+      <span class="chip chip--done">Home page, with classic-view toggle</span>
+      <span class="chip chip--done">Full game layer</span>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="kingdoms">
+    <div class="section-head">
+      <span class="eyebrow">The hand</span>
+      <h2 id="kingdoms">Five places, every page in one of them</h2>
+      <p class="lede">The 33 sidebar pages become destinations. Each kingdom gathers the tools and agents that share its suit.</p>
+    </div>
+    <div class="hand">
+      <article class="card card--court">
+        <div class="corner" aria-hidden="true"><span>K</span><span>✦</span></div>
+        <span class="place">Centre · gold fountain</span>
+        <h3>The Court</h3>
+        <dl>
+          <dt>Pages</dt><dd>Hermes chat and command, daily briefing</dd>
+          <dt>Lives here</dt><dd>Hermes, the dispatcher</dd>
+        </dl>
+      </article>
+      <article class="card">
+        <div class="corner" aria-hidden="true"><span>K</span><span>♣</span></div>
+        <span class="place">Forges · server towers</span>
+        <h3>Club Kingdom</h3>
+        <dl>
+          <dt>Pages</dt><dd>System, Services, VFX Studio, GPU, OpenCode</dd>
+          <dt>Lives here</dt><dd>Club cards, Flynn</dd>
+        </dl>
+      </article>
+      <article class="card">
+        <div class="corner" aria-hidden="true"><span>Q</span><span>♥</span></div>
+        <span class="place">Broadcast studios</span>
+        <h3>Heart Kingdom</h3>
+        <dl>
+          <dt>Pages</dt><dd>Instagram queue, Studio, Image Studio, Media Factory, Voiceover</dd>
+          <dt>Lives here</dt><dd>Heart cards, Titania, Max Headroom</dd>
+        </dl>
+      </article>
+      <article class="card">
+        <div class="corner" aria-hidden="true"><span>K</span><span>♠</span></div>
+        <span class="place">War-room citadel</span>
+        <h3>Spade Kingdom</h3>
+        <dl>
+          <dt>Pages</dt><dd>Ads audits, campaigns, analytics</dd>
+          <dt>Lives here</dt><dd>Spade cards, Wintermute, Galadriel</dd>
+        </dl>
+      </article>
+      <article class="card">
+        <div class="corner" aria-hidden="true"><span>A</span><span>♦</span></div>
+        <span class="place">Crystal vaults</span>
+        <h3>Diamond Kingdom</h3>
+        <dl>
+          <dt>Pages</dt><dd>Clients and CRM, Knowledge, Memory, NotebookLM</dd>
+          <dt>Lives here</dt><dd>Diamond cards, Midas, Brainiac</dd>
+        </dl>
+      </article>
+      <article class="card card--joker">
+        <div class="corner" aria-hidden="true"><span>J</span><span>★</span></div>
+        <span class="place">Floating above</span>
+        <h3>Jokers' Gallery</h3>
+        <dl>
+          <dt>Pages</dt><dd>Gauntlet arena: design, code and security review</dd>
+          <dt>Lives here</dt><dd>Severus (Red Joker), Black Joker</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="game">
+    <div class="section-head">
+      <span class="eyebrow">The game layer</span>
+      <h2 id="game">Every point comes from work that happened</h2>
+      <p class="lede">Scores are derived from data the hub already serves. Nothing is typed in by hand, so the courtyard can't drift from reality.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Mechanic</th><th scope="col">Driven by</th><th scope="col">Source</th></tr></thead>
+        <tbody>
+          <tr><td>Quests</td><td>Kanban cards. Finishing one awards XP to its kingdom.</td><td><code>/api/kanban</code></td></tr>
+          <tr><td>Agent levels</td><td>Completed delegations per agent; a status light shows idle, working or error.</td><td><code>/api/swarm/tasks</code></td></tr>
+          <tr><td>♥ Heart health</td><td>Posting streak and approved reels.</td><td><code>/api/ig/queue</code>, <code>/api/ig/metrics</code></td></tr>
+          <tr><td>♣ Club health</td><td>Services up and studio health.</td><td><code>/api/studio/health</code></td></tr>
+          <tr><td>♠ Spade health</td><td>Audits completed.</td><td><code>/api/swarm/tasks</code></td></tr>
+          <tr><td>♦ Diamond health</td><td>Monthly revenue toward the £5,000–£8,000 target.</td><td><code>/api/clients</code></td></tr>
+          <tr><td>Achievements</td><td>Gauntlet pass from Severus, 7-day posting streak, first client signed.</td><td>Derived from the above</td></tr>
+          <tr><td>Royal decree</td><td>One daily quest set by Hermes each morning.</td><td>Orchestrator</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rule">The game never blocks work. Every real page stays at most two clicks away, and the classic view is one toggle.</p>
+
+    <div class="section-head">
+      <h3>Courtyard status, as it would appear</h3>
+      <p class="example-note">Example values for illustration, not your live figures.</p>
+    </div>
+    <div class="status">
+      <div class="meter"><div class="meter-top"><strong>♥ Heart</strong><span>5 / 7 days</span></div><div class="bar" role="img" aria-label="71 percent"><i style="width:71%"></i></div><small>Posting streak</small></div>
+      <div class="meter"><div class="meter-top"><strong>♣ Club</strong><span>4 / 7 up</span></div><div class="bar" role="img" aria-label="57 percent"><i style="width:57%"></i></div><small>Services online</small></div>
+      <div class="meter"><div class="meter-top"><strong>♠ Spade</strong><span>3 audits</span></div><div class="bar" role="img" aria-label="60 percent"><i style="width:60%"></i></div><small>This month, target 5</small></div>
+      <div class="meter"><div class="meter-top"><strong>♦ Diamond</strong><span>£2,400 / £5,000</span></div><div class="bar" role="img" aria-label="48 percent"><i style="width:48%"></i></div><small>Monthly revenue</small></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="art">
+    <div class="section-head">
+      <span class="eyebrow">Generated art</span>
+      <h2 id="art">One look, carried through every image</h2>
+    </div>
+    <div class="hand">
+      <article class="card"><h3 style="padding:0">Kingdom key art</h3><p>Five images: four kingdoms and the Jokers' Gallery. Used as island billboards and loading screens.</p></article>
+      <article class="card"><h3 style="padding:0">Agent trading cards</h3><p>25 portraits from one fixed template so the set matches: suit, rank, name, level.</p></article>
+      <article class="card"><h3 style="padding:0">Achievement badges</h3><p>Small emblems for streaks, Gauntlet passes and first client.</p></article>
+    </div>
+    <p class="lede">The 3D world is built in code; images become textures and overlays. That keeps it fast. About 30 images in total: free once Gemini image creation is back, or roughly $2 through OpenRouter.</p>
+  </section>
+
+  <section class="section" aria-labelledby="build">
+    <div class="section-head">
+      <span class="eyebrow">Build order</span>
+      <h2 id="build">Three slices, each reviewed by Severus</h2>
+    </div>
+    <ol class="steps">
+      <li><div><h3>The map</h3><p>Five islands, fly-to camera, panels linking to existing pages. Becomes the home page, with the classic-view toggle.</p></div></li>
+      <li><div><h3>Live status and XP</h3><p>Kingdom health bars, agent status lights and levels from real hub data.</p></div></li>
+      <li><div><h3>Quests, achievements and cards</h3><p>Kanban quests, badges, the daily decree and the agent trading-card collection.</p></div></li>
+    </ol>
+    <p class="lede">Built on what the hub already has: React Three Fiber, drei and post-processing, extending the existing courtyard scene. The key art loads first as a still image so the page is usable before the 3D scene arrives. Every island is also a keyboard-focusable button, and reduced-motion settings skip the camera flights.</p>
+  </section>
+
+  <footer>Severus Connects · Hermes OS · concept, October 2026</footer>
+</main>
+
+<script>
+  // Respect reduced motion: show the poster and let the viewer press play.
+  (function () {
+    var film = document.getElementById("demo-film");
+    if (!film || !window.matchMedia) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      film.removeAttribute("autoplay");
+      film.pause();
+    }
+  })();
+</script>
+
+</body></html>
