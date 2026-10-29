@@ -1,34 +1,12 @@
+import { useRef } from 'react';
 import { WorldNav, WorldFooter, SectionHead } from './chrome';
 import { Reveal } from './Reveal';
+import { SpotlightCarousel } from '../components/ui/SpotlightCarousel';
+import { RECENT_PROJECTS } from '../data/recentProjects';
+import { useParallax } from '../hooks/useParallax';
+import { trackSpotlight } from '../lib/spotlight';
 
 const ACCENT = 'var(--accent)';
-
-const WORK = [
-  {
-    title: 'UI / UX Design',
-    tag: 'Product Design',
-    desc: 'End-to-end interface design: research, flows, hi-fi UI, and shipped front-ends. From discovery through to deployed product.',
-    href: 'https://github.com/Idris-Michael',
-    label: 'Research → Figma → Ship',
-    sub: 'Design systems, accessibility, conversion',
-  },
-  {
-    title: 'Front-End Builds',
-    tag: 'React · TypeScript',
-    desc: 'Production React and TypeScript builds with motion, WebGL, and design systems. Severus Overwatch is one example.',
-    href: 'https://github.com/Idris-Michael/severus-overwatch',
-    label: 'React · TypeScript · WebGL',
-    sub: 'Motion design, Three.js, GSAP',
-  },
-  {
-    title: 'AI Video & Motion',
-    tag: 'Creative',
-    desc: 'Generative video pipelines, automated clipping, and motion direction. Built on VideoDB and custom render pipelines.',
-    href: 'https://github.com/Idris-Michael',
-    label: 'VideoDB · Hyperframes',
-    sub: 'Automated clipping, voiceover, publish',
-  },
-];
 
 const DESIGN_CONCEPTS = [
   { title: 'Figma A/B Variant Review', tag: 'Figma · A/B Testing', img: 'images/figma/gen-dashboard.png', href: '/demos/figma-ab-variant.html', desc: 'Side-by-side variant comparison in a Figma-style inspector. Wilson score significance, winner declaration.' },
@@ -102,13 +80,16 @@ function PhoneEnv({ label, src }: { label: string; src: string }) {
 }
 
 export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
+  const rootRef = useRef<HTMLElement>(null);
+  useParallax(rootRef);
+
   return (
-    <main className="relative z-10 min-h-screen" style={{ color: 'var(--fg)' }}>
+    <main ref={rootRef} className="relative z-10 min-h-screen" style={{ color: 'var(--fg)' }}>
       <WorldNav
         world="frontend"
         onSwitch={onSwitch}
         links={[
-          { href: '#work', label: 'Work' },
+          { href: '#work', label: 'Recent work' },
           { href: '#design-concepts', label: 'Design' },
           { href: '#phone-live', label: 'Live Preview' },
           { href: '#demos', label: 'Demos' },
@@ -124,8 +105,8 @@ export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
           <span style={{ color: ACCENT }}>Frontend</span> <span style={{ color: 'var(--muted)' }}>// Design · UI · Interface</span>
         </Reveal>
         <Reveal as="h1" delay={80}>
-          <span className="block font-serif text-[15vw] md:text-[11vw] leading-[0.85] tracking-tight">Interfaces</span>
-          <span className="block font-serif italic text-[15vw] md:text-[11vw] leading-[0.85] tracking-tight" style={{ color: ACCENT }}>that ship.</span>
+          <span data-parallax="0.12" className="block font-serif text-[15vw] md:text-[11vw] leading-[0.85] tracking-tight">Interfaces</span>
+          <span data-parallax="0.3" className="block font-serif italic text-[15vw] md:text-[11vw] leading-[0.85] tracking-tight" style={{ color: ACCENT }}>that ship.</span>
         </Reveal>
         <Reveal delay={160} className="mt-8 max-w-xl text-lg">
           <p style={{ color: 'var(--muted)' }}>
@@ -142,40 +123,12 @@ export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
         </Reveal>
       </header>
 
-      {/* WORK — typographic cards, no glyph/gradient */}
+      {/* RECENT WORK — spotlight carousel */}
       <section id="work" className="px-6 md:px-12 py-24 max-w-7xl mx-auto w-full">
-        <SectionHead kicker="Selected work" title="What I make." lead="Design and front-end across product, web, and motion." />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {WORK.map((w, i) => (
-            <Reveal key={w.title} delay={i * 80}>
-              <a
-                href={w.href}
-                target="_blank"
-                rel="noreferrer"
-                className="hover-target group block rounded-2xl overflow-hidden h-full"
-                style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}
-              >
-                {/* Typographic hero — no generic glyph */}
-                <div
-                  className="aspect-[4/3] flex flex-col items-start justify-end p-6 relative overflow-hidden"
-                  style={{ background: 'var(--bg)' }}
-                >
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: `radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 65%)` }}
-                  />
-                  <span className="relative font-mono text-[10px] uppercase tracking-widest mb-3 px-2 py-0.5 rounded" style={{ color: ACCENT, border: `1px solid color-mix(in srgb, var(--accent) 35%, transparent)` }}>{w.tag}</span>
-                  <span className="relative font-serif text-3xl leading-tight tracking-tight" style={{ color: 'var(--fg)' }}>{w.label}</span>
-                  <span className="relative font-mono text-[10px] tracking-widest mt-2" style={{ color: 'var(--muted)' }}>{w.sub}</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-serif text-2xl mb-2">{w.title}</h3>
-                  <p className="text-sm" style={{ color: 'var(--muted)' }}>{w.desc}</p>
-                </div>
-              </a>
-            </Reveal>
-          ))}
-        </div>
+        <SectionHead kicker="Recent work" title="What I've shipped lately." lead="Product dashboards, creative tools and marketing sites, designed and built end to end. Use ← → or swipe." />
+        <Reveal>
+          <SpotlightCarousel items={RECENT_PROJECTS} />
+        </Reveal>
       </section>
 
       {/* DESIGN CONCEPTS */}
@@ -184,9 +137,9 @@ export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DESIGN_CONCEPTS.map((d, i) => (
             <Reveal key={d.title} delay={i * 80}>
-              <a href={d.href} target="_blank" rel="noreferrer" className="hover-target group block rounded-2xl overflow-hidden h-full" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
+              <a href={d.href} target="_blank" rel="noreferrer" onPointerMove={trackSpotlight} className="spotlight hover-target group block rounded-2xl overflow-hidden h-full" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
                 <div className="aspect-[16/9] overflow-hidden">
-                  <img src={d.img} alt={d.title} width={800} height={450} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                  <img data-parallax-img src={d.img} alt={d.title} width={800} height={450} className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="p-6">
                   <div className="font-mono text-[10px] uppercase tracking-widest mb-2" style={{ color: ACCENT }}>{d.tag}</div>
@@ -217,7 +170,7 @@ export function FrontendWorld({ onSwitch }: { onSwitch?: () => void }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {DEMOS_FEATURED.map((d, i) => (
             <Reveal key={d.num} delay={i * 80}>
-              <a href={d.href} target="_blank" rel="noreferrer" className="hover-target group flex flex-col gap-4 p-7 rounded-2xl h-full transition-colors" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
+              <a href={d.href} target="_blank" rel="noreferrer" onPointerMove={trackSpotlight} className="spotlight hover-target group flex flex-col gap-4 p-7 rounded-2xl h-full transition-colors" style={{ background: 'var(--surface)', border: '1px solid var(--line)' }}>
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-3xl font-bold leading-none" style={{ color: 'color-mix(in srgb, var(--accent) 25%, var(--bg))' }}>{d.num}</span>
                   <span className="font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded" style={{ color: ACCENT, background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}>{d.tag}</span>
