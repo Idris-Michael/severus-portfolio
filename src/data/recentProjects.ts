@@ -23,7 +23,7 @@ export const RECENT_PROJECTS: RecentProject[] = [
     role: 'Design + engineering',
     stack: ['TypeScript', 'Ollama', 'Claude', 'SQLite', 'node:test'],
     desc: 'Sends each LLM request to the cheapest model that can handle it: a free local model scores difficulty, code picks the tier, and every call is costed. On 115 code-graded tasks it was 91% cheaper than sending everything to Claude Sonnet, at 92% vs 100% success.',
-    label: '91% cheaper · 92% vs 100% success',
+    label: '91% lower model spend',
     href: 'https://github.com/Idris-Michael/llm-tier-router',
     cta: 'View on GitHub',
     cvBullet: 'Built and open-sourced a cost-tiered LLM router in TypeScript with per-call cost telemetry; on a 115-task code-graded benchmark it cut model spend 91% against an all-frontier baseline, at 92% vs 100% task success.',
