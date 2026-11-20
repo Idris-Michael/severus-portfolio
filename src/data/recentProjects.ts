@@ -17,6 +17,18 @@ export interface RecentProject {
 
 export const RECENT_PROJECTS: RecentProject[] = [
   {
+    title: 'Tracking Audit',
+    tag: 'Open source · Solutions engineering',
+    year: '2026',
+    role: 'Design + engineering',
+    stack: ['Python', 'Playwright', 'FastAPI', 'PostgreSQL', 'Terraform'],
+    desc: 'A pre-sales audit an agency can send to a prospect: one clean page load before the cookie banner, then a scorecard for GTM, GA4, Consent Mode v2 and the Meta Pixel. Run on 20 UK retail homepages: 8 audited, 12 refused automated browsers, median 4.45 s per site. Checked by hand against raw network captures, it now agrees on all 8; that check found server-side GA4 the first version missed. Every browser connection goes through a filter that blocks private addresses, redirects included.',
+    img: 'images/recent/tracking-audit.webp',
+    href: 'https://github.com/Idris-Michael/tracking-audit',
+    cta: 'View on GitHub',
+    cvBullet: 'Built and open-sourced a pre-sales tracking audit in Python (Playwright, FastAPI, Postgres workers) that scores GTM, GA4 including server-side endpoints, Consent Mode v2 and the Meta Pixel from one clean page load, with prospect-ready HTML and PDF scorecards. On 20 UK retail sites: 8 audited at a median 4.45 s; verdicts agree with hand-read network captures on all 8. An egress proxy stops the browser reaching private addresses, including through redirects. 74 tests; Terraform for Azure and AWS.',
+  },
+  {
     title: 'Lead to Proposal',
     tag: 'Open source · Sales automation',
     year: '2026',
