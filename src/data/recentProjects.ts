@@ -17,6 +17,18 @@ export interface RecentProject {
 
 export const RECENT_PROJECTS: RecentProject[] = [
   {
+    title: 'Lead to Proposal',
+    tag: 'Open source · Sales automation',
+    year: '2026',
+    role: 'Design + engineering',
+    stack: ['Python', 'FastAPI', 'LangGraph', 'PostgreSQL', 'n8n', 'HubSpot'],
+    desc: 'A website enquiry arrives, Claude qualifies it, HubSpot gets the contact, deal and note, and a person approves the proposal draft. Built twice, as a Python service and as an n8n workflow, and benchmarked. Against a real HubSpot portal, 20 of 20 verdicts matched hand labels, with no duplicate deals after the batch was replayed. When 60% of HubSpot calls were refused (HTTP 429), the Python service still completed 20 of 20 leads; the n8n version completed 8.',
+    img: 'images/recent/lead-to-proposal.webp',
+    href: 'https://github.com/Idris-Michael/lead-to-proposal',
+    cta: 'View on GitHub',
+    cvBullet: 'Built and open-sourced a lead-to-proposal automation (FastAPI, LangGraph, Postgres, Claude) with an n8n twin generated from the same prompts. Signed webhooks are acknowledged in 0.2 s, HubSpot writes are safe to repeat, and a step ledger lets a crashed worker resume. Against a live HubSpot portal: 20/20 verdicts and 0 duplicate deals. With 60% of HubSpot calls refused (HTTP 429), 20/20 leads completed vs 8/20 for the n8n twin. 72 tests; Terraform for Azure and AWS.',
+  },
+  {
     title: 'Agent Approval Gateway',
     tag: 'Open source · AI governance',
     year: '2026',
