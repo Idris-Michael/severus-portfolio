@@ -17,6 +17,18 @@ export interface RecentProject {
 
 export const RECENT_PROJECTS: RecentProject[] = [
   {
+    title: 'Agent Approval Gateway',
+    tag: 'Open source · AI governance',
+    year: '2026',
+    role: 'Design + engineering',
+    stack: ['TypeScript', 'LangGraph', 'Python', 'SQLite', 'Terraform'],
+    desc: 'Lets an AI agent ask for anything, but only do sensitive things (refunds, invoices) after a named person approves the exact request on their phone. Default-deny policy, signed approval cards, each approved action runs once, and a tamper-evident audit log. Shown live: a local model found a duplicate £40 charge, paused, and the refund ran once after approval.',
+    img: 'images/recent/approval-gateway.webp',
+    href: 'https://github.com/Idris-Michael/agent-approval-gateway',
+    cta: 'View on GitHub',
+    cvBullet: 'Built and open-sourced a human-in-the-loop approval gateway for AI agents: default-deny tool policy with argument schemas, HMAC-signed phone approvals, exactly-once execution through a durable SQLite queue, and a hash-chained audit log, with a LangGraph agent that pauses for the decision; 110 tests, Terraform for Azure and AWS.',
+  },
+  {
     title: 'LLM Tier Router',
     tag: 'Open source · AI infrastructure',
     year: '2026',
