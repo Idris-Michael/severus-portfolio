@@ -76,7 +76,19 @@ export function SpotlightCarousel({ items }: { items: RecentProject[] }) {
                 onPointerMove={isActive ? trackSpotlight : undefined}
               >
                 <div className="sc-media">
-                  {p.img ? (
+                  {isActive && p.video ? (
+                    // Only the active card mounts a player, and nothing downloads until play is pressed.
+                    <video
+                      src={p.video}
+                      poster={p.poster}
+                      controls
+                      preload="none"
+                      playsInline
+                      width={1280}
+                      height={800}
+                      aria-label={`${p.title}: recorded demo`}
+                    />
+                  ) : p.img ? (
                     <img src={p.img} alt={`${p.title} screen`} width={1280} height={800} loading={i < 2 ? 'eager' : 'lazy'} draggable={false} />
                   ) : (
                     <div className="sc-type">

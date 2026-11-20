@@ -9,6 +9,10 @@ export interface RecentProject {
   img?: string;
   /** Typographic hero text used when there is no screenshot. */
   label?: string;
+  /** Recorded demo (MP4 under public/videos); the active card plays it in place of the image. */
+  video?: string;
+  /** Frame from the video shown before it plays. */
+  poster?: string;
   href: string;
   /** Link text; private builds link to their screenshot instead of a live URL. */
   cta: string;
@@ -24,6 +28,8 @@ export const RECENT_PROJECTS: RecentProject[] = [
     stack: ['Python', 'Playwright', 'FastAPI', 'PostgreSQL', 'Terraform'],
     desc: 'A pre-sales audit an agency can send to a prospect: one clean page load before the cookie banner, then a scorecard for GTM, GA4, Consent Mode v2 and the Meta Pixel. Run on 20 UK retail homepages: 8 audited, 12 refused automated browsers, median 4.45 s per site. Checked by hand against raw network captures, it now agrees on all 8; that check found server-side GA4 the first version missed. Every browser connection goes through a filter that blocks private addresses, redirects included.',
     img: 'images/recent/tracking-audit.webp',
+    video: 'videos/tracking-audit.mp4',
+    poster: 'videos/tracking-audit-poster.webp',
     href: 'https://github.com/Idris-Michael/tracking-audit',
     cta: 'View on GitHub',
     cvBullet: 'Built and open-sourced a pre-sales tracking audit in Python (Playwright, FastAPI, Postgres workers) that scores GTM, GA4 including server-side endpoints, Consent Mode v2 and the Meta Pixel from one clean page load, with prospect-ready HTML and PDF scorecards. On 20 UK retail sites: 8 audited at a median 4.45 s; verdicts agree with hand-read network captures on all 8. An egress proxy stops the browser reaching private addresses, including through redirects. 74 tests; Terraform for Azure and AWS.',
@@ -36,6 +42,8 @@ export const RECENT_PROJECTS: RecentProject[] = [
     stack: ['Python', 'FastAPI', 'LangGraph', 'PostgreSQL', 'n8n', 'HubSpot'],
     desc: 'A website enquiry arrives, Claude qualifies it, HubSpot gets the contact, deal and note, and a person approves the proposal draft. Built twice, as a Python service and as an n8n workflow, and benchmarked. Against a real HubSpot portal, 20 of 20 verdicts matched hand labels, with no duplicate deals after the batch was replayed. When 60% of HubSpot calls were refused (HTTP 429), the Python service still completed 20 of 20 leads; the n8n version completed 8.',
     img: 'images/recent/lead-to-proposal.webp',
+    video: 'videos/lead-to-proposal.mp4',
+    poster: 'videos/lead-to-proposal-poster.webp',
     href: 'https://github.com/Idris-Michael/lead-to-proposal',
     cta: 'View on GitHub',
     cvBullet: 'Built and open-sourced a lead-to-proposal automation (FastAPI, LangGraph, Postgres, Claude) with an n8n twin generated from the same prompts. Signed webhooks are acknowledged in 0.2 s, HubSpot writes are safe to repeat, and a step ledger lets a crashed worker resume. Against a live HubSpot portal: 20/20 verdicts and 0 duplicate deals. With 60% of HubSpot calls refused (HTTP 429), 20/20 leads completed vs 8/20 for the n8n twin. 72 tests; Terraform for Azure and AWS.',
@@ -48,6 +56,8 @@ export const RECENT_PROJECTS: RecentProject[] = [
     stack: ['TypeScript', 'LangGraph', 'Python', 'SQLite', 'Terraform'],
     desc: 'Lets an AI agent ask for anything, but only do sensitive things (refunds, invoices) after a named person approves the exact request on their phone. Default-deny policy, signed approval cards, each approved action runs once, and a tamper-evident audit log. Shown live: a local model found a duplicate £40 charge, paused, and the refund ran once after approval.',
     img: 'images/recent/approval-gateway.webp',
+    video: 'videos/agent-approval-gateway.mp4',
+    poster: 'videos/agent-approval-gateway-poster.webp',
     href: 'https://github.com/Idris-Michael/agent-approval-gateway',
     cta: 'View on GitHub',
     cvBullet: 'Built and open-sourced a human-in-the-loop approval gateway for AI agents: default-deny tool policy with argument schemas, HMAC-signed phone approvals, exactly-once execution through a durable SQLite queue, and a hash-chained audit log, with a LangGraph agent that pauses for the decision; 110 tests, Terraform for Azure and AWS.',
@@ -60,6 +70,8 @@ export const RECENT_PROJECTS: RecentProject[] = [
     stack: ['TypeScript', 'Ollama', 'Claude', 'SQLite', 'node:test'],
     desc: 'Sends each LLM request to the cheapest model that can handle it: a free local model scores difficulty, code picks the tier, and every call is costed. On 115 code-graded tasks it was 91% cheaper than sending everything to Claude Sonnet, at 92% vs 100% success.',
     label: '91% lower model spend',
+    video: 'videos/llm-tier-router.mp4',
+    poster: 'videos/llm-tier-router-poster.webp',
     href: 'https://github.com/Idris-Michael/llm-tier-router',
     cta: 'View on GitHub',
     cvBullet: 'Built and open-sourced a cost-tiered LLM router in TypeScript with per-call cost telemetry; on a 115-task code-graded benchmark it cut model spend 91% against an all-frontier baseline, at 92% vs 100% task success.',
