@@ -21,6 +21,20 @@ export interface RecentProject {
 
 export const RECENT_PROJECTS: RecentProject[] = [
   {
+    title: 'Support Knowledge Assistant',
+    tag: 'Open source · Applied AI',
+    year: '2026',
+    role: 'Design + engineering',
+    stack: ['Python', 'LangGraph', 'LangChain', 'pgvector', 'Claude', 'Terraform'],
+    desc: 'A support assistant over the PostgreSQL manual and a support desk’s internal notes. Every sentence cites the section it came from, it says so when the documents don’t cover a question, and a customer can never receive an internal note: the access filter is part of the database query. On 64 test questions fixed before the code: 46 of 50 answerable questions answered, 8 of 8 unanswerable refused, and no restricted note returned in 576 searches. Vector search beat hybrid (46 vs 44 of 50).',
+    img: 'images/recent/support-knowledge-assistant.webp',
+    video: 'videos/support-knowledge-assistant.mp4',
+    poster: 'videos/support-knowledge-assistant-poster.webp',
+    href: 'https://github.com/Idris-Michael/support-knowledge-assistant',
+    cta: 'View on GitHub',
+    cvBullet: 'Built and open-sourced a support knowledge assistant in Python (LangGraph, LangChain, pgvector, Claude) with graded retrieval, code-checked citations and role-based access enforced in the SQL query. On a 64-question set fixed before the code: 46/50 answerable questions answered, 8/8 unanswerable refused, 0 restricted notes returned in 576 searches. 97 tests; Terraform for Azure and AWS.',
+  },
+  {
     title: 'Tracking Audit',
     tag: 'Open source · Solutions engineering',
     year: '2026',
