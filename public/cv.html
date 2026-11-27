@@ -241,6 +241,17 @@
                             <p class="text-[11px] text-on-surface-variant font-body leading-relaxed">Sends each LLM request to the cheapest model that can handle it: a free local model scores difficulty, code picks the tier, and every call is costed and logged. On 115 code-graded tasks it was 91% cheaper than sending everything to Claude Sonnet, at 92% vs 100% task success.</p>
                         </div>
 
+                        <!-- Smaller open-source projects -->
+                        <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
+                            <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Smaller open-source projects <span class="font-body font-normal text-[10px] text-secondary-dim">each with a measured benchmark</span></h4>
+                            <ul class="text-[11px] text-on-surface-variant font-body leading-relaxed mt-2 space-y-1.5">
+                                <li><a href="https://github.com/Idris-Michael/internal-systems-mcp" class="font-bold text-on-surface hover:underline">Internal Systems MCP</a> (Python, MCP): scoped tokens, read-only by default, writes gated by signed single-use approvals. 53/53 attacks blocked; model-written ads passed brand QA 40/40 after one repair round.</li>
+                                <li><a href="https://github.com/Idris-Michael/claim-guard" class="font-bold text-on-surface hover:underline">Claim Guard</a> (Python): removes unverified result claims from AI sales copy. On 100 held-out Claude-written emails: 154/154 real claims kept, 199/199 planted fakes removed.</li>
+                                <li><a href="https://github.com/Idris-Michael/signal-finder" class="font-bold text-on-surface hover:underline">Signal Finder</a> (Python): rule-scored leads where GA4/GTM/Pixel tracking is broken, no model calls. 64% precision on held-out threads vs 48% for a keyword alert.</li>
+                                <li><a href="https://github.com/Idris-Michael/cache-friendly-memory" class="font-bold text-on-surface hover:underline">Cache-Friendly Memory</a> (Python, Ollama, Claude): under prompt caching, full history was cheapest and most accurate to ~80 turns; distiller quality decided recall (1-2/8 vs 7-8/8).</li>
+                            </ul>
+                        </div>
+
                         <!-- Project 1 -->
                         <div class="bg-surface-container p-5 rounded-2xl border-l-4 border-primary hover:bg-surface-container-high transition-colors">
                             <h4 class="font-headline text-sm font-bold tracking-tight text-on-surface">Mount Severus OS</h4>
